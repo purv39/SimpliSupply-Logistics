@@ -1,18 +1,18 @@
 // components/Home.js
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
 
-  const { currentUser, logOut} = useAuth();
+  const { currentUser, LogOut} = useAuth();
 
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       // Use Firebase auth to sign out
-      await logOut();
+      await LogOut();
       navigate('/');
       console.log("logged out");
       // Redirect or handle successful logout

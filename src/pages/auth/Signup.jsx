@@ -1,20 +1,26 @@
 // components/Signup.js
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
+import User from '../../classes/User';
+import { AddUserToFirestore } from '../../firebase/firebaseFirestore';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const {signUp} = useAuth();
+  const {SignUp} = useAuth();
 
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
+      const newUser = new User(email, password, "retailer");
+      
       // Use Firebase auth to create a new user
-      await signUp(email, password);
+      await SignUp(newUser);
+      await AddUserToFirestore(newUser);
+
       navigate('/home');
       // Redirect or handle successful signup
     } catch (error) {

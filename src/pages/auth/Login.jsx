@@ -1,20 +1,23 @@
 // components/Login.js
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../firebase/firebaseAuth';
 import {  useNavigate } from 'react-router-dom';
+import User from '../../classes/User';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const {login} = useAuth();
+  const {Login} = useAuth();
 
   const handleLogin = async () => {
     try {
 
+      const loginUser = new User(email, password, "retailer");
+
       // Use Firebase auth to sign in
-      await login(email, password);
+      await Login(loginUser);
       navigate('/home');
       // Redirect or handle successful login
     } catch (error) {

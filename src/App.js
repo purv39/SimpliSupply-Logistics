@@ -5,7 +5,7 @@ import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 import Home from './pages/Home';
 import WelcomePage from './pages/Welcome';
-import { AuthContextProvider } from './context/AuthContext';
+import { AuthContextProvider } from './firebase/firebaseAuth';
 import PrivateRoutes from './components/PrivateRoutes';
 
 const App = () => {
