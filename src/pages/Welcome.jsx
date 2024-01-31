@@ -4,7 +4,7 @@ import React from 'react';
 const WelcomePage = () => {
   return (
     <div>
-      <h2>Welcome to My App!</h2>
+      <h2>Welcome user!!</h2>
       {/* Add any content for your welcome page */}
     </div>
   );
