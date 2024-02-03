@@ -4,10 +4,20 @@ import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
 import User from '../../classes/User';
 import { AddUserToFirestore } from '../../firebase/firebaseFirestore';
-
+import SignUpInformation from '../../components/SignUpInformation';
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [address, setAddress] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
+  const [city, setCity] = useState('');
+  const [province, setProvince] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [businessAddress, setBusinessAddress] = useState('');
+  const [businessNumber, setBusinessNumber] = useState('');
+
 
   const {SignUp} = useAuth();
 
@@ -32,12 +42,32 @@ const Signup = () => {
 
   return (
     <div>
-      <h2>Signup</h2>
-      <label>Email:</label>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <label>Password:</label>
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleSignup}>Signup</button>
+      
+      <SignUpInformation
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        firstName={firstName}
+        setFirstName={setFirstName}
+        lastName={lastName}
+        setLastName={setLastName}
+        address={address}
+        setAddress={setAddress}
+        contactNumber={contactNumber}
+        setContactNumber={setContactNumber}
+        city={city}
+        setCity={setCity}
+        province={province}
+        setProvince={setProvince}
+        businessName={businessName}
+        setBusinessName={setBusinessName}
+        businessAddress={businessAddress}
+        setBusinessAddress={setBusinessAddress}
+        businessNumber={businessNumber}
+        setBusinessNumber={setBusinessNumber}
+        onSignupClick={handleSignup}
+      />
     </div>
   );
 };
