@@ -28,7 +28,7 @@ const SignUpInformation = ({
   onSignupClick
 }) => {
   return (
-    <div className="signup-container">
+    <div className="signup-form">
       <h2>Signup Information</h2>
       <div className="form-group">
         <label>Email:</label>
@@ -75,7 +75,7 @@ const SignUpInformation = ({
         <input type="text" value={businessNumber} onChange={(e) => setBusinessNumber(e.target.value)} />
       </div>
       <div>
-      <button className="signup-button" onClick={onSignupClick}>
+      <button className="register-button" onClick={onSignupClick}>
         Signup
       </button>
       </div>

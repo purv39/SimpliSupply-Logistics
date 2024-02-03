@@ -41,34 +41,54 @@ const Signup = () => {
   };
 
   return (
-    <div>
       
-      <SignUpInformation
-        email={email}
-        setEmail={setEmail}
-        password={password}
-        setPassword={setPassword}
-        firstName={firstName}
-        setFirstName={setFirstName}
-        lastName={lastName}
-        setLastName={setLastName}
-        address={address}
-        setAddress={setAddress}
-        contactNumber={contactNumber}
-        setContactNumber={setContactNumber}
-        city={city}
-        setCity={setCity}
-        province={province}
-        setProvince={setProvince}
-        businessName={businessName}
-        setBusinessName={setBusinessName}
-        businessAddress={businessAddress}
-        setBusinessAddress={setBusinessAddress}
-        businessNumber={businessNumber}
-        setBusinessNumber={setBusinessNumber}
-        onSignupClick={handleSignup}
-      />
-    </div>
+      <div className='container'>
+        
+        <div className="register-container">
+          <SignUpInformation
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            firstName={firstName}
+            setFirstName={setFirstName}
+            lastName={lastName}
+            setLastName={setLastName}
+            address={address}
+            setAddress={setAddress}
+            contactNumber={contactNumber}
+            setContactNumber={setContactNumber}
+            city={city}
+            setCity={setCity}
+            province={province}
+            setProvince={setProvince}
+            businessName={businessName}
+            setBusinessName={setBusinessName}
+            businessAddress={businessAddress}
+            setBusinessAddress={setBusinessAddress}
+            businessNumber={businessNumber}
+            setBusinessNumber={setBusinessNumber}
+            onSignupClick={handleSignup}
+          />
+        </div>
+        <div className="item image-container">
+          <h2></h2>
+        </div>
+      </div>
+
+      // <div className='container'>
+      //   <div className='item item-1'>
+      //   <h1>This is the left half of the screen</h1>
+
+      //   </div>
+      //   <div className='item item-2'>
+      //     <h1>
+      //     This is the right half of the screen
+
+      //     </h1>
+      //   </div>
+      // </div>
+    
   );
 };
 
