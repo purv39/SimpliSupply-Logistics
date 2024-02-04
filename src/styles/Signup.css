@@ -8,21 +8,21 @@
 
 .image-container {
     flex: 0 0 50%;
-    background: url('../assets/signupVector.jpg') center center/cover no-repeat;
+    background: url('../assets/signupVector.png') center center/cover no-repeat;
     background-size: 100%; /* Set the background size to cover */
-
+    background-color:aquamarine;
+    border-radius: 50px;
 }
 
 .register-container {
     flex: 0 0 50%;
-    padding: 20px;
     height: 100%; /* Adjust height to take up full viewport */
 }
 
 .signup-form {
     margin: 0 auto;
     padding: 20px;
-    width: 700px;
+    width: 600px;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 8px;

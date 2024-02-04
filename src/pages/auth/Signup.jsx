@@ -72,7 +72,7 @@ const Signup = () => {
           />
         </div>
         <div className="item image-container">
-          <h2></h2>
+          
         </div>
       </div>
 
