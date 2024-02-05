@@ -10,7 +10,7 @@
     flex: 0 0 50%;
     background: url('../assets/signupVector.png') center center/cover no-repeat;
     background-size: 100%; /* Set the background size to cover */
-    background-color:aquamarine;
+    background-color: lightcyan;
     border-radius: 50px;
 }
 
@@ -19,7 +19,7 @@
     height: 100%; /* Adjust height to take up full viewport */
 }
 
-.signup-form {
+.signup-form {  
     margin: 0 auto;
     padding: 20px;
     width: 600px;

@@ -41,10 +41,11 @@ const Signup = () => {
   };
 
   return (
-      
+      <div style={{backgroundColor: 'lightcyan'}} >
       <div className='container'>
-        
-        <div className="register-container">
+        <div className="item image-container">
+          </div>
+        <div className="item register-container">
           <SignUpInformation
             email={email}
             setEmail={setEmail}
@@ -71,24 +72,10 @@ const Signup = () => {
             onSignupClick={handleSignup}
           />
         </div>
-        <div className="item image-container">
-          
+
         </div>
       </div>
 
-      // <div className='container'>
-      //   <div className='item item-1'>
-      //   <h1>This is the left half of the screen</h1>
-
-      //   </div>
-      //   <div className='item item-2'>
-      //     <h1>
-      //     This is the right half of the screen
-
-      //     </h1>
-      //   </div>
-      // </div>
-    
   );
 };
 

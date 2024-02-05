@@ -1,6 +1,7 @@
 // components/SignUpInformation.js
 import React from 'react';
 import '../styles/Signup.css'; // Import the stylesheet
+import logo from '../assets/logo.png';
 
 const SignUpInformation = ({
   email,
@@ -28,7 +29,11 @@ const SignUpInformation = ({
   onSignupClick
 }) => {
   return (
+    <div>
+
     <div className="signup-form">
+    <img src={logo} alt='logo'/>
+
       <h2>Signup Information</h2>
       <div className="form-group">
         <label>Email:</label>
@@ -38,7 +43,7 @@ const SignUpInformation = ({
         <label>Password:</label>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
       </div>
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>First Name:</label>
         <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
       </div>
@@ -73,13 +78,15 @@ const SignUpInformation = ({
       <div className="form-group">
         <label>Business Number (BIN):</label>
         <input type="text" value={businessNumber} onChange={(e) => setBusinessNumber(e.target.value)} />
-      </div>
+      </div> */}
       <div>
       <button className="register-button" onClick={onSignupClick}>
         Signup
       </button>
       </div>
     </div>
+    </div>
+
   );
 };
 
