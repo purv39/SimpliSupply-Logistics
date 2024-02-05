@@ -1,9 +1,12 @@
 // components/SignUpInformation.js
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/Signup.css'; // Import the stylesheet
 import logo from '../assets/logo.png';
-import MultiStep from 'react-multistep'
-import PersonalInfo from './PersonalInfo';
+import PersonalDetails from './PersonalDetails';
+import { Button, message, Steps } from 'antd';
+import BusinessDetails from './BusinessDetails';
+import SetupAccount from './SetupAccount';
+
 
 const SignUpInformation = ({
   email,
@@ -30,6 +33,65 @@ const SignUpInformation = ({
   setBusinessNumber,
   onSignupClick
 }) => {
+
+  const [current, setCurrent] = useState(0);
+
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+
+  const steps = [
+    {
+      title: 'Personal Details',
+      content: <PersonalDetails
+        firstName={firstName}
+        setFirstName={setFirstName}
+        lastName={lastName}
+        setLastName={setLastName}
+        address={address}
+        setAddress={setAddress}
+        contactNumber={contactNumber}
+        setContactNumber={setContactNumber}
+        city={city}
+        setCity={setCity}
+        province={province}
+        setProvince={setProvince}
+      />,
+    },
+    {
+      title: 'Business Details',
+      content: <BusinessDetails
+        businessName={businessName}
+        setBusinessName={setBusinessName}
+        businessAddress={businessAddress}
+        setBusinessAddress={setBusinessAddress}
+        businessNumber={businessNumber}
+        setBusinessNumber={setBusinessNumber}
+      />,
+    },
+    {
+      title: 'Setup Account',
+      content: <SetupAccount
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+      />,
+    },
+  ];
+
+  const items = steps.map((item) => ({
+    key: item.title,
+    title: item.title,
+  }));
+
+
+
+
   return (
     <div>
 
@@ -37,12 +99,36 @@ const SignUpInformation = ({
         <img src={logo} alt='logo' />
 
         <h2>Signup Information</h2>
-        <MultiStep activeStep={0} >
-          <PersonalInfo title="Personal Info"/>
-          <PersonalInfo title="Business Info"/>
-          <PersonalInfo title="Create Account"/>
 
-        </MultiStep>
+        <Steps current={current} items={items} />
+        <div>{steps[current].content}</div>
+        <div
+          style={{
+            marginTop: 24,
+          }}
+        >
+          {current > 0 && (
+            <Button
+              style={{
+                margin: '0 8px',
+              }}
+              onClick={() => prev()}
+            >
+              Previous
+            </Button>
+          )}
+          {current < steps.length - 1 && (
+            <Button type="primary" onClick={() => next()}>
+              Next
+            </Button>
+          )}
+          {current === steps.length - 1 && (
+            <Button type="primary" onClick={() => message.success('Processing complete!')}>
+              Create
+            </Button>
+          )}
+
+        </div>
         {/* <div className="form-group">
         <label>Email:</label>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -87,11 +173,11 @@ const SignUpInformation = ({
         <label>Business Number (BIN):</label>
         <input type="text" value={businessNumber} onChange={(e) => setBusinessNumber(e.target.value)} />
       </div> */}
-        <div>
+        {/* <div>
           <button className="register-button" onClick={onSignupClick}>
             Signup
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
 
