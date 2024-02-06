@@ -1,7 +1,7 @@
 // components/SignUpInformation.js
 import React, { useState } from 'react';
 import '../styles/Signup.css'; // Import the stylesheet
-import logo from '../assets/logo.png';
+import logo from '../assets/logo1.png';
 import PersonalDetails from './PersonalDetails';
 import { Button, message, Steps } from 'antd';
 import BusinessDetails from './BusinessDetails';

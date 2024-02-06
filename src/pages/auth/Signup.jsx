@@ -41,7 +41,7 @@ const Signup = () => {
   };
 
   return (
-      <div style={{backgroundColor: 'lightcyan'}} >
+      <div style={{backgroundColor: '#eaf9f5'}} >
       <div className='container'>
         <div className="item image-container">
           </div>
