@@ -97,20 +97,16 @@ const SignUpInformation = ({
 
       <div className="signup-form">
         <img src={logo} alt='logo' />
-
         <h2>Signup Information</h2>
-
         <Steps current={current} items={items} />
-        <div>{steps[current].content}</div>
-        <div
-          style={{
-            marginTop: 24,
-          }}
-        >
+        <div className='form-group'>{steps[current].content}</div>
+        <div>
           {current > 0 && (
             <Button
               style={{
-                margin: '0 8px',
+                margin: '0 10px',
+                width: '100px',
+                height: '40px'
               }}
               onClick={() => prev()}
             >
@@ -118,12 +114,12 @@ const SignUpInformation = ({
             </Button>
           )}
           {current < steps.length - 1 && (
-            <Button type="primary" onClick={() => next()}>
+            <Button type="primary" style={{ width: '100px', height: '40px' }} onClick={() => next()}>
               Next
             </Button>
           )}
           {current === steps.length - 1 && (
-            <Button type="primary" onClick={() => message.success('Processing complete!')}>
+            <Button type="primary" style={{ width: '100px', height: '40px' }} onClick={() => message.success('Processing complete!')}>
               Create
             </Button>
           )}
