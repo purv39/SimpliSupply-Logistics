@@ -2,6 +2,7 @@
 import React from 'react';
 import { useAuth } from '../firebase/firebaseAuth';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap
+import "../styles/Welcome.css";
 
 const WelcomePage = () => {
   //simplisupply
@@ -38,16 +39,14 @@ const WelcomePage = () => {
     <div className="container my-4">
       <div className="row">
         <div className="col-12">
-          <h1 className="mb-4 text-center">About page</h1>
+          <h1 className="mb-4 text-center">Information</h1>
         </div>
       </div>
 
       <div className="row">
         <div className="col-lg-8 mx-auto">
           <div className="card">
-            <div className="card-header bg-primary text-white">
-              <h2 className="mb-0">Information</h2>
-            </div>
+            
             <div className="card-body bg-light">
               <table className="table">
                 <tbody>
@@ -59,7 +58,22 @@ const WelcomePage = () => {
                     <th scope="row">Email</th>
                     <td>{currentUser.email}</td>
                   </tr>
-                  {/* Add more rows as needed */}
+                  <tr>
+                    <th scope="row">Address</th>
+                    <td>...</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Phone</th>
+                    <td>...</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Store Name</th>
+                    <td>...</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Store Number</th>
+                    <td>...</td>
+                  </tr>
                 </tbody>
               </table>
               <div className="text-right">
