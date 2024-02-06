@@ -31,7 +31,9 @@ const SignUpInformation = ({
   setBusinessAddress,
   businessNumber,
   setBusinessNumber,
-  onSignupClick
+  onSignupClick,
+  zipCode,
+  setZipCode
 }) => {
 
   const [current, setCurrent] = useState(0);
@@ -54,6 +56,8 @@ const SignUpInformation = ({
         setLastName={setLastName}
         address={address}
         setAddress={setAddress}
+        zipCode={zipCode}
+        setZipCode={setZipCode}
         contactNumber={contactNumber}
         setContactNumber={setContactNumber}
         city={city}

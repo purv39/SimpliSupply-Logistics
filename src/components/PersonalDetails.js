@@ -12,7 +12,9 @@ const PersonalDetails = ({
     city,
     setCity,
     province,
-    setProvince
+    setProvince,
+    zipCode,
+    setZipCode
 }) => {
     return (
         <div>
@@ -35,6 +37,10 @@ const PersonalDetails = ({
             <div className="form-group">
                 <label>City:</label>
                 <input type="text" value={city} onChange={(e) => setCity(e.target.value)} />
+            </div>
+            <div className="form-group">
+                <label>Zip Code:</label>
+                <input type="text" value={zipCode} onChange={(e) => setZipCode(e.target.value)} />
             </div>
             <div className="form-group">
                 <label>Province:</label>
