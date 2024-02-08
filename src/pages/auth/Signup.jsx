@@ -10,8 +10,9 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [address, setAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
+  const [address, setAddress] = useState('');
+  const [zipCode, setZipCode] = useState('');
   const [city, setCity] = useState('');
   const [province, setProvince] = useState('');
   const [businessName, setBusinessName] = useState('');
@@ -41,7 +42,7 @@ const Signup = () => {
   };
 
   return (
-      <div style={{backgroundColor: 'lightcyan'}} >
+      <div style={{backgroundColor: '#eaf9f5'}} >
       <div className='container'>
         <div className="item image-container">
           </div>
@@ -57,6 +58,8 @@ const Signup = () => {
             setLastName={setLastName}
             address={address}
             setAddress={setAddress}
+            zipCode={zipCode}
+            setZipCode={setZipCode}
             contactNumber={contactNumber}
             setContactNumber={setContactNumber}
             city={city}
