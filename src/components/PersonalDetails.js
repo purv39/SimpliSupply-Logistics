@@ -27,19 +27,19 @@ const PersonalDetails = ({
                 <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
             </div>
             <div className="form-group">
-                <label>Address:</label>
-                <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
-            </div>
-            <div className="form-group">
                 <label>Contact Number:</label>
                 <input type="tel" value={contactNumber} onChange={(e) => setContactNumber(e.target.value)} />
+            </div>
+            <div className="form-group">
+                <label>Address:</label>
+                <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
             </div>
             <div className="form-group">
                 <label>City:</label>
                 <input type="text" value={city} onChange={(e) => setCity(e.target.value)} />
             </div>
             <div className="form-group">
-                <label>Zip Code:</label>
+                <label>Postal Code:</label>
                 <input type="text" value={zipCode} onChange={(e) => setZipCode(e.target.value)} />
             </div>
             <div className="form-group">

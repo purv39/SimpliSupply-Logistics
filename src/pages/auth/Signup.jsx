@@ -8,6 +8,7 @@ import SignUpInformation from '../../components/SignUpInformation';
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [contactNumber, setContactNumber] = useState('');
@@ -18,16 +19,24 @@ const Signup = () => {
   const [businessName, setBusinessName] = useState('');
   const [businessAddress, setBusinessAddress] = useState('');
   const [businessNumber, setBusinessNumber] = useState('');
+  const [gstNumber, setGSTNumber] = useState('');
+  const [taxFile, setTaxFile] = useState('');
+  const [businessContact, setBusinessContact] = useState('');
+  const [businessCity, setBusinessCity] = useState('');
+  const [businessPostalCode, setBusinessPostalCode] = useState('');
+  const [businessProvince, setBusinessProvince] = useState('');
+  const [role, setRole] = useState('');
 
 
-  const {SignUp} = useAuth();
+
+  const { SignUp } = useAuth();
 
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
       const newUser = new User(email, password, "retailer");
-      
+
       // Use Firebase auth to create a new user
       await SignUp(newUser);
       await AddUserToFirestore(newUser);
@@ -36,22 +45,24 @@ const Signup = () => {
       // Redirect or handle successful signup
     } catch (error) {
       // Handle signup error
-      
+
       console.error('Signup failed:', error.message);
     }
   };
 
   return (
-      <div style={{backgroundColor: '#eaf9f5'}} >
+    <div style={{ backgroundColor: '#eaf9f5' }} >
       <div className='container'>
         <div className="item image-container">
-          </div>
+        </div>
         <div className="item register-container">
           <SignUpInformation
             email={email}
             setEmail={setEmail}
             password={password}
             setPassword={setPassword}
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
             firstName={firstName}
             setFirstName={setFirstName}
             lastName={lastName}
@@ -72,12 +83,26 @@ const Signup = () => {
             setBusinessAddress={setBusinessAddress}
             businessNumber={businessNumber}
             setBusinessNumber={setBusinessNumber}
+            gstNumber={gstNumber}
+            setGSTNumber={setGSTNumber}
+            taxFile={taxFile}
+            setTaxFile={setTaxFile}
+            businessContact={businessContact}
+            setBusinessContact={setBusinessContact}
+            businessCity={businessCity}
+            setBusinessCity={setBusinessCity}
+            businessPostalCode={businessPostalCode}
+            setBusinessPostalCode={setBusinessPostalCode}
+            businessProvince={businessProvince}
+            setBusinessProvince={setBusinessProvince}
+            role={role}
+            setRole={setRole}
             onSignupClick={handleSignup}
           />
         </div>
 
-        </div>
       </div>
+    </div>
 
   );
 };

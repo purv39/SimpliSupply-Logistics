@@ -13,12 +13,16 @@ const SignUpInformation = ({
   setEmail,
   password,
   setPassword,
+  confirmPassword,
+  setConfirmPassword,
   firstName,
   setFirstName,
   lastName,
   setLastName,
   address,
   setAddress,
+  zipCode,
+  setZipCode,
   contactNumber,
   setContactNumber,
   city,
@@ -31,9 +35,21 @@ const SignUpInformation = ({
   setBusinessAddress,
   businessNumber,
   setBusinessNumber,
+  gstNumber,
+  setGSTNumber,
+  taxFile,
+  setTaxFile,
+  businessContact,
+  setBusinessContact,
+  businessCity,
+  setBusinessCity,
+  businessPostalCode,
+  setBusinessPostalCode,
+  businessProvince,
+  setBusinessProvince,
+  role,
+  setRole,
   onSignupClick,
-  zipCode,
-  setZipCode
 }) => {
 
   const [current, setCurrent] = useState(0);
@@ -75,6 +91,18 @@ const SignUpInformation = ({
         setBusinessAddress={setBusinessAddress}
         businessNumber={businessNumber}
         setBusinessNumber={setBusinessNumber}
+        gstNumber={gstNumber}
+        setGSTNumber={setGSTNumber}
+        taxFile={taxFile}
+        setTaxFile={setTaxFile}
+        businessContact={businessContact}
+        setBusinessContact={setBusinessContact}
+        businessCity={businessCity}
+        setBusinessCity={setBusinessCity}
+        businessPostalCode={businessPostalCode}
+        setBusinessPostalCode={setBusinessPostalCode}
+        businessProvince={businessProvince}
+        setBusinessProvince={setBusinessProvince}
       />,
     },
     {
@@ -84,6 +112,10 @@ const SignUpInformation = ({
         setEmail={setEmail}
         password={password}
         setPassword={setPassword}
+        confirmPassword={confirmPassword}
+        setConfirmPassword={setConfirmPassword}
+        role={role}
+        setRole={setRole}
       />,
     },
   ];
