@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import User from '../../classes/User';
 import { AddUserToFirestore } from '../../firebase/firebaseFirestore';
 import SignUpInformation from '../../components/SignUpInformation';
+
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,6 +18,9 @@ const Signup = () => {
   const [businessName, setBusinessName] = useState('');
   const [businessAddress, setBusinessAddress] = useState('');
   const [businessNumber, setBusinessNumber] = useState('');
+  const [loading, setLoading] = useState(false); // Define loading state
+  const [error, setError] = useState(''); // Define error state
+
   const { SignUp } = useAuth();
   const navigate = useNavigate();
 
@@ -42,11 +46,9 @@ const Signup = () => {
   };
 
   return (
-
-      <div style={{backgroundColor: '#eaf9f5'}} >
+    <div style={{backgroundColor: '#eaf9f5'}}>
       <div className='container'>
-        <div className="item image-container">
-          </div>
+        <div className="item image-container"></div>
         <div className="item register-container">
           <SignUpInformation
             email={email}
@@ -75,10 +77,11 @@ const Signup = () => {
             setBusinessNumber={setBusinessNumber}
             onSignupClick={handleSignup}
           />
-        </div>
-
+          {loading && <p>Loading...</p>} {/* Show loading indicator if loading state is true */}
+          {error && <p>Error: {error}</p>} {/* Show error message if error state is not empty */}
         </div>
       </div>
+    </div>
   );
 };
 
