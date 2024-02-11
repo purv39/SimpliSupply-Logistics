@@ -1,0 +1,46 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar .form-inline {
+    display: flex;
+    align-items: center;
+  }
+  
+
+  .navbar .form-inline .btn {
+    padding: .375rem .75rem; 
+    margin-left: .5rem; 
+  }
+
+  
+
+  .card {
+    margin-top: 20px; 
+    margin-bottom: 20px; 
+  }
+
+  h1.mb-4.text-center {
+    text-align: left;
+  }
+
+
+  .card-body .text-right {
+    display: flex;
+    justify-content: flex-end; 
+  }
+
+  .btn-primary {
+    background-color: #4e73df;
+    border-color: #4e73df; 
+    color: white; 
+  }
+  
+
+  .btn-primary:hover {
+    background-color: #6c7ae0; 
+    border-color: #6c7ae0;
+  }
+  
