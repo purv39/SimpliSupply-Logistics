@@ -3,14 +3,20 @@ import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
 import User from '../../classes/User';
 import { AddUserToFirestore } from '../../firebase/firebaseFirestore';
-import companyLogo from '../../assets/logo.png'; // Import your company logo
-
+import SignUpInformation from '../../components/SignUpInformation';
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
+  const [address, setAddress] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [city, setCity] = useState('');
+  const [province, setProvince] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [businessAddress, setBusinessAddress] = useState('');
+  const [businessNumber, setBusinessNumber] = useState('');
   const { SignUp } = useAuth();
   const navigate = useNavigate();
 
@@ -36,23 +42,43 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
-      <header>
-        <img src={companyLogo} alt="Company Logo" className="company-logo" />
-        <h1>SimpliSupply Logistics</h1>
-      </header>
-      <div className="signup-content">
-        <h2>Signup</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <label>Email:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <label>Password:</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button onClick={handleSignup} disabled={loading}>
-          {loading ? 'Signing up...' : 'Signup'}
-        </button>
+
+      <div style={{backgroundColor: '#eaf9f5'}} >
+      <div className='container'>
+        <div className="item image-container">
+          </div>
+        <div className="item register-container">
+          <SignUpInformation
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            firstName={firstName}
+            setFirstName={setFirstName}
+            lastName={lastName}
+            setLastName={setLastName}
+            address={address}
+            setAddress={setAddress}
+            zipCode={zipCode}
+            setZipCode={setZipCode}
+            contactNumber={contactNumber}
+            setContactNumber={setContactNumber}
+            city={city}
+            setCity={setCity}
+            province={province}
+            setProvince={setProvince}
+            businessName={businessName}
+            setBusinessName={setBusinessName}
+            businessAddress={businessAddress}
+            setBusinessAddress={setBusinessAddress}
+            businessNumber={businessNumber}
+            setBusinessNumber={setBusinessNumber}
+            onSignupClick={handleSignup}
+          />
+        </div>
+
+        </div>
       </div>
-    </div>
   );
 };
 

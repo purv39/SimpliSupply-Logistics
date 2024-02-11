@@ -1,0 +1,75 @@
+/* styles/Register.css */
+
+.container {
+  /* Make the container a flex container */
+  display: flex;
+}
+
+.image-container {
+  flex: 0 0 50%;
+  background: url("../assets/signupVector.png") center center/cover no-repeat;
+  background-size: 100%; /* Set the background size to cover */
+  background-color: #eaf9f5;
+  border-radius: 50px;
+}
+
+.register-container {
+  flex: 0 0 50%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-form {
+  margin: 0 auto;
+  padding: 20px;
+  width: 600px;
+  background-color: rgba(255, 255, 255, 0.7);
+
+  /* background-color: #fff; */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Adjust the shadow for the floating effect */
+  border-radius: 40px;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-group {
+  width: 100%;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd; /* Lighter border color */
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-top: 5px;
+  font-size: 16px;
+  color: #333; /* Darker text color */
+  background-color: #fff; /* Lighter input background color */
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #4caf50;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 50px;
+  margin-top: -30px;
+}
+
+
