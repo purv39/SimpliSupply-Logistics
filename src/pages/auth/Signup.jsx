@@ -1,4 +1,3 @@
-// components/Signup.js
 import React, { useState } from 'react';
 import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
@@ -18,16 +17,15 @@ const Signup = () => {
   const [businessName, setBusinessName] = useState('');
   const [businessAddress, setBusinessAddress] = useState('');
   const [businessNumber, setBusinessNumber] = useState('');
-
-
-  const {SignUp} = useAuth();
-
+  const { SignUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
+      setLoading(true);
+
       const newUser = new User(email, password, "retailer");
-      
+
       // Use Firebase auth to create a new user
       await SignUp(newUser);
       await AddUserToFirestore(newUser);
@@ -36,12 +34,15 @@ const Signup = () => {
       // Redirect or handle successful signup
     } catch (error) {
       // Handle signup error
-      
+      setError(error.message);
       console.error('Signup failed:', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
+
       <div style={{backgroundColor: '#eaf9f5'}} >
       <div className='container'>
         <div className="item image-container">
@@ -78,7 +79,6 @@ const Signup = () => {
 
         </div>
       </div>
-
   );
 };
 
