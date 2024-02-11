@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
-import User from '../../classes/User';
-import { AddUserToFirestore } from '../../firebase/firebaseFirestore';
+import { AddNewUserToFirestore } from '../../firebase/firebaseFirestore';
 import SignUpInformation from '../../components/SignUpInformation';
+
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,12 +35,12 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const newUser = new User(email, password, "retailer");
 
       // Use Firebase auth to create a new user
-      await SignUp(newUser);
-      await AddUserToFirestore(newUser);
-
+      const uuid = await SignUp(email, password);
+      console.log(uuid);
+      AddNewUserToFirestore(uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role);
+      
       navigate('/home');
       // Redirect or handle successful signup
     } catch (error) {

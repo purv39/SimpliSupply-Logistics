@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../firebase/firebaseAuth';
 import {  useNavigate } from 'react-router-dom';
-import User from '../../classes/User';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -14,10 +13,8 @@ const Login = () => {
   const handleLogin = async () => {
     try {
 
-      const loginUser = new User(email, password, "retailer");
-
       // Use Firebase auth to sign in
-      await Login(loginUser);
+      await Login(email, password);
       navigate('/home');
       // Redirect or handle successful login
     } catch (error) {

@@ -155,7 +155,7 @@ const SignUpInformation = ({
             </Button>
           )}
           {current === steps.length - 1 && (
-            <Button type="primary" style={{ width: '100px', height: '40px' }} onClick={() => message.success('Processing complete!')}>
+            <Button type="primary" style={{ width: '100px', height: '40px' }} onClick={onSignupClick}>
               Create
             </Button>
           )}
