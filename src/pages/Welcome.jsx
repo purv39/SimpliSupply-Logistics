@@ -12,29 +12,6 @@ const WelcomePage = () => {
   return (
     
     <div>
-    <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: '#f2f2f2' }}>
-      <div className="container">
-        <a className="navbar-brand" href="#" style={{ color: '#4e73df', fontWeight: 'bold' }}>
-          SimPli SUPPLY
-        </a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div className="navbar-nav">
-            <a className="nav-item nav-link active" href="#">Items</a>
-            <a className="nav-item nav-link" href="#">Items</a>
-            <a className="nav-item nav-link" href="#">Items</a>
-            <a className="nav-item nav-link" href="#">Items</a>
-            <a className="nav-item nav-link" href="#">Items</a>
-          </div>
-          <form className="form-inline ml-auto">
-            <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-            <button className="btn btn-outline-primary my-2 my-sm-0" type="submit">LOGOUT</button>
-          </form>
-        </div>
-      </div>
-    </nav>
 
     <div className="container my-4">
       <div className="row">
