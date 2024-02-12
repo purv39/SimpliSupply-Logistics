@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
-import { AddNewUserToFirestore } from '../../firebase/firebaseFirestore';
+import { AddNewStoreForOperator, AddNewUserToFirestore } from '../../firebase/firebaseFirestore';
 import SignUpInformation from '../../components/SignUpInformation';
 
 const Signup = () => {
@@ -38,8 +38,8 @@ const Signup = () => {
 
       // Use Firebase auth to create a new user
       const uuid = await SignUp(email, password);
-      console.log(uuid);
-      AddNewUserToFirestore(uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role);
+      await AddNewUserToFirestore(uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role);
+      await AddNewStoreForOperator(uuid, businessName, businessNumber, gstNumber, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
       
       navigate('/home');
       // Redirect or handle successful signup
