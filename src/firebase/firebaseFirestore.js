@@ -35,6 +35,41 @@ export const AddNewUserToFirestore = (uuid, email, firstName, lastName, contactN
 }
 
 // Function to add a new store for operator
+export const AddNewDistributionStoreForOperator = async (uuid, storeName, businessNumber, gstNumber, storeContactNumber, storeAddress, storeCity, storePostalCode, storeProvince) => {
+    try {
+        const docRef = await addDoc(collection(db, 'Distribution Stores'), {
+            storeOperator: uuid,
+            storeName: storeName,
+            businessNumber: businessNumber,
+            gstNumber: gstNumber,
+            storeContactNumber: storeContactNumber,
+            storeAddress: storeAddress,
+            storeCity: storeCity,
+            storePostalCode: storePostalCode,
+            storeProvince: storeProvince,
+            rating: 0,
+            invites: [],
+            storesConnected: [],
+            distributorOrders: []
+        });
+
+        const newDistributorID = docRef.id;
+
+        // Update the distributionOrders array in the Users collection
+        const userDocRef = doc(db, 'Users', uuid);
+        await updateDoc(userDocRef, {
+            distributionStores: arrayUnion(newDistributorID)
+        });
+
+        return newDistributorID;
+    } catch (error) {
+        console.error("Error adding document: ", error);
+        throw error;
+    }
+}
+
+
+// Function to add a new store for operator
 export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gstNumber, storeContactNumber, storeAddress, storeCity, storePostalCode, storeProvince) => {
     try {
         const docRef = await addDoc(collection(db, 'Retail Stores'), {
