@@ -11,8 +11,6 @@ const WelcomePage = () => {
 
 
   return (
-    
- 
     <div>
       <div className="row">
         <div className="col-12">
