@@ -1,36 +1,25 @@
 import React, { useState } from 'react';
 import { useAuth} from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
-import User from '../../classes/User';
 import companyLogo from '../../assets/logo.png'; // Import your company logo
 import loginImage from '../../assets/loginVector.jpg'; // Import the cool-looking picture
 import { Button, Steps, message } from 'antd'; // Import Button and Steps from Ant Des
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // Define loading state
-  const [error, setError] = useState(''); // Define error state
-
+  
   const { forget } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      setLoading(true);
-
-      const loginUser = new User(email, password, "retailer");
-
       // Use Firebase auth to sign in
       await forget(email)
       navigate('/login');
       // Redirect or handle successful login
     } catch (error) {
       // Handle login error
-      setError(error.message);
-      console.error('Login failed:', error.message);
-    } finally {
-      setLoading(false);
+      message.error('Login failed: ' + error.message);
     }
   };
 
@@ -56,8 +45,6 @@ const ForgetPassword = () => {
               <Button type="primary" style={{ width: '300px', height: '40px' }} onClick={handleLogin}>
                 Reset Password 
               </Button>
-              {loading && <p>Loading...</p>}
-              {error && <p style={{ color: 'red' }}>Error: {error}</p>}
             </div>
           </div>
         </div>

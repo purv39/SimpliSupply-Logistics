@@ -3,6 +3,7 @@ import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
 import { AddNewDistributionStoreForOperator, AddNewStoreForOperator, AddNewUserToFirestore } from '../../firebase/firebaseFirestore';
 import SignUpInformation from '../../components/SignUpInformation';
+import { message } from 'antd';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -26,17 +27,12 @@ const Signup = () => {
   const [businessProvince, setBusinessProvince] = useState('');
   const [role, setRole] = useState('');
 
-  const [loading, setLoading] = useState(false); // Define loading state
-  const [error, setError] = useState(''); // Define error state
-
-
   const { SignUp } = useAuth();
 
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
-      setLoading(true);
 
       // Use Firebase auth to create a new user
       const uuid = await SignUp(email, password);
@@ -49,14 +45,10 @@ const Signup = () => {
         await AddNewDistributionStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
       }
 
-      navigate('/home');
+      navigate('/welcome');
       // Redirect or handle successful signup
     } catch (error) {
-      // Handle signup error
-      setError(error.message);
-      console.error('Signup failed:', error.message);
-    } finally {
-      setLoading(false);
+      message.error('Signup failed: ' + error.message);
     }
   };
 
@@ -108,8 +100,7 @@ const Signup = () => {
             setRole={setRole}
             onSignupClick={handleSignup}
           />
-          {loading && <p>Loading...</p>} {/* Show loading indicator if loading state is true */}
-          {error && <p>Error: {error}</p>} {/* Show error message if error state is not empty */}
+          
         </div>
       </div>
     </div>
