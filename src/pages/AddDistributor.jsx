@@ -6,7 +6,7 @@ import "../styles/AddDistributor.css";
 const AddDistributor = () => {
 
  
-  const distributorOptions = ['DistriCo A', 'DistriCo B', 'DistriCo C', 'DistriCo D', 'DistriCo E'];
+  const distributorOptions = ['Distributor A', 'Distributor B', 'Distributor C', 'Distributor D', 'Distributor E'];
 
 
   const [firstName, setFirstName] = useState('');
@@ -19,7 +19,9 @@ const AddDistributor = () => {
   const [businessNumber, setBusinessNumber] = useState('');
 
   const [error, setError] = useState('');
-  const [distributors, setDistributors] = useState([]);
+  const [distributors, setDistributors] = useState([
+    { name: 'Distributor F', confirmed: 'Confirmed' }
+  ]);
   const [selectedDistributor, setSelectedDistributor] = useState(distributorOptions[0]);
 
 
