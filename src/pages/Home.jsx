@@ -1,10 +1,9 @@
-// components/Home.js
 import React from 'react';
 import { useAuth } from '../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap
 import "../styles/Home.css";
-
+import logo from '../assets/logo.png'; // Import your logo
 
 const Home = () => {
 
@@ -25,15 +24,26 @@ const Home = () => {
     }
   };
 
-  const handleDistributor = () => {
-    navigate('/AddDistributor'); // Navigate to the Add Distributor page
+  const navigateTo = (path) => {
+    navigate(path); // Navigate to the specified path
   };
 
   return (
-    <div>
-      <h2>Welcome to the Home Page {currentUser.email}</h2>
-      <button onClick={handleLogout}>Logout</button>
-      <button className="btn btn-add-distributor" onClick={handleDistributor}>Add Distributor</button>
+    <div className="dashboard">
+      <div className="header">
+        <img src={logo} alt="Company Logo" className="logo" />
+        <h2>Welcome to the Home Page, {currentUser.email}</h2>
+        <button onClick={handleLogout}>Logout</button>
+      </div>
+      <div className="navigation">
+        <button className="navigation-tab" onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button>
+        <button className="navigation-tab" onClick={() => navigateTo('/OrderHistory')}>Order History</button>
+        <button className="navigation-tab" onClick={() => navigateTo('/DistributorList')}>Distributor List</button>
+        {/* Add more navigation tabs as needed */}
+      </div>
+      <div className="content">
+        {/* Add your main content here */}
+      </div>
     </div>
   );
 };
