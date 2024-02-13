@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
-import User from '../../classes/User';
 import companyLogo from '../../assets/logo.png'; // Import your company logo
 import loginImage from '../../assets/loginVector.jpg'; // Import the cool-looking picture
 import { Button, Steps, message } from 'antd'; // Import Button and Steps from Ant Design
@@ -19,10 +18,8 @@ const Login = () => {
     try {
       setLoading(true);
 
-      const loginUser = new User(email, password, "retailer");
-
       // Use Firebase auth to sign in
-      await Login(loginUser);
+      await Login(email, password);
       navigate('/home');
       // Redirect or handle successful login
     } catch (error) {

@@ -13,13 +13,16 @@ const UserContext = createContext();
 export const AuthContextProvider = ({children}) => {
     const [currentUser, setCurrentUser] = useState({});
 
-    const SignUp = (user) => {
-        return createUserWithEmailAndPassword(auth, user.email, user.password);
-
+    const SignUp = (email, password) => {
+        return createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                return userCredential.user.uid; // Return UUID
+            });
     }
+    
 
-    const Login = (user) => {
-        return signInWithEmailAndPassword(auth, user.email, user.password);
+    const Login = (email, password) => {
+        return signInWithEmailAndPassword(auth, email, password);
     }
 
     const LogOut = () => {
