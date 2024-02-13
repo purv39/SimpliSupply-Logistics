@@ -1,4 +1,3 @@
-// components/Signup.js
 import React, { useState } from 'react';
 import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +26,8 @@ const Signup = () => {
   const [businessProvince, setBusinessProvince] = useState('');
   const [role, setRole] = useState('');
 
+  const [loading, setLoading] = useState(false); // Define loading state
+  const [error, setError] = useState(''); // Define error state
 
 
   const { SignUp } = useAuth();
@@ -35,34 +36,34 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
+      setLoading(true);
 
       // Use Firebase auth to create a new user
       const uuid = await SignUp(email, password);
       await AddNewUserToFirestore(uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role);
-      
-      if(role === "store")
-      {
+
+      if (role === "store") {
         await AddNewStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
       }
-      else if (role === "distributor")
-      {
+      else if (role === "distributor") {
         await AddNewDistributionStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
       }
-      
+
       navigate('/home');
       // Redirect or handle successful signup
     } catch (error) {
       // Handle signup error
-
+      setError(error.message);
       console.error('Signup failed:', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div style={{ backgroundColor: '#eaf9f5' }} >
       <div className='container'>
-        <div className="item image-container">
-        </div>
+        <div className="item image-container"></div>
         <div className="item register-container">
           <SignUpInformation
             email={email}
@@ -107,11 +108,11 @@ const Signup = () => {
             setRole={setRole}
             onSignupClick={handleSignup}
           />
+          {loading && <p>Loading...</p>} {/* Show loading indicator if loading state is true */}
+          {error && <p>Error: {error}</p>} {/* Show error message if error state is not empty */}
         </div>
-
       </div>
     </div>
-
   );
 };
 

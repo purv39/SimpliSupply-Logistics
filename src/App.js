@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
+import ForgetPassword from './pages/auth/ForgetPassword';
 import Home from './pages/Home';
 import WelcomePage from './pages/Welcome';
 import { AuthContextProvider } from './firebase/firebaseAuth';
@@ -14,9 +15,10 @@ const App = () => {
       <AuthContextProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forget" element={<ForgetPassword />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<PrivateRoutes><Home /></PrivateRoutes> } />
-          <Route path="/" element={<WelcomePage />} />
+          <Route path="/welcome" element={<WelcomePage />} />
         </Routes>
       </AuthContextProvider>
     </Router>
