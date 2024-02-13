@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../firebase/firebaseAuth';
+import { useAuth} from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
 import User from '../../classes/User';
 import companyLogo from '../../assets/logo.png'; // Import your company logo
 import loginImage from '../../assets/loginVector.jpg'; // Import the cool-looking picture
-import { Button, Steps, message } from 'antd'; // Import Button and Steps from Ant Design
+import { Button, Steps, message } from 'antd'; // Import Button and Steps from Ant Des
 
-const Login = () => {
+const ForgetPassword = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false); // Define loading state
   const [error, setError] = useState(''); // Define error state
 
-  const { Login } = useAuth();
+  const { forget } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -22,8 +22,8 @@ const Login = () => {
       const loginUser = new User(email, password, "retailer");
 
       // Use Firebase auth to sign in
-      await Login(loginUser);
-      navigate('/home');
+      await forget(email)
+      navigate('/login');
       // Redirect or handle successful login
     } catch (error) {
       // Handle login error
@@ -44,27 +44,21 @@ const Login = () => {
           <header>
             <img src={companyLogo} alt="Company Logo" className="company-logo" />
           </header>
-          <h2>Login</h2>
+          <h2>Forget Password</h2>
           <div className="signup-form" style={{ width: '100%' }}>
-            <Steps current={0} size="small">
-              <Steps.Step title="Personal Details" />
-            </Steps>
+            
             <div className='form-group' style={{ width: '100%', marginBottom: '20px' }}>
-              <label>Email:</label>
+              <label class="h5">Email:</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '5px', boxSizing: 'border-box', marginTop: '5px', fontSize: '16px', color: '#333', backgroundColor: '#fff', transition: 'border-color 0.3s' }} />
             </div>
-            <div className='form-group' style={{ width: '100%', marginBottom: '20px' }}>
-              <label>Password:</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '5px', boxSizing: 'border-box', marginTop: '5px', fontSize: '16px', color: '#333', backgroundColor: '#fff', transition: 'border-color 0.3s' }} />
-            </div>
+           
             <div style={{ width: '100%' }}>
-              <Button type="primary" style={{ width: '100px', height: '40px' }} onClick={handleLogin}>
-                Login
+              <Button type="primary" style={{ width: '300px', height: '40px' }} onClick={handleLogin}>
+                Reset Password 
               </Button>
               {loading && <p>Loading...</p>}
               {error && <p style={{ color: 'red' }}>Error: {error}</p>}
             </div>
-            <div> <a href="/forget">Forget Password </a></div>
           </div>
         </div>
       </div>
@@ -72,4 +66,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgetPassword;
