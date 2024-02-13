@@ -40,13 +40,13 @@ const Signup = () => {
       const uuid = await SignUp(email, password);
       await AddNewUserToFirestore(uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role);
       
-      if(role === "storeOperator")
+      if(role === "store")
       {
-        await AddNewStoreForOperator(uuid, businessName, businessNumber, gstNumber, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
+        await AddNewStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
       }
       else if (role === "distributor")
       {
-        await AddNewDistributionStoreForOperator(uuid, businessName, businessNumber, gstNumber, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
+        await AddNewDistributionStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
       }
       
       navigate('/home');
