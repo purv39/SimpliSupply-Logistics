@@ -55,7 +55,17 @@ const SignUpInformation = ({
   const [current, setCurrent] = useState(0);
 
   const next = () => {
-    setCurrent(current + 1);
+    // Validate input fields before proceeding to the next step
+    const currentStepContent = steps[current].content.props;
+  
+    // Check if all required fields are filled
+    const isFilled = Object.values(currentStepContent).every(value => value !== '');
+  
+    if (isFilled) {
+      setCurrent(current + 1);
+    } else {
+      message.error('Please fill in all required fields before proceeding.');
+    }
   };
 
   const prev = () => {

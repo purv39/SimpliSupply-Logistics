@@ -28,7 +28,8 @@ export const AddNewUserToFirestore = (uuid, email, firstName, lastName, contactN
         city: city,
         postalCode: zipCode,
         province: province,
-        role: roleObject,
+        roles: roleObject,
+        verified: false,
         storesList: [],
         distributionStores: []
     });
