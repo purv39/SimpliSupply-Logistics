@@ -120,3 +120,5 @@ export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gs
         throw error;
     }
 }
+
+
