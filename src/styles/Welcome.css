@@ -1,4 +1,9 @@
-.navbar {
+  .table {
+    width: 100%; 
+    max-width: none; 
+  }
+  
+  .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -16,31 +21,29 @@
   }
 
   
-
   .card {
-    margin-top: 20px; 
-    margin-bottom: 20px; 
+    width: 60%; 
+    margin: 20px auto; 
   }
 
-  h1.mb-4.text-center {
+  h1.mb-4 {
     text-align: left;
   }
 
 
   .card-body .text-right {
+
     display: flex;
-    justify-content: flex-end; 
+    justify-content: flex-end;
   }
 
-  .btn-primary {
+  .custom-btn-primary {
     background-color: #4e73df;
-    border-color: #4e73df; 
-    color: white; 
+    border-color: #4e73df;
+    color: white;
   }
-  
 
-  .btn-primary:hover {
-    background-color: #6c7ae0; 
+  .custom-btn-primary:hover {
+    background-color: #6c7ae0;
     border-color: #6c7ae0;
   }
-  

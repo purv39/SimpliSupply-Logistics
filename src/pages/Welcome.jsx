@@ -9,11 +9,9 @@ const WelcomePage = () => {
   // if we have more inform, we can add it here 
   const {currentUser} = useAuth();
 
-  return (
-    
-    <div>
 
-    <div className="container my-4">
+  return (
+    <div>
       <div className="row">
         <div className="col-12">
           <h1 className="mb-4 text-center">Information</h1>
@@ -53,15 +51,15 @@ const WelcomePage = () => {
                   </tr>
                 </tbody>
               </table>
-              <div className="text-right">
-                <button className="btn btn-primary">Edit</button>
-              </div>
+                <div className="text-right">
+                <button className="btn custom-btn-primary">Edit</button>
+                </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
   );
 };
 
