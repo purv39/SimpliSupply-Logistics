@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
 
@@ -100,7 +100,7 @@ export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gs
 
         const newStoreID = docRef.id;
 
-        
+
         AddTaxFileToStorage(taxFile, newStoreID).then(async (dwnldurl) => {
             const storeDocRef = doc(db, 'Retail Stores', newStoreID);
             await updateDoc(storeDocRef, {
@@ -121,4 +121,60 @@ export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gs
     }
 }
 
+export const FetchAllDistributorsForStore = async (storeID) => {
+    try {
+        var distributorsConnected = '';
+        const storeRef = doc(db, 'Retail Stores', storeID);
+        const storeSnap = await getDoc(storeRef);
+        if (storeSnap.exists()) {
+            distributorsConnected = storeSnap.data().distributorsConnected;
 
+            if (distributorsConnected.length > 0) {
+                FetchDistributorsInfo(distributorsConnected).then((array) => {
+                    console.log(array)
+                })
+            }
+        }
+    } catch (error) {
+
+    }
+}
+
+
+
+export const FetchDistributorsInfo = async (distributorsList) => {
+    try {
+        const distributorsData = [];
+
+        // Loop through each distributor ID and fetch its document
+        for (const distributorId of distributorsList) {
+            const distributorRef = doc(db, 'Distribution Stores', distributorId);
+            const distributorSnapshot = await getDoc(distributorRef);
+
+            if (distributorSnapshot.exists()) {
+                const distributorData = distributorSnapshot.data();
+                    const subcollectionRef = collection(distributorRef, "products");
+                    const subcollectionSnapshot = await getDocs(subcollectionRef);
+
+                    const subcollectionData = subcollectionSnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        data: doc.data()
+                    }));
+
+                    distributorData.productsData = subcollectionData;
+
+                distributorsData.push({
+                    id: distributorSnapshot.id,
+                    data: distributorData
+                });
+            } else {
+                console.log(`Document with ID ${distributorId} does not exist.`);
+            }
+        }
+
+        return distributorsData;
+    } catch (error) {
+        console.error('Error fetching distributors information:', error);
+        throw error; // Rethrow the error to handle it at a higher level
+    }
+};

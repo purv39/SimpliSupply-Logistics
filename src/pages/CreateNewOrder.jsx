@@ -1,7 +1,10 @@
+import { FetchAllDistributorsForStore } from "../firebase/firebaseFirestore";
+
 const CreateNewOrder = () => {
+    FetchAllDistributorsForStore("5NxCpVGHf520hNnWJYuX");
     return(
         <div>
-            hi
+            
         </div>
     )
 }
