@@ -1,14 +1,58 @@
 // components/WelcomePage.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../firebase/firebaseAuth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from "../firebase/firebaseConfig"; // Firestore 설정을 가져옵니다.
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap
 import "../styles/Welcome.css";
 
 const WelcomePage = () => {
-  //simplisupply
-  // if we have more inform, we can add it here 
-  const {currentUser} = useAuth();
+  const { currentUser } = useAuth();
+  const [userInfo, setUserInfo] = useState({
+    address: '',
+    contactNumber: '',
+    storeName: '', 
+    storeNumber: '', 
+  });
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (currentUser && currentUser.uid) {
+        const userRef = doc(db, 'Users', currentUser.uid);
+        const docSnap = await getDoc(userRef);
+
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          const fullName = `${userData.firstName} ${userData.lastName}`; 
+          const firstStoreId = userData.storesList.length > 0 ? userData.storesList[0] : null;
+          let storeName = '';
+          let storeNumber = '';
+          let storeAddress = '';
+
+          if (firstStoreId) {
+            const storeRef = doc(db, 'Retail Stores', firstStoreId);
+            const storeSnap = await getDoc(storeRef);
+            if (storeSnap.exists()) {
+              storeName = storeSnap.data().storeName;
+              storeNumber = storeSnap.data().businessNumber; 
+              storeAddress = storeSnap.data().storeAddress;
+            }
+          }
+
+          setUserInfo({
+            fullName,
+            address: `${userData.address}, ${userData.city}, ${userData.province}, ${userData.postalCode}`,
+            contactNumber: userData.contactNumber,
+            storeName,
+            storeNumber,
+            storeAddress
+          });
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [currentUser]);
 
   return (
     <div>
@@ -21,13 +65,12 @@ const WelcomePage = () => {
       <div className="row">
         <div className="col-lg-8 mx-auto">
           <div className="card">
-            
             <div className="card-body bg-light">
               <table className="table">
                 <tbody>
                   <tr>
                     <th scope="row">Name</th>
-                    <td>{currentUser.displayName}</td>
+                    <td>{userInfo.fullName}</td>
                   </tr>
                   <tr>
                     <th scope="row">Email</th>
@@ -35,31 +78,34 @@ const WelcomePage = () => {
                   </tr>
                   <tr>
                     <th scope="row">Address</th>
-                    <td>...</td>
+                    <td>{userInfo.address}</td>
                   </tr>
                   <tr>
                     <th scope="row">Phone</th>
-                    <td>...</td>
+                    <td>{userInfo.contactNumber}</td>
                   </tr>
                   <tr>
                     <th scope="row">Store Name</th>
-                    <td>...</td>
+                    <td>{userInfo.storeName}</td>
                   </tr>
                   <tr>
                     <th scope="row">Store Number</th>
-                    <td>...</td>
+                    <td>{userInfo.storeNumber}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Store Address</th>
+                    <td>{userInfo.storeAddress}</td>
                   </tr>
                 </tbody>
               </table>
-                <div className="text-right">
+              <div className="text-right">
                 <button className="btn custom-btn-primary">Edit</button>
-                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
   );
 };
 
