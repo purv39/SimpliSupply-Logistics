@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
 
@@ -152,15 +152,15 @@ export const FetchDistributorsInfo = async (distributorsList) => {
 
             if (distributorSnapshot.exists()) {
                 const distributorData = distributorSnapshot.data();
-                    const subcollectionRef = collection(distributorRef, "products");
-                    const subcollectionSnapshot = await getDocs(subcollectionRef);
+                const subcollectionRef = collection(distributorRef, "products");
+                const subcollectionSnapshot = await getDocs(subcollectionRef);
 
-                    const subcollectionData = subcollectionSnapshot.docs.map(doc => ({
-                        id: doc.id,
-                        data: doc.data()
-                    }));
+                const subcollectionData = subcollectionSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    data: doc.data()
+                }));
 
-                    distributorData.productsData = subcollectionData;
+                distributorData.productsData = subcollectionData;
 
                 distributorsData.push({
                     id: distributorSnapshot.id,
@@ -175,5 +175,39 @@ export const FetchDistributorsInfo = async (distributorsList) => {
     } catch (error) {
         console.error('Error fetching distributors information:', error);
         throw error; // Rethrow the error to handle it at a higher level
+    }
+};
+
+
+export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
+    try {
+        // Set up the initial data for the order
+        const orderData = {
+            createdAt: new Date(),
+            distributorID: distributorID,
+            storeID: storeID,
+            fulfillmentStatus: {
+                delivered: false,
+                paymentReceived: false,
+                shipped: false
+            }
+        };
+
+        // Add the order to the "Orders" collection
+        const orderRef = await addDoc(collection(db, 'Orders'), orderData);
+
+        // Add orderItems to the subcollection "orderItems"
+        const batch = writeBatch(db);
+        orderItems.forEach(async (item) => {
+            const itemRef = doc(collection(orderRef, "orderItems")); // Construct a new DocumentReference for orderItems
+            batch.set(itemRef, item);
+        });
+        await batch.commit();
+
+        console.log("Order successfully created:", orderRef.id);
+        return orderRef.id; // Return the ID of the created order
+    } catch (error) {
+        console.error("Error creating order:", error);
+        throw error; // Throw error for handling in UI or higher-level components
     }
 };

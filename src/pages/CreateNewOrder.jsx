@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { FetchAllDistributorsForStore } from "../firebase/firebaseFirestore";
+import { FetchAllDistributorsForStore, CreateNewOrderForStore } from "../firebase/firebaseFirestore";
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
@@ -34,7 +34,7 @@ const CreateNewOrder = () => {
                     const quantity = orderQuantities[`${distributor.id}-${product.id}`] || 0;
                     if (quantity > 0) {
                         orderItems.push({
-                            productID: product.id,
+                            productData: product,
                             quantity: quantity
                         });
                     }
@@ -42,16 +42,9 @@ const CreateNewOrder = () => {
             }
         });
 
-        // Call CreateOrder function
-        CreateOrder(storeID, distributorID, orderItems);
+        CreateNewOrderForStore(storeID, distributorID, orderItems);
     };
 
-    const CreateOrder = (storeID, distributorID, orderItems) => {
-        // Implement logic to create order
-        console.log("Creating order for store ID:", storeID);
-        console.log("Distributor ID:", distributorID);
-        console.log("Order items:", orderItems);
-    };
 
     useEffect(() => {
         // Call handleDistributorClick when the component mounts
