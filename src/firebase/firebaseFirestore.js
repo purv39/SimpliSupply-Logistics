@@ -130,9 +130,8 @@ export const FetchAllDistributorsForStore = async (storeID) => {
             distributorsConnected = storeSnap.data().distributorsConnected;
 
             if (distributorsConnected.length > 0) {
-                FetchDistributorsInfo(distributorsConnected).then((array) => {
-                    console.log(array)
-                })
+                const array = await FetchDistributorsInfo(distributorsConnected)
+                return array;
             }
         }
     } catch (error) {
