@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FetchAllDistributorsForStore } from "../firebase/firebaseFirestore";
 
@@ -17,11 +17,40 @@ const CreateNewOrder = () => {
         setExpanded(isExpanded ? panel : null);
     };
 
-    const handleQuantityChange = (productId, quantity) => {
+    const handleQuantityChange = (productId, distributorID, quantity) => {
+        const id = `${distributorID}-${productId}`; // Correctly concatenate distributorID and productId
         setOrderQuantities(prevState => ({
             ...prevState,
-            [productId]: quantity
+            [id]: quantity
         }));
+    };
+
+    const handlePlaceOrder = (storeID, distributorID) => {
+        // Gather order items
+        const orderItems = [];
+        distributors.forEach(distributor => {
+            if (distributor.id === distributorID) {
+                distributor.data.productsData.forEach(product => {
+                    const quantity = orderQuantities[`${distributor.id}-${product.id}`] || 0;
+                    if (quantity > 0) {
+                        orderItems.push({
+                            productID: product.id,
+                            quantity: quantity
+                        });
+                    }
+                });
+            }
+        });
+
+        // Call CreateOrder function
+        CreateOrder(storeID, distributorID, orderItems);
+    };
+
+    const CreateOrder = (storeID, distributorID, orderItems) => {
+        // Implement logic to create order
+        console.log("Creating order for store ID:", storeID);
+        console.log("Distributor ID:", distributorID);
+        console.log("Order items:", orderItems);
     };
 
     useEffect(() => {
@@ -70,10 +99,10 @@ const CreateNewOrder = () => {
                                             <TableCell>
                                                 <TextField
                                                     type="number"
-                                                    value={orderQuantities[product.id] || ''}
-                                                    onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                                                    value={orderQuantities[`${distributor.id}-${product.id}`] || ''}
+                                                    onChange={(e) => handleQuantityChange(product.id, distributor.id, e.target.value)}
                                                     inputProps={{ min: '0', max: product.data.unitsInStock }}
-                                                    style={{ width: '70%' }} 
+                                                    style={{ width: '70%' }}
                                                 />
                                             </TableCell>
                                         </TableRow>
@@ -81,6 +110,14 @@ const CreateNewOrder = () => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handlePlaceOrder("5NxCpVGHf520hNnWJYuX", distributor.id)} // Hardcoded storeID, replace with actual storeID
+                            style={{ marginTop: '10px' }}
+                        >
+                            Checkout
+                        </Button>
                     </AccordionDetails>
                 </Accordion>
             ))}
