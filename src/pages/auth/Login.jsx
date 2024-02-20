@@ -3,7 +3,7 @@ import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
 import companyLogo from '../../assets/logo.png'; // Import your company logo
 import loginImage from '../../assets/loginVector.jpg'; // Import the cool-looking picture
-import { Button, Steps, message } from 'antd'; // Import Button and Steps from Ant Design
+import { Button} from 'antd'; // Import Button and Steps from Ant Design
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -43,9 +43,7 @@ const Login = () => {
           </header>
           <h2>Login</h2>
           <div className="signup-form" style={{ width: '100%' }}>
-            <Steps current={0} size="small">
-              <Steps.Step title="Personal Details" />
-            </Steps>
+            
             <div className='form-group' style={{ width: '100%', marginBottom: '20px' }}>
               <label>Email:</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '5px', boxSizing: 'border-box', marginTop: '5px', fontSize: '16px', color: '#333', backgroundColor: '#fff', transition: 'border-color 0.3s' }} />

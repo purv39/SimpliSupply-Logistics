@@ -39,6 +39,9 @@ const Home = () => {
         <button className="navigation-tab" onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button>
         <button className="navigation-tab" onClick={() => navigateTo('/OrderHistory')}>Order History</button>
         <button className="navigation-tab" onClick={() => navigateTo('/DistributorList')}>Distributor List</button>
+        <button className="navigation-tab" onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button>
+        <button className="navigation-tab" onClick={() => navigateTo('/OrderHistory')}>Order History</button>
+
         {/* Add more navigation tabs as needed */}
       </div>
       <div className="content">

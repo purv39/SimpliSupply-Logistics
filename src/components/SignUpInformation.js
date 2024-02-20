@@ -143,7 +143,7 @@ const SignUpInformation = ({
 
       <div className="signup-form">
         <img src={logo} alt='logo' />
-        <h2>Signup Information</h2>
+        <h2 className='header'>Signup Information</h2>
         <Steps current={current} items={items} />
         <div className='form-group'>{steps[current].content}</div>
         <div>
