@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch, query, where } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
 
@@ -52,7 +52,6 @@ export const AddNewDistributionStoreForOperator = async (uuid, storeName, busine
             rating: 0,
             invites: [],
             storesConnected: [],
-            distributorOrders: []
         });
 
         const newDistributorID = docRef.id;
@@ -95,7 +94,6 @@ export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gs
             rating: 0,
             invites: [],
             distributorsConnected: [],
-            storeOrdersList: []
         });
 
         const newStoreID = docRef.id;
@@ -181,17 +179,17 @@ export const FetchDistributorsInfo = async (distributorsList) => {
 
 export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
     try {
+        var totalCost = 0;
+
         // Set up the initial data for the order
         const orderData = {
             createdAt: new Date(),
             distributorID: distributorID,
             storeID: storeID,
-            fulfillmentStatus: {
-                delivered: false,
-                paymentReceived: false,
-                shipped: false
-            }
+            currentStatus: "Pending",
+            totalCost: totalCost
         };
+
 
         // Add the order to the "Orders" collection
         const orderRef = await addDoc(collection(db, 'Orders'), orderData);
@@ -199,15 +197,60 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
         // Add orderItems to the subcollection "orderItems"
         const batch = writeBatch(db);
         orderItems.forEach(async (item) => {
+
+            // Calculate the product cost
+            const productCost = (item.productData?.data?.unitPrice * item.unitsOrdered).toFixed(2);
+            item.productCost = parseFloat(productCost); // Convert back to a float
+
+            // Update total cost
+            totalCost += item.productCost;
+            
             const itemRef = doc(collection(orderRef, "orderItems")); // Construct a new DocumentReference for orderItems
             batch.set(itemRef, item);
         });
         await batch.commit();
+
+
+        // Update the order document with the new totalCost
+        await updateDoc(orderRef, { totalCost: totalCost });
 
         console.log("Order successfully created:", orderRef.id);
         return orderRef.id; // Return the ID of the created order
     } catch (error) {
         console.error("Error creating order:", error);
         throw error; // Throw error for handling in UI or higher-level components
+    }
+};
+
+
+export const fetchOrderHistoryForStore = async (storeID) => {
+    try {
+        const ordersQuery = query(collection(db, 'Orders'), where('storeID', '==', storeID));
+        const ordersSnapshot = await getDocs(ordersQuery);
+
+        const ordersData = [];
+        for (const orderDoc of ordersSnapshot.docs) {
+            const orderData = orderDoc.data();
+            const orderItemsSnapshot = await getDocs(collection(orderDoc.ref, 'orderItems'));
+            const orderItemsData = orderItemsSnapshot.docs.map((doc) => doc.data());
+            orderData.orderItems = orderItemsData;
+
+            // Fetch distributor name using distributor ID
+            const distributorDocRef = await doc(collection(db, 'Distribution Stores'), orderData.distributorID);
+            const distributorSnapshot = await getDoc(distributorDocRef);
+
+            if (distributorSnapshot.exists()) {
+                orderData.distributorName = distributorSnapshot.data().storeName;
+            } else {
+                orderData.distributorName = "Unknown Distributor"; // Placeholder if distributor not found
+            }
+
+            ordersData.push({ id: orderDoc.id, ...orderData });
+
+        }
+
+        return ordersData;
+    } catch (error) {
+        console.error('Error fetching orders:', error);
     }
 };
