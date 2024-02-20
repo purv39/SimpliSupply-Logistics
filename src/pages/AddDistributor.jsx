@@ -1,62 +1,102 @@
 // AddDistributor.jsx
-import React, { useState } from 'react';
+import  '../styles/AddDistributor.css';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../firebase/firebaseAuth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from "../firebase/firebaseConfig"; 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../styles/AddDistributor.css";
+import { collection, addDoc } from 'firebase/firestore';
 
 const AddDistributor = () => {
 
- 
   const distributorOptions = ['Distributor A', 'Distributor B', 'Distributor C', 'Distributor D', 'Distributor E'];
-
-
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [businessName, setBusinessName] = useState('');
-  const [businessAddress, setBusinessAddress] = useState('');
-  const [businessCity, setBusinessCity] = useState('');
-  const [businessProvince, setBusinessProvince] = useState('');
-  const [businessZipCode, setBusinessZipCode] = useState('');
-  const [businessNumber, setBusinessNumber] = useState('');
-
-  const [error, setError] = useState('');
-  const [distributors, setDistributors] = useState([
-    { name: 'Distributor F', confirmed: 'Confirmed' }
-  ]);
   const [selectedDistributor, setSelectedDistributor] = useState(distributorOptions[0]);
+  const { currentUser } = useAuth(); 
+  const [userInfo, setUserInfo] = useState({
+    fullName: '',
+    address: '',
+    contactNumber: '',
+    storeName: '',
+    storeNumber: '',
+    storeAddress: ''
+  });
+  const [distributors, setDistributors] = useState([]); 
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (currentUser?.uid) {
+        try {
+          const userRef = doc(db, 'Users', currentUser.uid);
+          const docSnap = await getDoc(userRef);
+  
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            const fullName = `${userData.firstName} ${userData.lastName}`; 
+            const firstStoreId = userData.storesList?.length > 0 ? userData.storesList[0] : null;
+            let storeName = '';
+            let storeNumber = '';
+            let storeAddress = '';
+  
+            if (firstStoreId) {
+              const storeRef = doc(db, 'Retail Stores', firstStoreId);
+              const storeSnap = await getDoc(storeRef);
+              if (storeSnap.exists()) {
+                storeName = storeSnap.data().storeName;
+                storeNumber = storeSnap.data().businessNumber; 
+                storeAddress = storeSnap.data().storeAddress;
+              }
+            }
+  
+            setUserInfo({
+              fullName,
+              address: `${userData.address}, ${userData.city}, ${userData.province}, ${userData.postalCode}`,
+              contactNumber: userData.contactNumber,
+              storeName,
+              storeNumber,
+              storeAddress
+            });
+          } else {
+            setError('No user data found.');
+          }
+        } catch (error) {
+          console.error("Error fetching user data: ", error);
+          setError("Failed to load user data.");
+        }
+      }
+    };
+  
+    fetchUserData();
+  }, [currentUser]);
 
-
- 
-
-  const handleAddDistributor = () => {
-    setError('');
-
-    if (!firstName || !lastName || !businessName || !businessAddress || !businessCity || !businessProvince || !businessZipCode || !businessNumber) {
-      setError('The required requirements were not met.');
+  const handleAddDistributor = async () => {
+    if (distributors.some(distributor => distributor.name === selectedDistributor)) {
+      alert('This distributor has already been added.');
       return;
     }
-
-    if (distributors.some(d => d.name === selectedDistributor)) {
-      alert('The distributor you have already applied for');
-      return;
+  
+    // Add distributor to Firestore
+    try {
+      const docRef = await addDoc(collection(db, "distributors"), {
+        name: selectedDistributor,
+        // Add the userInfo object instead of just the user ID
+        userInfo: {
+          fullName: userInfo.fullName,
+          address: userInfo.address,
+          contactNumber: userInfo.contactNumber,
+          storeName: userInfo.storeName,
+          storeNumber: userInfo.storeNumber,
+          storeAddress: userInfo.storeAddress,
+        },
+        status: 'Waiting'
+      });
+      console.log("Document written with ID: ", docRef.id);
+      // Update local state
+      setDistributors([...distributors, { id: docRef.id, name: selectedDistributor, status: 'Waiting' }]);
+    } catch (e) {
+      console.error("Error adding document: ", e);
     }
-
-    // Correctly set the name of the new distributor
-    setDistributors([...distributors, { name: selectedDistributor, confirmed: 'Waiting...' }]);
-
-    // Clear the form fields after adding
-    setFirstName('');
-    setLastName('');
-    setBusinessName('');
-    setBusinessAddress('');
-    setBusinessCity('');
-    setBusinessProvince('');
-    setBusinessZipCode('');
-    setBusinessNumber('');
-    setSelectedDistributor(distributorOptions[0]); 
-    
   };
   
-
   return (
 
     
@@ -84,73 +124,52 @@ const AddDistributor = () => {
                 </select>
             </div>
 
-            {/* Owner Name */}
+            {/* Owner Name */}         
             <div className="mb-3">
-              <label htmlFor="firstName" className="form-label">First Name *</label>
-              <input type="text" className="form-control" id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-            </div>
-
-            
-            <div className="mb-3">
-              <label htmlFor="lastName" className="form-label">Last Name *</label>
-              <input type="text" className="form-control" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                <p><strong>Name:</strong> {userInfo.fullName}</p>
             </div>
 
             {/* Business Name */}
             <div className="mb-3">
-              <label htmlFor="businessName" className="form-label">Store Name *</label>
-              <input type="text" className="form-control" id="businessName" value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
+                <p><strong>Address:</strong> {userInfo.address}</p>
             </div>
 
             {/* Business Address */}
             <div className="mb-3">
-              <label htmlFor="businessAddress" className="form-label">Address *</label>
-              <input type="text" className="form-control" id="businessAddress" value={businessAddress} onChange={(e) => setBusinessAddress(e.target.value)} />
+                <p><strong>Contact Number:</strong> {userInfo.contactNumber}</p>
             </div>
 
             <div className="mb-3">
-              <label htmlFor="businessCity" className="form-label">City *</label>
-              <input type="text" className="form-control" id="businessCity" value={businessCity} onChange={(e) => setBusinessCity(e.target.value)} />
+                <p><strong>Store Name:</strong> {userInfo.storeName}</p>
             </div>
 
             <div className="mb-3">
-              <label htmlFor="businessProvince" className="form-label">Province *</label>
-              <input type="text" className="form-control" id="businessProvince" value={businessProvince} onChange={(e) => setBusinessProvince(e.target.value)} />
+                <p><strong>Store Number:</strong> {userInfo.storeNumber}</p>
             </div>
 
             <div className="mb-3">
-              <label htmlFor="businessZipCode" className="form-label">ZipCode *</label>
-              <input type="text" className="form-control" id="businessZipCode" value={businessZipCode} onChange={(e) => setBusinessZipCode(e.target.value)} />
-            </div>
+                <p><strong>Store Address:</strong> {userInfo.storeAddress}</p>
 
-            {/* Business Number */}
-            <div className="mb-3">
-              <label htmlFor="businessNumber" className="form-label">Store Number *</label>
-              <input type="text" className="form-control" id="businessNumber" value={businessNumber} onChange={(e) => setBusinessNumber(e.target.value)} />
             </div>
-
 
             <div className="d-grid gap-2 addButtonLocation">
-              <button className="btn btn-primary addButton" type="button" onClick={handleAddDistributor}>ADD</button>
+              <button className="btn btn-primary" type="button" onClick={handleAddDistributor}>ADD</button>
             </div>
           </form>
         </div>
 
         <div className="col-md-6">
-          <div className="list-group">
-            {distributors.map((distributor, index) => (
-              <div key={index} className="list-group-item d-flex justify-content-between align-items-center">
-                {distributor.name} 
-                <span className={`badge ${distributor.confirmed === 'Confirmed' ? 'bg-success' : 'bg-warning text-dark'}`}>
-                  {distributor.confirmed}
-                </span>
-              </div>
-            ))}
-          </div>
+            <div className="list-group">
+                {distributors.map((distributor, index) => (
+                <div key={index} className="list-group-item d-flex justify-content-between align-items-center" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>{distributor.name}</span>
+                    <span className="badge bg-warning text-dark" style={{ marginLeft: 'auto' }}>Waiting</span>
+                </div>
+                ))}
+            </div>
         </div>
       </div>
     </div>
   );
 };
-
 export default AddDistributor;

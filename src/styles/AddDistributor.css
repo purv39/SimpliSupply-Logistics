@@ -1,4 +1,4 @@
-/* AddDistributor.module.css */
+/* AddDistributor.css */
 .formContainer {
     max-width: 60%; 
     margin-right: auto;
@@ -17,4 +17,12 @@
     justify-content: flex-end; 
     align-items: flex-end; 
     height: 100%; 
+  }
+  .list-group-item {
+    display: flex;
+    justify-content: space-between; 
+  }
+  
+  .list-group-item .badge {
+    margin-left: auto; 
   }
