@@ -9,7 +9,7 @@ import WelcomePage from './pages/Welcome';
 import AddDistributor from './pages/AddDistributor';
 import { AuthContextProvider } from './firebase/firebaseAuth';
 import PrivateRoutes from './components/PrivateRoutes';
-
+import DistributorsList from './pages/distributor/DistributorsList';
 
 const App = () => {
   return (
@@ -21,8 +21,8 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<PrivateRoutes><Home /></PrivateRoutes> } />
           <Route path="/welcome" element={<WelcomePage />} />
-          <Route path="/adddistributor" element={<AddDistributor />} />
-
+          <Route path="/add_distributor" element={<AddDistributor/>} />
+          <Route path="/distributorlist" element={<DistributorsList/>} />
         </Routes>
       </AuthContextProvider>
     </Router>

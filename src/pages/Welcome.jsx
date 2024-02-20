@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../firebase/firebaseAuth';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from "../firebase/firebaseConfig"; // Firestore 설정을 가져옵니다.
+import { db } from "../firebase/firebaseConfig"; 
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap
 import "../styles/Welcome.css";
 
