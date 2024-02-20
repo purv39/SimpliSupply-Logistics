@@ -1,0 +1,75 @@
+/* LandingPage.css */
+
+.landing-page {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .landing-header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 24px;
+  }
+  
+  .navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar ul li {
+    display: inline;
+    margin-right: 20px;
+  }
+  
+  .navbar ul li:last-child {
+    margin-right: 0;
+  }
+  
+  .navbar ul li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .landing-content {
+    padding: 20px;
+  }
+  
+  .about-us {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .about-us-text {
+    flex: 1;
+    max-width: 50%;
+    text-align: left;
+  }
+  
+  .about-us-image {
+    flex: 1;
+  }
+  
+  .landing-footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+
+  /* LandingPage.css */
+
+.company-logo {
+    max-width: 150px; /* Increase the size as needed */
+    margin-bottom: 50px; /* Adjust the margin to move the logo up */
+}
+
