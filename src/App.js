@@ -10,6 +10,7 @@ import AddDistributor from './pages/AddDistributor';
 import { AuthContextProvider } from './firebase/firebaseAuth';
 import PrivateRoutes from './components/PrivateRoutes';
 import CreateNewOrder from './pages/CreateNewOrder';
+import OrderHistory from './pages/OrderHistory';
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/welcome" element={<PrivateRoutes><WelcomePage /></PrivateRoutes>} />
           <Route path="/adddistributor" element={<AddDistributor />} />
           <Route path="/createNewOrder" element={<CreateNewOrder />} />
+          <Route path="/orderhistory" element={<OrderHistory />} />
 
         </Routes>
       </AuthContextProvider>

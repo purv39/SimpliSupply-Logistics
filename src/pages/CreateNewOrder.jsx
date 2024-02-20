@@ -35,7 +35,7 @@ const CreateNewOrder = () => {
                     if (quantity > 0) {
                         orderItems.push({
                             productData: product,
-                            quantity: quantity
+                            unitsOrdered: quantity
                         });
                     }
                 });
