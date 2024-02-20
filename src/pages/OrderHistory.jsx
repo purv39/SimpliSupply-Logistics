@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { fetchOrderHistoryForStore } from '../firebase/firebaseFirestore';
 
@@ -15,10 +15,10 @@ const OrderHistory = ({ userID }) => {
         fetchOrders();
     }, []);
 
-     // Function to format timestamp into a human-readable date string
-     const formatDate = (timestamp) => {
-        const date = new Date(timestamp.seconds * 1000); 
-        return date.toLocaleString(); 
+    // Function to format timestamp into a human-readable date string
+    const formatDate = (timestamp) => {
+        const date = new Date(timestamp.seconds * 1000);
+        return date.toLocaleString();
     };
 
     return (
@@ -53,7 +53,6 @@ const OrderHistory = ({ userID }) => {
                                     <TableCell>Unit Price</TableCell>
                                     <TableCell>Units Ordered</TableCell>
                                     <TableCell>Product Cost</TableCell>
-
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -62,10 +61,9 @@ const OrderHistory = ({ userID }) => {
                                         <TableCell>{item.productData?.data?.categoryName}</TableCell>
                                         <TableCell>{item.productData?.data?.productName}</TableCell>
                                         <TableCell>{item.productData?.data?.quantityPerUnit}</TableCell>
-                                        <TableCell>${item.productData?.data?.unitPrice}</TableCell>
+                                        <TableCell>${item.productData?.data?.unitPrice.toFixed(2)}</TableCell>
                                         <TableCell>{item.unitsOrdered}</TableCell>
-                                        <TableCell>${item.productCost}</TableCell>
-
+                                        <TableCell>${item.productCost.toFixed(2)}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
