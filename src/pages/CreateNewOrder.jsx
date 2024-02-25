@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FetchAllDistributorsForStore, CreateNewOrderForStore } from "../firebase/firebaseFirestore";
+import MainNavBar from '../components/MainNavBar';
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
@@ -54,6 +55,7 @@ const CreateNewOrder = () => {
 
     return (
         <div>
+            <MainNavBar />
             <h2>Distributors</h2>
             {distributors.map(distributor => (
                 <Accordion

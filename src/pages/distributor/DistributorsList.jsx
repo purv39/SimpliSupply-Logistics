@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from "../../firebase/firebaseConfig";
 import { collection, getDocs, getDoc, deleteDoc, doc } from 'firebase/firestore'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import MainNavBar from '../../components/MainNavBar';
 
 const DistributorsList = () => {
   const [distributors, setDistributors] = useState([]);
@@ -60,6 +61,7 @@ const DistributorsList = () => {
 
   return (
     <div>
+      <MainNavBar />
       <h2>Distributors List</h2>
       <ul className="list-group">
         {distributors.map((distributor) => (

@@ -1,17 +1,18 @@
 // AddDistributor.jsx
-import  '../styles/AddDistributor.css';
+import '../styles/AddDistributor.css';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../firebase/firebaseAuth';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from "../firebase/firebaseConfig"; 
+import { db } from "../firebase/firebaseConfig";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { collection, addDoc } from 'firebase/firestore';
+import MainNavBar from '../components/MainNavBar';
 
 const AddDistributor = () => {
 
   const distributorOptions = ['Distributor A', 'Distributor B', 'Distributor C', 'Distributor D', 'Distributor E'];
   const [selectedDistributor, setSelectedDistributor] = useState(distributorOptions[0]);
-  const { currentUser } = useAuth(); 
+  const { currentUser } = useAuth();
   const [userInfo, setUserInfo] = useState({
     fullName: '',
     address: '',
@@ -20,7 +21,7 @@ const AddDistributor = () => {
     storeNumber: '',
     storeAddress: ''
   });
-  const [distributors, setDistributors] = useState([]); 
+  const [distributors, setDistributors] = useState([]);
   const [error, setError] = useState('');
   useEffect(() => {
     const fetchUserData = async () => {
@@ -28,25 +29,25 @@ const AddDistributor = () => {
         try {
           const userRef = doc(db, 'Users', currentUser.uid);
           const docSnap = await getDoc(userRef);
-  
+
           if (docSnap.exists()) {
             const userData = docSnap.data();
-            const fullName = `${userData.firstName} ${userData.lastName}`; 
+            const fullName = `${userData.firstName} ${userData.lastName}`;
             const firstStoreId = userData.storesList?.length > 0 ? userData.storesList[0] : null;
             let storeName = '';
             let storeNumber = '';
             let storeAddress = '';
-  
+
             if (firstStoreId) {
               const storeRef = doc(db, 'Retail Stores', firstStoreId);
               const storeSnap = await getDoc(storeRef);
               if (storeSnap.exists()) {
                 storeName = storeSnap.data().storeName;
-                storeNumber = storeSnap.data().businessNumber; 
+                storeNumber = storeSnap.data().businessNumber;
                 storeAddress = storeSnap.data().storeAddress;
               }
             }
-  
+
             setUserInfo({
               fullName,
               address: `${userData.address}, ${userData.city}, ${userData.province}, ${userData.postalCode}`,
@@ -64,7 +65,7 @@ const AddDistributor = () => {
         }
       }
     };
-  
+
     fetchUserData();
   }, [currentUser]);
 
@@ -73,7 +74,7 @@ const AddDistributor = () => {
       alert('This distributor has already been added.');
       return;
     }
-  
+
     // Add distributor to Firestore
     try {
       const docRef = await addDoc(collection(db, "distributors"), {
@@ -96,21 +97,19 @@ const AddDistributor = () => {
       console.error("Error adding document: ", e);
     }
   };
-  
+
   return (
-
-    
-
-    <div className="formContainer">
-      <h2 className="text-center mb-4">Add Distributor</h2>
-      <div className="row">
-
-        <div className="col-md-6">
-          {error && <div className="alert alert-danger" role="alert">{error}</div>}
-          <form>
-            <label>* required</label>
-            <div className="mb-3">
-              <label htmlFor="distributorSelect" className="form-label">Select Distributor *</label>
+    <div>
+      <MainNavBar />
+      <div className="formContainer">
+        <h2 className="text-center mb-4">Add Distributor</h2>
+        <div className="row">
+          <div className="col-md-6">
+            {error && <div className="alert alert-danger" role="alert">{error}</div>}
+            <form>
+              <label>* required</label>
+              <div className="mb-3">
+                <label htmlFor="distributorSelect" className="form-label">Select Distributor *</label>
                 <select
                   className="form-select"
                   id="distributorSelect"
@@ -122,54 +121,56 @@ const AddDistributor = () => {
                     <option key={index} value={option}>{option}</option>
                   ))}
                 </select>
-            </div>
+              </div>
 
-            {/* Owner Name */}         
-            <div className="mb-3">
+              {/* Owner Name */}
+              <div className="mb-3">
                 <p><strong>Name:</strong> {userInfo.fullName}</p>
-            </div>
+              </div>
 
-            {/* Business Name */}
-            <div className="mb-3">
+              {/* Business Name */}
+              <div className="mb-3">
                 <p><strong>Address:</strong> {userInfo.address}</p>
-            </div>
+              </div>
 
-            {/* Business Address */}
-            <div className="mb-3">
+              {/* Business Address */}
+              <div className="mb-3">
                 <p><strong>Contact Number:</strong> {userInfo.contactNumber}</p>
-            </div>
+              </div>
 
-            <div className="mb-3">
+              <div className="mb-3">
                 <p><strong>Store Name:</strong> {userInfo.storeName}</p>
-            </div>
+              </div>
 
-            <div className="mb-3">
+              <div className="mb-3">
                 <p><strong>Store Number:</strong> {userInfo.storeNumber}</p>
-            </div>
+              </div>
 
-            <div className="mb-3">
+              <div className="mb-3">
                 <p><strong>Store Address:</strong> {userInfo.storeAddress}</p>
 
-            </div>
+              </div>
 
-            <div className="d-grid gap-2 addButtonLocation">
-              <button className="btn btn-primary" type="button" onClick={handleAddDistributor}>ADD</button>
-            </div>
-          </form>
-        </div>
+              <div className="d-grid gap-2 addButtonLocation">
+                <button className="btn btn-primary" type="button" onClick={handleAddDistributor}>ADD</button>
+              </div>
+            </form>
+          </div>
 
-        <div className="col-md-6">
+          <div className="col-md-6">
             <div className="list-group">
-                {distributors.map((distributor, index) => (
+              {distributors.map((distributor, index) => (
                 <div key={index} className="list-group-item d-flex justify-content-between align-items-center" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span>{distributor.name}</span>
-                    <span className="badge bg-warning text-dark" style={{ marginLeft: 'auto' }}>Waiting</span>
+                  <span>{distributor.name}</span>
+                  <span className="badge bg-warning text-dark" style={{ marginLeft: 'auto' }}>Waiting</span>
                 </div>
-                ))}
+              ))}
             </div>
+          </div>
         </div>
       </div>
     </div>
+
   );
 };
 export default AddDistributor;
