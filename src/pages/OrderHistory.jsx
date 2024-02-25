@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { fetchOrderHistoryForStore } from '../firebase/firebaseFirestore';
 import OrderDetailsTable from '../components/OrderDetailsTable';
+import MainNavBar from '../components/MainNavBar';
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
@@ -30,6 +31,7 @@ const OrderHistory = () => {
 
     return (
         <div>
+            <MainNavBar />
             <h2>Order History</h2>
             <TableContainer component={Paper}>
                 <Table aria-label="collapsible table">
