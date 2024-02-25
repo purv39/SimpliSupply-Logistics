@@ -9,5 +9,7 @@ export const AddTaxFileToStorage = async (taxFile, storeID) => {
 
     const dwnldurl = await getDownloadURL(uploadTask.snapshot.ref);
 
-    return dwnldurl;
+    const downloadURL = dwnldurl.split("?")[0];
+
+    return downloadURL;
 };
