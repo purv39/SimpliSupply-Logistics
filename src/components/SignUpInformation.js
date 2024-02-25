@@ -57,10 +57,10 @@ const SignUpInformation = ({
   const next = () => {
     // Validate input fields before proceeding to the next step
     const currentStepContent = steps[current].content.props;
-  
+
     // Check if all required fields are filled
     const isFilled = Object.values(currentStepContent).every(value => value !== '');
-  
+
     if (isFilled) {
       setCurrent(current + 1);
     } else {
@@ -171,6 +171,14 @@ const SignUpInformation = ({
           )}
 
         </div>
+
+        {current === 0 && (
+          <div style={{ display: 'flex', width: '100%', justifyContent: 'center', marginTop: '10px' }}>
+            Already have an Account?
+            <a href="/login" style={{ textDecoration: 'none', marginLeft: '5px' }}>Login</a>
+          </div>
+        )}
+
       </div>
     </div>
 
