@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
-import companyLogo from '../../assets/logo.png'; // Import your company logo
-import loginImage from '../../assets/loginVector.jpg'; // Import the cool-looking picture
-import { Button} from 'antd'; // Import Button and Steps from Ant Design
+import companyLogo from '../../assets/logo1.png'; // Import your company logo
+import loginImage from '../../assets/loginVector.png'; // Import the cool-looking picture
+import { Button } from 'antd'; // Import Button and Steps from Ant Design
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -32,18 +32,18 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container" style={{ display: 'flex', height: '100vh', overflow: 'auto' }}>
+    <div className="login-container" style={{ display: 'flex', height: '100vh', overflow: 'auto', backgroundColor: '#eaf9f5' }}>
       <div className="login-content" style={{ display: 'flex', flex: 1 }}>
-        <div className="login-image" style={{ flex: '0 0 50%', maxWidth: '50%', overflow: 'auto', marginTop: '90px' }}>
-          <img src={loginImage} alt="Login" style={{ maxWidth: '100%', height: 'auto' }} />
+        <div className="login-image" style={{ flex: '0 0 50%', maxWidth: '50%', justifyContent: 'center', display: 'flex' }}>
+          <img src={loginImage} alt="Login" style={{ width: "170%", marginTop: '8%', marginLeft: '10%'}} />
         </div>
-        <div className="login-form" style={{ flex: '0 0 50%', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', maxWidth: '40%', margin: '0 auto' }}> 
-          <header>
-            <img src={companyLogo} alt="Company Logo" className="company-logo" />
+        <div className="login-form" style={{ flex: '0 0 50%', padding: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', maxWidth: '40%', margin: '50px auto auto auto' }}>
+          <header style={{ display: 'flex', justifyContent: 'center' }}>
+            <img src={companyLogo} alt="Company Logo" style={{ width: '100%', marginTop: '-70px' }} />
           </header>
-          <h2>Login</h2>
           <div className="signup-form" style={{ width: '100%' }}>
-            
+
+            <h2>Login</h2>
             <div className='form-group' style={{ width: '100%', marginBottom: '20px' }}>
               <label>Email:</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '5px', boxSizing: 'border-box', marginTop: '5px', fontSize: '16px', color: '#333', backgroundColor: '#fff', transition: 'border-color 0.3s' }} />
@@ -52,14 +52,20 @@ const Login = () => {
               <label>Password:</label>
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '5px', boxSizing: 'border-box', marginTop: '5px', fontSize: '16px', color: '#333', backgroundColor: '#fff', transition: 'border-color 0.3s' }} />
             </div>
-            <div style={{ width: '100%' }}>
-              <Button type="primary" style={{ width: '100px', height: '40px' }} onClick={handleLogin}>
+            <div style={{ display: 'flex', width: '100%', justifyContent: 'right' }}>
+              <a href="/forget" style={{ textDecoration: 'none', marginRight: '5px' }}>Forgot Password</a>
+            </div>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+              <Button type="primary" style={{ width: '200px', height: '50px', borderRadius: '10px' }} onClick={handleLogin}>
                 Login
               </Button>
               {loading && <p>Loading...</p>}
               {error && <p style={{ color: 'red' }}>Error: {error}</p>}
             </div>
-            <div> <a href="/forget">Forget Password </a></div>
+          </div>
+          <div style={{ display: 'flex', width: '100%', justifyContent: 'left', marginTop: '20px'}}>
+             Don't have an Account?
+            <a href="/signup" style={{ textDecoration: 'none',  marginLeft: '5px' }}> Register Now</a>
           </div>
         </div>
       </div>
