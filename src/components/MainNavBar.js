@@ -20,7 +20,7 @@ const MainNavBar = () => {
       };
 
     return (<div className="navbar">
-        <div className="logo">SimpliSupply Logistics</div>
+        <div className="logo"  onClick={() => navigateTo('/home')}>SimpliSupply Logistics</div>
         <nav>
             <ul>
                 <li><button className="nav-button" onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button></li>
