@@ -36,17 +36,15 @@ const Login = () => {
     <div className="login-container" style={{ display: 'flex', height: '100vh', overflow: 'auto', backgroundColor: '#eaf9f5' }}>
       <div className="login-content" style={{ display: 'flex', flex: 1 }}>
         <div className="login-image" style={{ flex: '0 0 50%', maxWidth: '50%', justifyContent: 'center', display: 'flex' }}>
-          <img src={loginImage} alt="Login" style={{ width: "170%", marginTop: '8%', marginLeft: '10%'}} />
+          <img src={loginImage} alt="Login" style={{ width: "170%", marginTop: '8%', marginLeft: '10%' }} />
         </div>
         <div className="login-form" style={{ flex: '0 0 50%', padding: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', maxWidth: '40%', margin: '50px auto auto auto' }}>
           <header style={{ display: 'flex', justifyContent: 'center' }}>
-            <img src={companyLogo} alt="Company Logo" style={{ width: '100%', marginTop: '-70px' }} />
+            <img src={companyLogo} alt="Company Logo" style={{ width: '100%', marginTop: '-100px' }} />
           </header>
           <div className="signup-form" style={{ width: '100%' }}>
-
             <h2>Login</h2>
-          <LoginToggleButton />
-
+            <LoginToggleButton />
             <div className='form-group' style={{ width: '100%', marginBottom: '20px' }}>
               <label>Email:</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '5px', boxSizing: 'border-box', marginTop: '5px', fontSize: '16px', color: '#333', backgroundColor: '#fff', transition: 'border-color 0.3s' }} />
@@ -68,9 +66,9 @@ const Login = () => {
             </div>
 
           </div>
-          <div style={{ display: 'flex', width: '100%', justifyContent: 'left', marginTop: '20px'}}>
-             Don't have an Account?
-            <a href="/signup" style={{ textDecoration: 'none',  marginLeft: '5px' }}> Register Now</a>
+          <div style={{ display: 'flex', width: '100%', justifyContent: 'left', marginTop: '20px' }}>
+            Don't have an Account?
+            <a href="/signup" style={{ textDecoration: 'none', marginLeft: '5px' }}> Register Now</a>
           </div>
         </div>
       </div>
