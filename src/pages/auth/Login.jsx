@@ -54,7 +54,7 @@ const Login = () => {
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '5px', boxSizing: 'border-box', marginTop: '5px', fontSize: '16px', color: '#333', backgroundColor: '#fff', transition: 'border-color 0.3s' }} />
             </div>
             <div style={{ display: 'flex', width: '100%', justifyContent: 'right' }}>
-              <a href="/forget" style={{ textDecoration: 'none', marginRight: '5px' }}>Forgot Password</a>
+              <a href="/forget" style={{ textDecoration: 'none', marginRight: '5px' }}>Forgot Password?</a>
             </div>
 
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
