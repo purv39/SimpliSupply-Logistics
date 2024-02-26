@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import companyLogo from '../../assets/logo1.png'; // Import your company logo
 import loginImage from '../../assets/loginVector.png'; // Import the cool-looking picture
 import { Button } from 'antd'; // Import Button and Steps from Ant Design
+import LoginToggleButton from '../../components/LoginToggleButton';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -44,6 +45,8 @@ const Login = () => {
           <div className="signup-form" style={{ width: '100%' }}>
 
             <h2>Login</h2>
+          <LoginToggleButton />
+
             <div className='form-group' style={{ width: '100%', marginBottom: '20px' }}>
               <label>Email:</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '5px', boxSizing: 'border-box', marginTop: '5px', fontSize: '16px', color: '#333', backgroundColor: '#fff', transition: 'border-color 0.3s' }} />
@@ -55,6 +58,7 @@ const Login = () => {
             <div style={{ display: 'flex', width: '100%', justifyContent: 'right' }}>
               <a href="/forget" style={{ textDecoration: 'none', marginRight: '5px' }}>Forgot Password</a>
             </div>
+
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
               <Button type="primary" style={{ width: '200px', height: '50px', borderRadius: '10px' }} onClick={handleLogin}>
                 Login
@@ -62,6 +66,7 @@ const Login = () => {
               {loading && <p>Loading...</p>}
               {error && <p style={{ color: 'red' }}>Error: {error}</p>}
             </div>
+
           </div>
           <div style={{ display: 'flex', width: '100%', justifyContent: 'left', marginTop: '20px'}}>
              Don't have an Account?
