@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
 import "../styles/LoginToggle.css";
 
-const LoginToggleButton = () => {
-    const [activeButton, setActiveButton] = useState('store');
+const LoginToggleButton = ({setRole, role}) => {
 
-    const moveRegister = () => {
-        setActiveButton('distributor');
+    const selectDistributor = () => {
+        setRole('Distributor')
     };
 
-    const moveLogin = () => {
-        setActiveButton('store');
+    const selectStore = () => {
+        setRole('Store');
     };
 
     return (
         <div className="button-box">
-            <div id="btn" style={{ left: activeButton === 'store' ? '0' : '50%' }}></div>
-            <button type="button" className='toggle-btn' onClick={moveLogin}>
+            <div id="btn" style={{ left: role === 'Store' ? '0' : '50%' }}></div>
+            <button type="button" className='toggle-btn' onClick={selectStore}>
                 Store Login
             </button>
-            <button type="button" className='toggle-btn' onClick={moveRegister}>
+            <button type="button" className='toggle-btn' onClick={selectDistributor}>
                 Distributor Login
             </button>
         </div>
