@@ -11,8 +11,6 @@ import '../../styles/Login.css';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // Define loading state
-  const [error, setError] = useState(''); // Define error state
   const [role, setRole] = useState('Store');
 
   const { Login } = useAuth();
@@ -27,10 +25,8 @@ const Login = () => {
       // Redirect or handle successful login
     } catch (error) {
       // Handle login error
-      setError(error.message);
       message.error('Login failed: ' + error.message);
     } finally {
-      setLoading(false);
     }
   };
 
