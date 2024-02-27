@@ -26,15 +26,15 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
 
           <Route path="/home" element={<PrivateRoutes><Home /></PrivateRoutes> } />
-          <Route path="/welcome" element={<WelcomePage />} />
-          <Route path="/add_distributor" element={<AddDistributor/>} />
-          <Route path="/distributorlist" element={<DistributorsList/>} />
+          <Route path="/welcome" element={<PrivateRoutes><WelcomePage /></PrivateRoutes> } />
+          <Route path="/add_distributor" element={<PrivateRoutes><AddDistributor/></PrivateRoutes>} />
+          <Route path="/distributorlist" element={<PrivateRoutes><DistributorsList/></PrivateRoutes>} />
 
           <Route path="/home" element={<PrivateRoutes><Home /></PrivateRoutes>} />
           <Route path="/welcome" element={<PrivateRoutes><WelcomePage /></PrivateRoutes>} />
-          <Route path="/adddistributor" element={<AddDistributor />} />
-          <Route path="/createNewOrder" element={<CreateNewOrder />} />
-          <Route path="/orderhistory" element={<OrderHistory />} />
+          <Route path="/adddistributor" element={<PrivateRoutes><AddDistributor /></PrivateRoutes>} />
+          <Route path="/createNewOrder" element={<PrivateRoutes><CreateNewOrder /></PrivateRoutes> } />
+          <Route path="/orderhistory" element={<PrivateRoutes><OrderHistory /></PrivateRoutes> } />
 
         </Routes>
       </AuthContextProvider>
