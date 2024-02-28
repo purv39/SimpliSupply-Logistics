@@ -13,7 +13,9 @@ import DistributorsList from './pages/distributor/DistributorsList';
 import CreateNewOrder from './pages/CreateNewOrder';
 import OrderHistory from './pages/OrderHistory';
 import LandingPage from './pages/LandingPage'; // Import your LandingPage component
-
+import PageNotFound from './pages/PageNotFound';
+import StoreOperatorPrivateRoute from './components/StoreOperatorPrivateRoute';
+import DistributorPrivateRoute from './components/DistributorPrivateRoute';
 
 const App = () => {
   return (
@@ -21,20 +23,18 @@ const App = () => {
       <AuthContextProvider>
         <Routes>
           <Route path="/" element={<LandingPage />} /> {/* Landing page */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/forget" element={<ForgetPassword />} />
-          <Route path="/signup" element={<Signup />} />
-
-          <Route path="/home" element={<PrivateRoutes><Home /></PrivateRoutes> } />
-          <Route path="/welcome" element={<WelcomePage />} />
-          <Route path="/add_distributor" element={<AddDistributor/>} />
-          <Route path="/distributorlist" element={<DistributorsList/>} />
-
-          <Route path="/home" element={<PrivateRoutes><Home /></PrivateRoutes>} />
-          <Route path="/welcome" element={<PrivateRoutes><WelcomePage /></PrivateRoutes>} />
-          <Route path="/adddistributor" element={<AddDistributor />} />
-          <Route path="/createNewOrder" element={<CreateNewOrder />} />
-          <Route path="/orderhistory" element={<OrderHistory />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Forget" element={<ForgetPassword />} />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="*" element={<PageNotFound />  } />
+          
+          <Route path="/Home" element={<PrivateRoutes><Home /></PrivateRoutes> } />
+          <Route path="/Welcome" element={<PrivateRoutes><WelcomePage /></PrivateRoutes> } />
+          
+          <Route path="/DistributorList" element={<StoreOperatorPrivateRoute><DistributorsList/></StoreOperatorPrivateRoute>} />
+          <Route path="/AddDistributor" element={<StoreOperatorPrivateRoute><AddDistributor /></StoreOperatorPrivateRoute>} />
+          <Route path="/CreateNewOrder" element={<StoreOperatorPrivateRoute><CreateNewOrder /></StoreOperatorPrivateRoute> } />
+          <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
 
         </Routes>
       </AuthContextProvider>

@@ -1,0 +1,31 @@
+.button-box {
+    margin: 20px auto;
+    position: relative;
+    box-shadow: 0 0 20px 9px #ff61241f;
+    border-radius: 30px;
+    width: 90%;
+    display: flex;
+}
+
+.toggle-btn {
+    padding: 10px 30px;
+    padding-right: auto;
+    width: 50%;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    position: relative;
+    font-weight: bold;
+    z-index: 1; /* Ensure buttons are above the #btn */
+}
+
+#btn {
+    top: 0;
+    position: absolute;
+    width: 50%; /* Set to cover the entire width of the button-box */
+    height: 100%;
+    background: linear-gradient(to right, #fc4a1a, #f7b733);
+    border-radius: 30px;
+    transition: 0.5s;
+    z-index: 0; /* Ensure #btn is behind buttons */
+}
