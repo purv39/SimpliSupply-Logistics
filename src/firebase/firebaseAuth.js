@@ -1,9 +1,8 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
-    onAuthStateChanged,
     sendPasswordResetEmail
 } from "firebase/auth";
 import { auth } from "./firebaseConfig";
@@ -13,7 +12,6 @@ const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [currentRole, setCurrentRole] = useState('');
 
     const SignUp = (email, password) => {
         return createUserWithEmailAndPassword(auth, email, password)
@@ -29,7 +27,6 @@ export const AuthContextProvider = ({ children }) => {
                     return FetchUserData(userCredential.user.uid)
                         .then((roles) => {
                             if ((roles.storeOperator && role === 'Store') || (roles.distributor && role === 'Distributor')) {
-                                setCurrentRole(role);
                                 userCredential.user.currentRole = role;
                                 setCurrentUser(userCredential.user);
                             } else {
