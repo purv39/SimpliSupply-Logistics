@@ -20,7 +20,7 @@ const Login = () => {
     try {
 
       // Use Firebase auth to sign in
-      await Login(email, password);
+      await Login(email, password, role);
       navigate('/home');
       // Redirect or handle successful login
     } catch (error) {

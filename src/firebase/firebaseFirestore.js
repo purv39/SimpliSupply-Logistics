@@ -254,3 +254,11 @@ export const fetchOrderHistoryForStore = async (storeID) => {
         console.error('Error fetching orders:', error);
     }
 };
+
+export const FetchUserData = async (uuid) => {
+    const userDataRef = doc(db, 'Users', uuid);
+    const userDataSnapshot = await getDoc(userDataRef);
+    const userData = userDataSnapshot.data();
+
+    return userData.roles;
+}
