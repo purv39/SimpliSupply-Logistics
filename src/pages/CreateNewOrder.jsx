@@ -3,15 +3,19 @@ import { Accordion, AccordionDetails, AccordionSummary, Table, TableBody, TableC
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FetchAllDistributorsForStore, CreateNewOrderForStore } from "../firebase/firebaseFirestore";
 import MainNavBar from '../components/MainNavBar';
+import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
+import "../styles/LoadingSpinner.css";
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
     const [expanded, setExpanded] = useState(null);
     const [orderQuantities, setOrderQuantities] = useState({});
+    const [loading, setLoading] = useState(true); // State for loading status
 
     const handleDistributorClick = async (storeID) => {
         const distributorData = await FetchAllDistributorsForStore(storeID);
         setDistributors(distributorData);
+        setLoading(false); // Set loading to false when data is fetched
     };
 
     const handleChange = (panel) => (event, isExpanded) => {
@@ -57,65 +61,70 @@ const CreateNewOrder = () => {
         <div>
             <MainNavBar />
             <h2>Distributors</h2>
-            {distributors.map(distributor => (
-                <Accordion
-                    key={distributor.id}
-                    expanded={expanded === distributor.id}
-                    onChange={handleChange(distributor.id)}
-                >
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1bh-content"
-                        id="panel1bh-header"
+            {loading ? ( // Render loading spinner if loading is true
+                <div className="loading-spinner">
+                    <RiseLoader color="#36D7B7" loading={loading} size={10} />
+                </div>
+            ) : (
+                distributors.map(distributor => (
+                    <Accordion
+                        key={distributor.id}
+                        expanded={expanded === distributor.id}
+                        onChange={handleChange(distributor.id)}
                     >
-                        <Typography>{distributor.data.storeName}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <TableContainer component={Paper}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Category Name</TableCell>
-                                        <TableCell>Product Name</TableCell>
-                                        <TableCell>Quantity Per Unit</TableCell>
-                                        <TableCell>Unit Price</TableCell>
-                                        <TableCell>Units In Stock</TableCell>
-                                        <TableCell>Quantity to Order</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {distributor.data.productsData.map(product => (
-                                        <TableRow key={product.id}>
-                                            <TableCell>{product.data.categoryName}</TableCell>
-                                            <TableCell>{product.data.productName}</TableCell>
-                                            <TableCell>{product.data.quantityPerUnit}</TableCell>
-                                            <TableCell>${product.data.unitPrice}</TableCell>
-                                            <TableCell>{product.data.unitsInStock}</TableCell>
-                                            <TableCell>
-                                                <TextField
-                                                    type="number"
-                                                    value={orderQuantities[`${distributor.id}-${product.id}`] || ''}
-                                                    onChange={(e) => handleQuantityChange(product.id, distributor.id, e.target.value)}
-                                                    inputProps={{ min: '0', max: product.data.unitsInStock }}
-                                                    style={{ width: '70%' }}
-                                                />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handlePlaceOrder("5NxCpVGHf520hNnWJYuX", distributor.id)} // Hardcoded storeID, replace with actual storeID
-                            style={{ marginTop: '10px' }}
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1bh-content"
+                            id="panel1bh-header"
                         >
-                            Checkout
-                        </Button>
-                    </AccordionDetails>
-                </Accordion>
-            ))}
+                            <Typography>{distributor.data.storeName}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Category Name</TableCell>
+                                            <TableCell>Product Name</TableCell>
+                                            <TableCell>Quantity Per Unit</TableCell>
+                                            <TableCell>Unit Price</TableCell>
+                                            <TableCell>Units In Stock</TableCell>
+                                            <TableCell>Quantity to Order</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {distributor.data.productsData.map(product => (
+                                            <TableRow key={product.id}>
+                                                <TableCell>{product.data.categoryName}</TableCell>
+                                                <TableCell>{product.data.productName}</TableCell>
+                                                <TableCell>{product.data.quantityPerUnit}</TableCell>
+                                                <TableCell>${product.data.unitPrice}</TableCell>
+                                                <TableCell>{product.data.unitsInStock}</TableCell>
+                                                <TableCell>
+                                                    <TextField
+                                                        type="number"
+                                                        value={orderQuantities[`${distributor.id}-${product.id}`] || ''}
+                                                        onChange={(e) => handleQuantityChange(product.id, distributor.id, e.target.value)}
+                                                        inputProps={{ min: '0', max: product.data.unitsInStock }}
+                                                        style={{ width: '70%' }}
+                                                    />
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handlePlaceOrder("5NxCpVGHf520hNnWJYuX", distributor.id)} // Hardcoded storeID, replace with actual storeID
+                                style={{ marginTop: '10px' }}
+                            >
+                                Checkout
+                            </Button>
+                        </AccordionDetails>
+                    </Accordion>
+                )))}
         </div>
     );
 }
