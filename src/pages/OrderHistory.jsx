@@ -7,21 +7,24 @@ import OrderDetailsTable from '../components/OrderDetailsTable';
 import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 import "../styles/LoadingSpinner.css";
+import { useAuth } from '../firebase/firebaseAuth';
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [expandedOrderId, setExpandedOrderId] = useState(null);
     const [loading, setLoading] = useState(true); // State for loading status
+    const { currentUser } = useAuth();
+    const storeID = currentUser.selectedStore;
 
     useEffect(() => {
         const fetchOrders = async () => {
-            const orderData = await fetchOrderHistoryForStore("5NxCpVGHf520hNnWJYuX");
+            const orderData = await fetchOrderHistoryForStore(storeID);
             setOrders(orderData);
             setLoading(false); // Set loading to false when data is fetched
         }
 
         fetchOrders();
-    }, []);
+    }, [storeID]);
 
     // Function to format timestamp into a human-readable date string
     const formatDate = (timestamp) => {

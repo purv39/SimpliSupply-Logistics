@@ -5,12 +5,15 @@ import { FetchAllDistributorsForStore, CreateNewOrderForStore } from "../firebas
 import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 import "../styles/LoadingSpinner.css";
+import { useAuth } from '../firebase/firebaseAuth';
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
     const [expanded, setExpanded] = useState(null);
     const [orderQuantities, setOrderQuantities] = useState({});
     const [loading, setLoading] = useState(true); // State for loading status
+    const {currentUser} = useAuth();
+    const storeID = currentUser.selectedStore;
 
     const handleDistributorClick = async (storeID) => {
         const distributorData = await FetchAllDistributorsForStore(storeID);
@@ -53,9 +56,8 @@ const CreateNewOrder = () => {
 
     useEffect(() => {
         // Call handleDistributorClick when the component mounts
-        const storeID = "5NxCpVGHf520hNnWJYuX"; // Replace with your store ID
         handleDistributorClick(storeID);
-    }, []); // Empty dependency array ensures this effect runs only once on mount
+    }, [storeID]); // Empty dependency array ensures this effect runs only once on mount
 
     return (
         <div>
@@ -65,6 +67,8 @@ const CreateNewOrder = () => {
                 <div className="loading-spinner">
                     <RiseLoader color="#36D7B7" loading={loading} size={10} />
                 </div>
+            ) : (distributors === undefined || distributors.length === 0) ? (
+                <Typography>No distributors available</Typography>
             ) : (
                 distributors.map(distributor => (
                     <Accordion
@@ -117,7 +121,7 @@ const CreateNewOrder = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => handlePlaceOrder("5NxCpVGHf520hNnWJYuX", distributor.id)} // Hardcoded storeID, replace with actual storeID
+                                onClick={() => handlePlaceOrder(storeID, distributor.id)} // Hardcoded storeID, replace with actual storeID
                                 style={{ marginTop: '10px' }}
                             >
                                 Checkout

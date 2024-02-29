@@ -260,5 +260,5 @@ export const FetchUserData = async (uuid) => {
     const userDataSnapshot = await getDoc(userDataRef);
     const userData = userDataSnapshot.data();
 
-    return userData.roles;
+    return userData;
 }
