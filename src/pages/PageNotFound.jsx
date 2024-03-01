@@ -15,7 +15,13 @@ const PageNotFound = () => {
                 </div>
                 {/* Conditional rendering of the "Go Back" link */}
                 {currentUser ? (
-                    <Link to="/Home">Go Home</Link> 
+                    currentUser.currentRole === 'Store' ? (
+                        <Link to="/StoreHome">Go Home</Link> 
+                    ) : (
+                        <Link to="/DistributorHome">Go Home</Link> 
+
+                    )
+                    
                 ) : (
                     <Link to="/Login">Go Back</Link> 
                 )}

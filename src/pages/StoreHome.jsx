@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap
-import "../styles/Home.css";
+import "../styles/StoreHome.css";
 import MainNavBar from '../components/MainNavBar';
 import { useAuth } from '../firebase/firebaseAuth';
 import { FetchStoreInventory } from '../firebase/firebaseFirestore';
+import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
+import "../styles/LoadingSpinner.css";
 
-const Home = () => {
+const StoreHome = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true); // State for loading status
   const { currentUser } = useAuth();
@@ -32,7 +34,9 @@ const Home = () => {
       <div className="content">
         <h2>Inventory</h2>
         {loading ? (
-          <p>Loading...</p>
+          <div className="loading-spinner">
+            <RiseLoader color="#36D7B7" loading={loading} size={10} />
+          </div>
         ) : (
           <table className="table">
             <thead>
@@ -73,4 +77,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default StoreHome;

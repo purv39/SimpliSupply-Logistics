@@ -21,7 +21,11 @@ const Login = () => {
 
       // Use Firebase auth to sign in
       await Login(email, password, role);
-      navigate('/home');
+      if(role === 'Store') {
+        navigate('/StoreHome');
+      } else {
+        navigate('/DistributorHome')
+      }
       // Redirect or handle successful login
     } catch (error) {
       // Handle login error

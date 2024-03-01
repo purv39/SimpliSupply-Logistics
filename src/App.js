@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 import ForgetPassword from './pages/auth/ForgetPassword';
-import Home from './pages/Home';
 import WelcomePage from './pages/Welcome';
 import AddDistributor from './pages/AddDistributor';
 import { AuthContextProvider } from './firebase/firebaseAuth';
@@ -18,6 +17,8 @@ import StoreOperatorPrivateRoute from './components/StoreOperatorPrivateRoute';
 import AddProducts from './pages/AddProducts'; // Import the AddProducts component
 import Invitations from './pages/Invitations';
 import DistributorPrivateRoute from './components/DistributorPrivateRoute';
+import StoreHome from './pages/StoreHome';
+import DistributorHome from './pages/DistributorHome';
 
 const App = () => {
   return (
@@ -30,13 +31,15 @@ const App = () => {
           <Route path="/Signup" element={<Signup />} />
           <Route path="*" element={<PageNotFound />  } />
           
-          <Route path="/Home" element={<PrivateRoutes><Home /></PrivateRoutes> } />
+          <Route path="/StoreHome" element={<StoreOperatorPrivateRoute><StoreHome /></StoreOperatorPrivateRoute> } />
           <Route path="/Welcome" element={<PrivateRoutes><WelcomePage /></PrivateRoutes> } />
           
           <Route path="/DistributorList" element={<StoreOperatorPrivateRoute><DistributorsList/></StoreOperatorPrivateRoute>} />
           <Route path="/AddDistributor" element={<StoreOperatorPrivateRoute><AddDistributor /></StoreOperatorPrivateRoute>} />
           <Route path="/CreateNewOrder" element={<StoreOperatorPrivateRoute><CreateNewOrder /></StoreOperatorPrivateRoute> } />
           <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
+
+          <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
           <Route path="/AddProducts" element={<DistributorPrivateRoute><AddProducts /></DistributorPrivateRoute>} />
           <Route path="/Invitations" element={<DistributorPrivateRoute><Invitations /></DistributorPrivateRoute>} />
           
