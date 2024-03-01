@@ -22,17 +22,17 @@ export const AuthContextProvider = ({ children }) => {
             });
     }
 
-    const SetCurrentUserDetails = (userCredential, role) => {
+    const SetCurrentUserDetails = (userCredential, selectedRole) => {
         return FetchUserData(userCredential.user.uid).then((userData) => {
-            if (role === 'Store') {
+            if (userData.roles.storeOperator && selectedRole === 'Store') {
                 userCredential.selectedStore = userData.storesList[0];
                 userCredential.storesList = userData.storesList;
-                userCredential.currentRole = role;
+                userCredential.currentRole = selectedRole;
                 setCurrentUser(userCredential);
-            } else if (role === 'Distributor') {
+            } else if (userData.roles.distributor && selectedRole === 'Distributor') {
                 userCredential.selectedStore = userData.distributionStores[0];
                 userCredential.storesList = userData.distributionStores;
-                userCredential.currentRole = role;
+                userCredential.currentRole = selectedRole;
                 setCurrentUser(userCredential);
             } else {
                 throw new Error("Invalid role for this user.");
@@ -43,22 +43,7 @@ export const AuthContextProvider = ({ children }) => {
         return signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 if (userCredential.user) {
-                    return FetchUserData(userCredential.user.uid)
-                        .then((userData) => {
-                            if ((userData.roles.storeOperator && role === 'Store')) {
-                                userCredential.selectedStore = userData.storesList[0];
-                                userCredential.storesList = userData.storesList;
-                                userCredential.currentRole = role;
-                                setCurrentUser(userCredential);
-                            } else if (userData.roles.distributor && role === 'Distributor') {
-                                userCredential.selectedStore = userData.distributionStores[0];
-                                userCredential.storesList = userData.distributionStores;
-                                userCredential.currentRole = role;
-                                setCurrentUser(userCredential);
-                            } else {
-                                throw new Error("Invalid role for this user.");
-                            }
-                        });
+                    return SetCurrentUserDetails(userCredential, role);
                 }
             });
     }

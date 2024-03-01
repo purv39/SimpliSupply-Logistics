@@ -37,7 +37,7 @@ const ForgotPassword = () => {
             <h2>Forgot Password</h2>
 
             <div className='form-group' style={{ width: '100%', marginBottom: '20px' }}>
-              <label class="h5">Email:</label>
+              <label className="h5">Email:</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '5px', boxSizing: 'border-box', marginTop: '5px', fontSize: '16px', color: '#333', backgroundColor: '#fff', transition: 'border-color 0.3s' }} />
             </div>
 
