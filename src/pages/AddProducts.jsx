@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { TextField, Button } from '@mui/material'; // Import form components from Material-UI
 import { AddProductToInventory } from '../firebase/firebaseFirestore'; // Import function to add product to database
+import {useAuth} from '../firebase/firebaseAuth';
 
-const AddProducts = ({ selectedStore }) => {
+const AddProducts = () => {
+  
+  const { currentUser } = useAuth();
+  const selectedStore = currentUser.selectedStore;
+
   const [product, setProduct] = useState({
     productName: '',
     category: '',
@@ -16,7 +21,8 @@ const AddProducts = ({ selectedStore }) => {
     setProduct({ ...product, [name]: value });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     // Add product to inventory
     AddProductToInventory(
       selectedStore, // Use selectedStore as distributorID
