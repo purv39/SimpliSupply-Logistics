@@ -76,6 +76,29 @@ export const AddNewDistributionStoreForOperator = async (uuid, storeName, busine
     }
 }
 
+// Function to add a new product to the distributor's inventory
+export const AddProductToInventory = async (distributorID, productName, category, quantityPerUnit, unitPrice, unitsInStock) => {
+    try {
+        // Construct the product object
+        const productData = {
+            productName: productName,
+            category: category,
+            quantityPerUnit: quantityPerUnit,
+            unitPrice: unitPrice,
+            unitsInStock: unitsInStock
+        };
+
+        // Add the product to the "products" subcollection of the distributor
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        const productRef = await addDoc(collection(distributorRef, 'products'), productData);
+
+        console.log("Product added successfully:", productRef.id);
+        return productRef.id; // Return the ID of the added product
+    } catch (error) {
+        console.error("Error adding product:", error);
+        throw error; // Throw error for handling in UI or higher-level components
+    }
+};
 
 // Function to add a new store for operator
 export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gstNumber, taxFile, storeContactNumber, storeAddress, storeCity, storePostalCode, storeProvince) => {

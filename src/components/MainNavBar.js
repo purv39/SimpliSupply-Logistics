@@ -30,6 +30,11 @@ const MainNavBar = () => {
         {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/OrderHistory')}>Order History</button></li>}
       </ul>
     </nav>
+    <nav>
+      <ul>
+        {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/AddProducts')}>Add Products</button></li>}
+      </ul>
+    </nav>
     <button className="logout-button" onClick={handleLogout}>Logout</button>
   </div>)
 }
