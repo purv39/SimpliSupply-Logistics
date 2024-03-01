@@ -31,8 +31,8 @@ const SetupAccount = ({
                     <label>
                         <input
                             type="radio"
-                            value="store"
-                            checked={role === "store"}
+                            value="Store"
+                            checked={role === "Store"}
                             onChange={(e) => setRole(e.target.value)}
                         />
                         Store
@@ -40,8 +40,8 @@ const SetupAccount = ({
                     <label>
                         <input
                             type="radio"
-                            value="distributor"
-                            checked={role === "distributor"}
+                            value="Distributor"
+                            checked={role === "Distributor"}
                             onChange={(e) => setRole(e.target.value)}
                         />
                         Distributor
