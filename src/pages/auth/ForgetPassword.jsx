@@ -14,7 +14,8 @@ const ForgotPassword = () => {
   const handleLogin = async () => {
     try {
       // Use Firebase auth to sign in
-      await forget(email)
+      await forget(email);
+      message.success('Reset Email Sent Successfully!!');
       navigate('/login');
       // Redirect or handle successful login
     } catch (error) {
