@@ -56,14 +56,7 @@ const DistributorHome = () => {
                                     <td>{item.data.categoryName}</td>
                                     <td>{item.data.quantityPerUnit}</td>
                                     <td>{item.data.unitsInStock}</td>
-                                    <td>
-                                        <button
-                                            className="btn btn-primary"
-                                            onClick={() => handleOrder(item.id)}
-                                        >
-                                            Order
-                                        </button>
-                                    </td>
+                                    <td>{item.data.unitPrice}</td>                        
                                 </tr>
                             ))}
                         </tbody>
