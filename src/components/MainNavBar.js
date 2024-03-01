@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../firebase/firebaseAuth';
+import { FetchStoreDataByID }  from '../firebase/firebaseFirestore';
+import React, { useState, useEffect } from 'react';
 
 const MainNavBar = () => {
   const navigate = useNavigate();
@@ -20,6 +22,13 @@ const MainNavBar = () => {
     }
   };
 
+  const [storesData, setStoresData] = useState([]);
+       useEffect(() => 
+       { async function fetchStoresData() 
+        { const fetchedData = await Promise.all( currentUser.storesList.map(option => FetchStoreDataByID(option)) );   
+        setStoresData(fetchedData); }        
+         fetchStoresData();}, [currentUser.storesList]);
+
   return (<div className="navbar">
     <div className="logo" onClick={() => {
       if(role === 'Store') {
@@ -34,8 +43,21 @@ const MainNavBar = () => {
         {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button></li>}
         {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/DistributorList')}>Distributor List</button></li>}
         {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/OrderHistory')}>Order History</button></li>}
+        {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/Addstore')}>Add Store</button></li>}
       </ul>
+
     </nav>
+    <div className="">
+{/* <label htmlFor="storeSelect" className="form-label">Select Store </label> */}
+<select
+className="form-select"
+id="storeSelect"
+// value={currentUser.selectedStore}
+onChange={(e) => { currentUser.selectedStore = e.target.value; console.log(currentUser.selectedStore)} }
+     > 
+ {storesData.map((storeName, index) => (  <option key={index} value={currentUser.storesList[index]}>{storeName}</option> ))} 
+</select>
+</div>
     <button className="logout-button" onClick={handleLogout}>Logout</button>
   </div>)
 }
