@@ -24,11 +24,6 @@ const DistributorHome = () => {
         fetchInventory();
     }, [distributionStoreID]);
 
-    const handleOrder = (productId) => {
-        // Implement logic to handle order
-        console.log(`Order placed for product ID: ${productId}`);
-    };
-
     return (
         <div className="dashboard">
             <MainNavBar />
