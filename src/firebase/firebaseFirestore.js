@@ -156,6 +156,7 @@ export const FetchAllDistributorsForStore = async (storeID) => {
             }
         }
     } catch (error) {
+        throw error; // Rethrow the error to handle it at a higher level
 
     }
 }
@@ -275,6 +276,8 @@ export const fetchOrderHistoryForStore = async (storeID) => {
         return ordersData;
     } catch (error) {
         console.error('Error fetching orders:', error);
+        throw error; // Rethrow the error to handle it at a higher level
+
     }
 };
 
