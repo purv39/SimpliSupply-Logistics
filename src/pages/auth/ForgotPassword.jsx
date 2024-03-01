@@ -8,13 +8,13 @@ import { Button, Steps, message } from 'antd'; // Import Button and Steps from A
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
 
-  const { forget } = useAuth();
+  const { Forgot } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       // Use Firebase auth to sign in
-      await forget(email);
+      await Forgot(email);
       message.success('Reset Email Sent Successfully!!');
       navigate('/login');
       // Redirect or handle successful login

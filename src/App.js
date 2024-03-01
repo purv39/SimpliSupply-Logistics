@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
-import ForgetPassword from './pages/auth/ForgetPassword';
+import ForgotPassword from './pages/auth/ForgotPassword';
 import WelcomePage from './pages/Welcome';
 import AddDistributor from './pages/AddDistributor';
 import { AuthContextProvider } from './firebase/firebaseAuth';
@@ -27,7 +27,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<LandingPage />} /> {/* Landing page */}
           <Route path="/Login" element={<Login />} />
-          <Route path="/Forgot" element={<ForgetPassword />} />
+          <Route path="/Forgot" element={<ForgotPassword />} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="*" element={<PageNotFound />  } />
           

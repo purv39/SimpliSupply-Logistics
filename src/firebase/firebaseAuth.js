@@ -53,7 +53,7 @@ export const AuthContextProvider = ({ children }) => {
         return signOut(auth);
     }
 
-    const forget = (email) => {
+    const Forgot = (email) => {
         return sendPasswordResetEmail(auth, email);
     }
 
@@ -63,7 +63,7 @@ export const AuthContextProvider = ({ children }) => {
         Login,
         LogOut,
         SignUp,
-        forget,
+        Forgot,
         SetCurrentUserDetails
     }
 
