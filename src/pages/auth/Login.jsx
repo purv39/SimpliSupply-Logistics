@@ -56,7 +56,7 @@ const Login = () => {
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div className='forgot-password'>
-              <a href="/forget">Forgot Password?</a>
+              <a href="/Forgot">Forgot Password?</a>
             </div>
             <div >
               <Button type="primary" className='login-button' onClick={handleLogin}>
@@ -66,7 +66,7 @@ const Login = () => {
           </div>
           <div className='register-link' >
             Don't have an Account?
-            <a href="/signup"> Register Now</a>
+            <a href="/Signup"> Register Now</a>
           </div>
         </div>
       </div>

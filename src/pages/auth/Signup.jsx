@@ -38,25 +38,21 @@ const Signup = () => {
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
       if (!emailRegex.test(email)) {
-        message.error('Signup failed: Please enter a valid email address');
-        return;
+        throw new Error('Signup failed: Please enter a valid email address');
       }
 
       // Validate password strength
       if (password.length < 8) {
-        message.error('Signup failed: Password must be at least 8 characters long');
-        return;
+        throw new Error('Signup failed: Password must be at least 8 characters long');
       }
 
       // Confirm password validation
       if (password !== confirmPassword) {
-        message.error('Signup failed: Passwords do not match');
-        return;
+        throw new Error('Signup failed: Passwords do not match');
       }
 
       if(role === '') {
-        message.error('Signup failed: Please select a role');
-        return;
+        throw new Error('Signup failed: Please select a role');
       }
 
       // Use Firebase auth to create a new user
@@ -83,6 +79,7 @@ const Signup = () => {
 
     } catch (error) {
       message.error('Signup failed: ' + error.message);
+      setIsLoading(false);
     }
   };
 
