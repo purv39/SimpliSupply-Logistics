@@ -18,10 +18,27 @@ export const AuthContextProvider = ({ children }) => {
     const SignUp = (email, password) => {
         return createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                return userCredential.user.uid;
+                return userCredential;
             });
     }
 
+    const SetCurrentUserDetails = (userCredential, role) => {
+        return FetchUserData(userCredential.user.uid).then((userData) => {
+            if (role === 'Store') {
+                userCredential.selectedStore = userData.storesList[0];
+                userCredential.storesList = userData.storesList;
+                userCredential.currentRole = role;
+                setCurrentUser(userCredential);
+            } else if (role === 'Distributor') {
+                userCredential.selectedStore = userData.distributionStores[0];
+                userCredential.storesList = userData.distributionStores;
+                userCredential.currentRole = role;
+                setCurrentUser(userCredential);
+            } else {
+                throw new Error("Invalid role for this user.");
+            }
+        })
+    }
     const Login = (email, password, role) => {
         return signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
@@ -33,8 +50,9 @@ export const AuthContextProvider = ({ children }) => {
                                 userCredential.storesList = userData.storesList;
                                 userCredential.currentRole = role;
                                 setCurrentUser(userCredential);
-                            } else if  (userData.roles.distributor && role === 'Distributor') {
+                            } else if (userData.roles.distributor && role === 'Distributor') {
                                 userCredential.selectedStore = userData.distributionStores[0];
+                                userCredential.storesList = userData.distributionStores;
                                 userCredential.currentRole = role;
                                 setCurrentUser(userCredential);
                             } else {
@@ -60,7 +78,8 @@ export const AuthContextProvider = ({ children }) => {
         Login,
         LogOut,
         SignUp,
-        forget
+        forget,
+        SetCurrentUserDetails
     }
 
     return (

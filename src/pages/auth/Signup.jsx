@@ -26,27 +26,61 @@ const Signup = () => {
   const [businessPostalCode, setBusinessPostalCode] = useState('');
   const [businessProvince, setBusinessProvince] = useState('');
   const [role, setRole] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { SignUp } = useAuth();
+  const { SignUp, SetCurrentUserDetails } = useAuth();
 
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
+      setIsLoading(true); // Set loading to true while signup process is ongoing
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
+      if (!emailRegex.test(email)) {
+        message.error('Signup failed: Please enter a valid email address');
+        return;
+      }
+
+      // Validate password strength
+      if (password.length < 8) {
+        message.error('Signup failed: Password must be at least 8 characters long');
+        return;
+      }
+
+      // Confirm password validation
+      if (password !== confirmPassword) {
+        message.error('Signup failed: Passwords do not match');
+        return;
+      }
+
+      if(role === '') {
+        message.error('Signup failed: Please select a role');
+        return;
+      }
 
       // Use Firebase auth to create a new user
-      const uuid = await SignUp(email, password);
+      const userCrendentials = await SignUp(email, password);
+      const uuid = userCrendentials.user.uid;
+
       await AddNewUserToFirestore(uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role);
 
-      if (role === "store") {
+      if (role === "Store") {
         await AddNewStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
       }
-      else if (role === "distributor") {
+      else if (role === "Distributor") {
         await AddNewDistributionStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
       }
+      await SetCurrentUserDetails(userCrendentials, role);
 
-      navigate('/welcome');
-      // Redirect or handle successful signup
+      if(role === 'Store') {
+        navigate('/StoreHome');
+      } else if (role === 'Distributor') {
+        navigate('/DistributorHome');
+      }
+
+      setIsLoading(false);
+
     } catch (error) {
       message.error('Signup failed: ' + error.message);
     }
@@ -54,7 +88,10 @@ const Signup = () => {
 
   return (
     <div style={{ backgroundColor: '#eaf9f5' }} >
-      <div className='container'>
+      {
+        isLoading ? (
+          <p>Loading</p>
+        ) : (<div className='container'>
         <div className="item image-container"></div>
         <div className="item register-container">
           <SignUpInformation
@@ -100,10 +137,12 @@ const Signup = () => {
             setRole={setRole}
             onSignupClick={handleSignup}
           />
-          
+
         </div>
       </div>
-    </div>
+)
+      }
+          </div>
   );
 };
 

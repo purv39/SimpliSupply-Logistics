@@ -6,9 +6,9 @@ import { AddTaxFileToStorage } from "./firebaseStorage";
 export const AddNewUserToFirestore = (uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role) => {
     let storeOperator = false;
     let distributor = false;
-    if (role === 'store') {
+    if (role === 'Store') {
         storeOperator = true;
-    } else if (role === 'distributor') {
+    } else if (role === 'Distributor') {
         distributor = true;
     }
 
