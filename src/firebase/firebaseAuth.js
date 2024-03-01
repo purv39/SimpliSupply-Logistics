@@ -30,6 +30,7 @@ export const AuthContextProvider = ({ children }) => {
                         .then((userData) => {
                             if ((userData.roles.storeOperator && role === 'Store')) {
                                 userCredential.selectedStore = userData.storesList[0];
+                                userCredential.storesList = userData.storesList;
                                 userCredential.currentRole = role;
                                 setCurrentUser(userCredential);
                             } else if  (userData.roles.distributor && role === 'Distributor') {
