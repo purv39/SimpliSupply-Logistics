@@ -78,6 +78,33 @@ const SignUpInformation = ({
           message.error('Please enter a valid Canadian postal code');
           return;
         }
+      } else if (current === 1) {
+        
+        if (businessNumber.length !== 9) {
+          message.error('BIN should be 9 digits');
+          return;
+        }
+
+        // Validate GST/HST number format
+        const gstRegex = /^\d{9}[A-Za-z]{2}\d{4}$/; // Assuming GST/HST number format
+        if (!gstRegex.test(gstNumber)) {
+          message.error('Please enter a valid GST/HST number (9 digits BN followed by program code and a 4-digit reference number)');
+          return;
+        }
+        
+        // Validate postal code format
+        const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/; // Canadian postal code format
+        if (!postalCodeRegex.test(businessPostalCode)) {
+          message.error('Please enter a valid Canadian Postal Code');
+          return;
+        }
+
+        // Validate contact number format
+        const contactRegex = /^\d{10}$/; // Assuming contact number should be 10 digits
+        if (!contactRegex.test(businessContact)) {
+          message.error('Please enter a valid contact number (10 digits)');
+          return;
+        }
       }
 
       // Proceed to the next step if all validations pass
