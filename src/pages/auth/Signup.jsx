@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { AddNewDistributionStoreForOperator, AddNewStoreForOperator, AddNewUserToFirestore } from '../../firebase/firebaseFirestore';
 import SignUpInformation from '../../components/SignUpInformation';
 import { message } from 'antd';
+import '../../styles/LoadingSpinner.css';
+import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -51,7 +53,7 @@ const Signup = () => {
         throw new Error('Signup failed: Passwords do not match');
       }
 
-      if(role === '') {
+      if (role === '') {
         throw new Error('Signup failed: Please select a role');
       }
 
@@ -69,7 +71,7 @@ const Signup = () => {
       }
       await SetCurrentUserDetails(userCrendentials, role);
 
-      if(role === 'Store') {
+      if (role === 'Store') {
         navigate('/StoreHome');
       } else if (role === 'Distributor') {
         navigate('/DistributorHome');
@@ -84,62 +86,70 @@ const Signup = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#eaf9f5' }} >
+    <div>
       {
         isLoading ? (
-          <p>Loading</p>
-        ) : (<div className='container'>
-        <div className="item image-container"></div>
-        <div className="item register-container">
-          <SignUpInformation
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            firstName={firstName}
-            setFirstName={setFirstName}
-            lastName={lastName}
-            setLastName={setLastName}
-            address={address}
-            setAddress={setAddress}
-            zipCode={zipCode}
-            setZipCode={setZipCode}
-            contactNumber={contactNumber}
-            setContactNumber={setContactNumber}
-            city={city}
-            setCity={setCity}
-            province={province}
-            setProvince={setProvince}
-            businessName={businessName}
-            setBusinessName={setBusinessName}
-            businessAddress={businessAddress}
-            setBusinessAddress={setBusinessAddress}
-            businessNumber={businessNumber}
-            setBusinessNumber={setBusinessNumber}
-            gstNumber={gstNumber}
-            setGSTNumber={setGSTNumber}
-            taxFile={taxFile}
-            setTaxFile={setTaxFile}
-            businessContact={businessContact}
-            setBusinessContact={setBusinessContact}
-            businessCity={businessCity}
-            setBusinessCity={setBusinessCity}
-            businessPostalCode={businessPostalCode}
-            setBusinessPostalCode={setBusinessPostalCode}
-            businessProvince={businessProvince}
-            setBusinessProvince={setBusinessProvince}
-            role={role}
-            setRole={setRole}
-            onSignupClick={handleSignup}
-          />
-
-        </div>
-      </div>
-)
-      }
+          <div className="loading-spinner">
+            <RiseLoader color="#36D7B7" loading={isLoading} size={10} />
           </div>
+        ) : (
+          <div style={{ backgroundColor: '#eaf9f5' }} >
+
+            <div className='container'>
+              <div className="item image-container"></div>
+              <div className="item register-container">
+                <SignUpInformation
+                  email={email}
+                  setEmail={setEmail}
+                  password={password}
+                  setPassword={setPassword}
+                  confirmPassword={confirmPassword}
+                  setConfirmPassword={setConfirmPassword}
+                  firstName={firstName}
+                  setFirstName={setFirstName}
+                  lastName={lastName}
+                  setLastName={setLastName}
+                  address={address}
+                  setAddress={setAddress}
+                  zipCode={zipCode}
+                  setZipCode={setZipCode}
+                  contactNumber={contactNumber}
+                  setContactNumber={setContactNumber}
+                  city={city}
+                  setCity={setCity}
+                  province={province}
+                  setProvince={setProvince}
+                  businessName={businessName}
+                  setBusinessName={setBusinessName}
+                  businessAddress={businessAddress}
+                  setBusinessAddress={setBusinessAddress}
+                  businessNumber={businessNumber}
+                  setBusinessNumber={setBusinessNumber}
+                  gstNumber={gstNumber}
+                  setGSTNumber={setGSTNumber}
+                  taxFile={taxFile}
+                  setTaxFile={setTaxFile}
+                  businessContact={businessContact}
+                  setBusinessContact={setBusinessContact}
+                  businessCity={businessCity}
+                  setBusinessCity={setBusinessCity}
+                  businessPostalCode={businessPostalCode}
+                  setBusinessPostalCode={setBusinessPostalCode}
+                  businessProvince={businessProvince}
+                  setBusinessProvince={setBusinessProvince}
+                  role={role}
+                  setRole={setRole}
+                  onSignupClick={handleSignup}
+                />
+
+              </div>
+            </div>
+
+          </div>
+        )}
+
+    </div>
+
   );
 };
 
