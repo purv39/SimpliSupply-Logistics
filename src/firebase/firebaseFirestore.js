@@ -6,9 +6,9 @@ import { AddTaxFileToStorage } from "./firebaseStorage";
 export const AddNewUserToFirestore = (uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role) => {
     let storeOperator = false;
     let distributor = false;
-    if (role === 'store') {
+    if (role === 'Store') {
         storeOperator = true;
-    } else if (role === 'distributor') {
+    } else if (role === 'Distributor') {
         distributor = true;
     }
 
@@ -133,6 +133,7 @@ export const FetchAllDistributorsForStore = async (storeID) => {
             }
         }
     } catch (error) {
+        throw error; // Rethrow the error to handle it at a higher level
 
     }
 }
@@ -252,6 +253,8 @@ export const fetchOrderHistoryForStore = async (storeID) => {
         return ordersData;
     } catch (error) {
         console.error('Error fetching orders:', error);
+        throw error; // Rethrow the error to handle it at a higher level
+
     }
 };
 
