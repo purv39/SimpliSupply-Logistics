@@ -6,9 +6,9 @@ import { AddTaxFileToStorage } from "./firebaseStorage";
 export const AddNewUserToFirestore = (uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role) => {
     let storeOperator = false;
     let distributor = false;
-    if (role === 'store') {
+    if (role === 'Store') {
         storeOperator = true;
-    } else if (role === 'distributor') {
+    } else if (role === 'Distributor') {
         distributor = true;
     }
 
@@ -156,6 +156,7 @@ export const FetchAllDistributorsForStore = async (storeID) => {
             }
         }
     } catch (error) {
+        throw error; // Rethrow the error to handle it at a higher level
 
     }
 }
@@ -227,7 +228,7 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
 
             // Update total cost
             totalCost += item.productCost;
-            
+
             const itemRef = doc(collection(orderRef, "orderItems")); // Construct a new DocumentReference for orderItems
             batch.set(itemRef, item);
         });
@@ -275,6 +276,8 @@ export const fetchOrderHistoryForStore = async (storeID) => {
         return ordersData;
     } catch (error) {
         console.error('Error fetching orders:', error);
+        throw error; // Rethrow the error to handle it at a higher level
+
     }
 };
 
@@ -284,4 +287,35 @@ export const FetchUserData = async (uuid) => {
     const userData = userDataSnapshot.data();
 
     return userData;
+}
+
+export const FetchStoreInventory = async (storeID) => {
+    try {
+        var storeData = {};
+
+        // Loop through each distributor ID and fetch its document
+        const storeRef = doc(db, 'Retail Stores', storeID);
+        const storeSnapshot = await getDoc(storeRef);
+
+        if (storeSnapshot.exists()) {
+            storeData = storeSnapshot.data();
+            const subcollectionRef = collection(storeRef, "Inventory");
+            const subcollectionSnapshot = await getDocs(subcollectionRef);
+
+            const subcollectionData = subcollectionSnapshot.docs.map(doc => ({
+                id: doc.id,
+                data: doc.data()
+            }));
+
+            storeData.inventory = subcollectionData;
+        } else {
+            console.log(`Document with ID ${storeID} does not exist.`);
+        }
+
+        return storeData.inventory;
+    } catch (error) {
+        console.error('Error fetching store information:', error);
+        throw error; // Rethrow the error to handle it at a higher level
+    }
+
 }
