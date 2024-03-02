@@ -21,7 +21,13 @@ const MainNavBar = () => {
   };
 
   return (<div className="navbar">
-    <div className="logo" onClick={() => navigateTo('/home')}>SimpliSupply Logistics</div>
+    <div className="logo" onClick={() => {
+      if(role === 'Store') {
+        navigateTo('/StoreHome')
+      } else {
+        navigateTo('/DistributorHome')
+      }
+    }} >SimpliSupply Logistics</div>
     <nav>
       <ul>
         {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button></li>}
