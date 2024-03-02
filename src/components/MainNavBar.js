@@ -39,6 +39,7 @@ const MainNavBar = () => {
     <nav>
       <ul>
         {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/AddProducts')}>Add Products</button></li>}
+        {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/Invitations')}>Invitations</button></li>}
       </ul>
     </nav>
     <button className="logout-button" onClick={handleLogout}>Logout</button>
