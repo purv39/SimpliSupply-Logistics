@@ -16,6 +16,7 @@ import LandingPage from './pages/LandingPage'; // Import your LandingPage compon
 import PageNotFound from './pages/PageNotFound';
 import StoreOperatorPrivateRoute from './components/StoreOperatorPrivateRoute';
 import AddProducts from './pages/AddProducts'; // Import the AddProducts component
+import Invitations from './pages/Invitations';
 import DistributorPrivateRoute from './components/DistributorPrivateRoute';
 
 const App = () => {
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="/CreateNewOrder" element={<StoreOperatorPrivateRoute><CreateNewOrder /></StoreOperatorPrivateRoute> } />
           <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
           <Route path="/AddProducts" element={<DistributorPrivateRoute><AddProducts /></DistributorPrivateRoute>} />
+          <Route path="/Invitations" element={<DistributorPrivateRoute><Invitations /></DistributorPrivateRoute>} />
           
         </Routes>
       </AuthContextProvider>
