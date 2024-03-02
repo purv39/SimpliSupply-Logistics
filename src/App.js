@@ -14,6 +14,7 @@ import OrderHistory from './pages/OrderHistory';
 import LandingPage from './pages/LandingPage'; // Import your LandingPage component
 import PageNotFound from './pages/PageNotFound';
 import StoreOperatorPrivateRoute from './components/StoreOperatorPrivateRoute';
+import AddProducts from './pages/AddProducts'; // Import the AddProducts component
 import DistributorPrivateRoute from './components/DistributorPrivateRoute';
 import StoreHome from './pages/StoreHome';
 import DistributorHome from './pages/DistributorHome';
@@ -36,7 +37,7 @@ const App = () => {
           <Route path="/AddDistributor" element={<StoreOperatorPrivateRoute><AddDistributor /></StoreOperatorPrivateRoute>} />
           <Route path="/CreateNewOrder" element={<StoreOperatorPrivateRoute><CreateNewOrder /></StoreOperatorPrivateRoute> } />
           <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
-
+          <Route path="/AddProducts" element={<DistributorPrivateRoute><AddProducts /></DistributorPrivateRoute>} />
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
 
         </Routes>
