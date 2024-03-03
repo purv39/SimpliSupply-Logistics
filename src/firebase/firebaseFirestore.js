@@ -119,11 +119,68 @@ export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gs
     }
 }
 
+
+// Function to add a new Invitation for store
+export const AddInvitation = async (distributorID, storeID) => {
+    try {
+      const invitationRef = await addDoc(collection(db, 'Invitations'), {
+        createdAt: new Date(),
+        distributorID: distributorID,
+        storeID: storeID,
+        pending: false,
+      });
+  
+      return invitationRef.id; 
+    } catch (error) {
+      console.error("Error creating invitation:", error);
+      throw error;
+    }
+  };
+
+
+export const FetchDistributorStore = async () => {
+    try {
+      const storeRef = collection(db, 'Distribution Stores');
+      const storeSnap = await getDocs(storeRef);
+      console.log("Fetched stores: ", storeSnap.docs.map(doc => doc.data())); // Debug log
+      return storeSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error('Error fetching distribution stores:', error);
+      throw error;
+    }
+  };
+
+  export const FetchDistributionStoreDetails = async (storeId) => {
+    try {
+      const storeRef = doc(db, 'Distribution Stores', storeId);
+      const storeSnap = await getDoc(storeRef);
+  
+      if (storeSnap.exists()) {
+        return { id: storeSnap.id, ...storeSnap.data() };
+      } else {
+        throw new Error('Distribution store details not found.');
+      }
+    } catch (error) {
+      console.error('Error fetching distribution store details:', error);
+      throw error;
+    }
+  };
+
+  export const CheckForExistingInvitation = async (distributorID, storeID) => {
+    const invitationsRef = collection(db, 'Invitations');
+    const q = query(invitationsRef, where("distributorID", "==", distributorID), where("storeID", "==", storeID));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.length > 0; 
+  };
+  
+
+
 export const FetchAllDistributorsForStore = async (storeID) => {
     try {
         var distributorsConnected = '';
         const storeRef = doc(db, 'Retail Stores', storeID);
         const storeSnap = await getDoc(storeRef);
+
         if (storeSnap.exists()) {
             distributorsConnected = storeSnap.data().distributorsConnected;
 
