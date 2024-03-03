@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch, query, where, arrayRemove, runTransaction } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, query, where, arrayRemove, runTransaction } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
 
@@ -82,7 +82,7 @@ export const AddProductToInventory = async (distributorID, productName, category
         // Construct the product object
         const productData = {
             productName: productName,
-            category: category,
+            categoryName: category,
             quantityPerUnit: quantityPerUnit,
             unitPrice: unitPrice,
             unitsInStock: unitsInStock
