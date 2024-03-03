@@ -27,7 +27,6 @@ const CreateNewOrder = () => {
     };
 
     const handleQuantityChange = (productId, distributorID, quantity) => {
-        quantity = quantity.replace(/^0+/, '');
 
         const id = `${distributorID}-${productId}`; // Correctly concatenate distributorID and productId
         const product = distributors.find(distributor => distributor.id === distributorID)
