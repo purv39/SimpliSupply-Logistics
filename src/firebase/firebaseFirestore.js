@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch, query, where, arrayRemove } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch, query, where, arrayRemove, runTransaction } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
 
@@ -268,52 +268,52 @@ export const FetchDistributorsInfo = async (distributorsList) => {
     }
 };
 
-
 export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
     try {
-        var totalCost = 0;
+        await runTransaction(db, async (transaction) => {
+            const distributorRef = doc(db, 'Distribution Stores', distributorID);
+            const productsInfoRef = collection(distributorRef, "products");
+            var totalCost = 0;
 
-        // Set up the initial data for the order
-        const orderData = {
-            createdAt: new Date(),
-            distributorID: distributorID,
-            storeID: storeID,
-            currentStatus: "Pending",
-            totalCost: totalCost
-        };
+            for (const item of orderItems) {
+                const docRef = doc(productsInfoRef, item.productData.id);
+                const productSnapshot = await transaction.get(docRef);
+                const productData = productSnapshot.data();
+                
+                if (!(productData.unitsInStock >= item.unitsOrdered)) {
+                    throw new Error('Error Creating Order: Few Items are out of Stock!!');
+                }
 
+                const productCost = (item.productData?.data?.unitPrice * item.unitsOrdered).toFixed(2);
+                item.productCost = parseFloat(productCost); // Convert back to a float
+                totalCost += item.productCost;
+            }
 
-        // Add the order to the "Orders" collection
-        const orderRef = await addDoc(collection(db, 'Orders'), orderData);
+            // Set up the initial data for the order
+            const orderData = {
+                createdAt: new Date(),
+                distributorID: distributorID,
+                storeID: storeID,
+                currentStatus: "Pending",
+                totalCost: totalCost
+            };
 
-        // Add orderItems to the subcollection "orderItems"
-        const batch = writeBatch(db);
-        orderItems.forEach(async (item) => {
+            // Add the order to the "Orders" collection
+            const orderRef = doc(collection(db, 'Orders'));
+            transaction.set(orderRef, orderData);
 
-            // Calculate the product cost
-            const productCost = (item.productData?.data?.unitPrice * item.unitsOrdered).toFixed(2);
-            item.productCost = parseFloat(productCost); // Convert back to a float
+            // Add orderItems to the subcollection "orderItems"
+            for (const item of orderItems) {
+                const itemRef = doc(collection(db, 'Orders', orderRef.id, "orderItems")); // Construct a new DocumentReference for orderItems
+                transaction.set(itemRef, item);
+            }
 
-            // Update total cost
-            totalCost += item.productCost;
-
-            const itemRef = doc(collection(orderRef, "orderItems")); // Construct a new DocumentReference for orderItems
-            batch.set(itemRef, item);
+            return orderRef.id; // Return the ID of the created order
         });
-        await batch.commit();
-
-
-        // Update the order document with the new totalCost
-        await updateDoc(orderRef, { totalCost: totalCost });
-
-        console.log("Order successfully created:", orderRef.id);
-        return orderRef.id; // Return the ID of the created order
     } catch (error) {
-        console.error("Error creating order:", error);
         throw error; // Throw error for handling in UI or higher-level components
     }
 };
-
 
 export const fetchOrderHistoryForStore = async (storeID) => {
     try {

@@ -6,13 +6,14 @@ import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 import "../styles/LoadingSpinner.css";
 import { useAuth } from '../firebase/firebaseAuth';
+import { message } from 'antd';
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
     const [expanded, setExpanded] = useState(null);
     const [orderQuantities, setOrderQuantities] = useState({});
     const [loading, setLoading] = useState(true); // State for loading status
-    const {currentUser} = useAuth();
+    const { currentUser } = useAuth();
     const storeID = currentUser.selectedStore;
 
     const handleDistributorClick = async (storeID) => {
@@ -26,31 +27,59 @@ const CreateNewOrder = () => {
     };
 
     const handleQuantityChange = (productId, distributorID, quantity) => {
+
         const id = `${distributorID}-${productId}`; // Correctly concatenate distributorID and productId
-        setOrderQuantities(prevState => ({
-            ...prevState,
-            [id]: quantity
-        }));
+        const product = distributors.find(distributor => distributor.id === distributorID)
+            .data.productsData.find(product => product.id === productId);
+
+        // Ensure quantity doesn't exceed available stock
+        if (parseInt(quantity) > product.data.unitsInStock) {
+            quantity = product.data.unitsInStock.toString();
+        }
+
+        // Filter out + and - symbols
+        quantity = quantity.replace(/[+-]/g, '');
+
+        // Check if quantity is a valid number
+        if (!isNaN(quantity) && quantity !== '') {
+            setOrderQuantities(prevState => ({
+                ...prevState,
+                [id]: quantity
+            }));
+        }
     };
 
-    const handlePlaceOrder = (storeID, distributorID) => {
-        // Gather order items
-        const orderItems = [];
-        distributors.forEach(distributor => {
-            if (distributor.id === distributorID) {
-                distributor.data.productsData.forEach(product => {
-                    const quantity = orderQuantities[`${distributor.id}-${product.id}`] || 0;
-                    if (quantity > 0) {
-                        orderItems.push({
-                            productData: product,
-                            unitsOrdered: quantity
-                        });
-                    }
-                });
-            }
-        });
 
-        CreateNewOrderForStore(storeID, distributorID, orderItems);
+    const handlePlaceOrder = async (storeID, distributorID) => {
+        // Gather order items
+        try {
+            const orderItems = [];
+            distributors.forEach(distributor => {
+                if (distributor.id === distributorID) {
+                    distributor.data.productsData.forEach(product => {
+                        const quantity = orderQuantities[`${distributor.id}-${product.id}`] || 0;
+                        if (quantity > 0) {
+                            orderItems.push({
+                                productData: product,
+                                unitsOrdered: quantity
+                            });
+                        }
+                    });
+                }
+            });
+
+            if (orderItems?.length !== 0) {
+                await CreateNewOrderForStore(storeID, distributorID, orderItems);
+                message.success('Order Placed Successfully');
+                setExpanded(false);
+                setOrderQuantities({});
+            } else {
+                throw new Error('Error Creating Order: Please make sure the quantity is set properly!!');
+            }
+        } catch (error) {
+            message.error(error.message);
+        }
+
     };
 
 
