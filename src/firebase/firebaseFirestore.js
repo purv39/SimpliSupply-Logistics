@@ -204,6 +204,26 @@ export const FetchDistributorsInfo = async (distributorsList) => {
 export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
     try {
         var totalCost = 0;
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        const productsInfoRef = await collection(distributorRef, "products");
+        const productsInfoSnapshot = await getDocs(productsInfoRef);
+        const productsInfoData = productsInfoSnapshot.docs.map(doc => ({
+            id: doc.id,
+            data: doc.data()
+        }));
+
+        for (const item of orderItems) {
+            const orderItemID = item.productData.id;
+            const foundItem = productsInfoData.find(product => product.id === orderItemID);
+            if (foundItem) {
+                // Do something with foundItem
+                if (!(foundItem.data.unitsInStock >= item.unitsOrdered)) {
+                    throw new Error('Error Creating Order: Item out of Stock!!')
+                }
+            } else {
+                throw new Error('Error Creating Order: Item not found!!')
+            }
+        }
 
         // Set up the initial data for the order
         const orderData = {
@@ -213,7 +233,6 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
             currentStatus: "Pending",
             totalCost: totalCost
         };
-
 
         // Add the order to the "Orders" collection
         const orderRef = await addDoc(collection(db, 'Orders'), orderData);
@@ -234,14 +253,12 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
         });
         await batch.commit();
 
-
         // Update the order document with the new totalCost
         await updateDoc(orderRef, { totalCost: totalCost });
 
         console.log("Order successfully created:", orderRef.id);
         return orderRef.id; // Return the ID of the created order
     } catch (error) {
-        console.error("Error creating order:", error);
         throw error; // Throw error for handling in UI or higher-level components
     }
 };

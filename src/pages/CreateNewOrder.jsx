@@ -75,7 +75,7 @@ const CreateNewOrder = () => {
                 setExpanded(false);
                 setOrderQuantities({});
             } else {
-                throw new Error('Order Failed: Please make sure the quantity is set properly!!');
+                throw new Error('Error Creating Order: Please make sure the quantity is set properly!!');
             }
         } catch (error) {
             message.error(error.message);
