@@ -26,6 +26,8 @@ const CreateNewOrder = () => {
     };
 
     const handleQuantityChange = (productId, distributorID, quantity) => {
+        quantity = quantity.replace(/^0+/, '');
+
         const id = `${distributorID}-${productId}`; // Correctly concatenate distributorID and productId
         const product = distributors.find(distributor => distributor.id === distributorID)
             .data.productsData.find(product => product.id === productId);
@@ -50,7 +52,7 @@ const CreateNewOrder = () => {
 
     const handlePlaceOrder = (storeID, distributorID) => {
         // Gather order items
-        const orderItems = [];
+        const orderItems = [];        
         distributors.forEach(distributor => {
             if (distributor.id === distributorID) {
                 distributor.data.productsData.forEach(product => {
@@ -65,7 +67,9 @@ const CreateNewOrder = () => {
             }
         });
 
-        CreateNewOrderForStore(storeID, distributorID, orderItems);
+        if(orderItems?.length !== 0) {
+            CreateNewOrderForStore(storeID, distributorID, orderItems);
+        }
     };
 
 
