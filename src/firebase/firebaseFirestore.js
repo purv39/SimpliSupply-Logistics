@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, query, where, runTransaction } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch, query, where, arrayRemove, runTransaction } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
 
@@ -141,6 +141,74 @@ export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gs
         throw error;
     }
 }
+
+export const FetchInvitationsForDistributor = async (distributorID) => {
+    try {
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        const distributorSnap = await getDoc(distributorRef);
+        if (distributorSnap.exists()) {
+            const invites = distributorSnap.data().invites;
+            if (invites.length > 0) {
+                const invitationsData = [];
+                for (const invitationId of invites) {
+                    const invitationRef = doc(db, 'Invitations', invitationId);
+                    const invitationSnap = await getDoc(invitationRef);
+                    if (invitationSnap.exists()) {
+                        invitationsData.push({
+                            id: invitationSnap.id,
+                            data: invitationSnap.data()
+                        });
+                    } else {
+                    }
+                }
+                return invitationsData;
+            } else {
+            }
+        } else {
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Function to accept an invitation
+export const AcceptInvitation = async (distributorID, storeID) => {
+    try {
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        await updateDoc(distributorRef, {
+            invites: arrayRemove(storeID), // Remove the store from the invites array
+            storesConnected: arrayUnion(storeID) // Add the store to the storesConnected array
+        });
+        const storeRef = doc(db, 'Retail Stores', storeID);
+        await updateDoc(storeRef, {
+            invitations: arrayRemove(distributorID), // Remove the distributor from the invitations array
+            distributorsConnected: arrayUnion(distributorID) // Add the distributor to the distributorsConnected array
+        });
+        return true;
+    } catch (error) {
+        console.error('Error accepting invitation:', error);
+        throw error;
+    }
+};
+
+// Function to decline an invitation
+export const DeclineInvitation = async (distributorID, storeID) => {
+    try {
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        await updateDoc(distributorRef, {
+            invites: arrayRemove(storeID) // Remove the store from the invites array
+        });
+        const storeRef = doc(db, 'Retail Stores', storeID);
+        await updateDoc(storeRef, {
+            invitations: arrayRemove(distributorID) // Remove the distributor from the invitations array
+        });
+        return true;
+    } catch (error) {
+        console.error('Error declining invitation:', error);
+        throw error;
+    }
+};
+
 
 export const FetchAllDistributorsForStore = async (storeID) => {
     try {
