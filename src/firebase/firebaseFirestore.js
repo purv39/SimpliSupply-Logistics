@@ -205,7 +205,6 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
         await runTransaction(db, async (transaction) => {
             const distributorRef = doc(db, 'Distribution Stores', distributorID);
             const productsInfoRef = collection(distributorRef, "products");
-            const batch = writeBatch(db);
             var totalCost = 0;
 
             for (const item of orderItems) {
@@ -232,25 +231,21 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
             };
 
             // Add the order to the "Orders" collection
-            const orderRef = await addDoc(collection(db, 'Orders'), orderData);
+            const orderRef = doc(collection(db, 'Orders'));
+            transaction.set(orderRef, orderData);
 
             // Add orderItems to the subcollection "orderItems"
             for (const item of orderItems) {
                 const itemRef = doc(collection(db, 'Orders', orderRef.id, "orderItems")); // Construct a new DocumentReference for orderItems
-                batch.set(itemRef, item);
+                transaction.set(itemRef, item);
             }
 
-            // Commit the batch after adding all order items
-            await batch.commit();
-
-            console.log("Order successfully created:", orderRef.id);
             return orderRef.id; // Return the ID of the created order
         });
     } catch (error) {
         throw error; // Throw error for handling in UI or higher-level components
     }
 };
-
 
 export const fetchOrderHistoryForStore = async (storeID) => {
     try {
