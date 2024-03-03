@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch, query, where } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch, query, where, runTransaction } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
 
@@ -200,64 +200,55 @@ export const FetchDistributorsInfo = async (distributorsList) => {
     }
 };
 
-
 export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
     try {
-        var totalCost = 0;
-        const distributorRef = doc(db, 'Distribution Stores', distributorID);
-        const productsInfoRef = await collection(distributorRef, "products");
-        const productsInfoSnapshot = await getDocs(productsInfoRef);
-        const productsInfoData = productsInfoSnapshot.docs.map(doc => ({
-            id: doc.id,
-            data: doc.data()
-        }));
+        await runTransaction(db, async (transaction) => {
+            const distributorRef = doc(db, 'Distribution Stores', distributorID);
+            const productsInfoRef = collection(distributorRef, "products");
+            const batch = writeBatch(db);
+            var totalCost = 0;
 
-        for (const item of orderItems) {
-            const orderItemID = item.productData.id;
-            const foundItem = productsInfoData.find(product => product.id === orderItemID);
-            if (foundItem) {
-                // Do something with foundItem
-                if (!(foundItem.data.unitsInStock >= item.unitsOrdered)) {
-                    throw new Error('Error Creating Order: Item out of Stock!!')
+            for (const item of orderItems) {
+                const docRef = doc(productsInfoRef, item.productData.id);
+                const productSnapshot = await transaction.get(docRef);
+                const productData = productSnapshot.data();
+                
+                if (!(productData.unitsInStock >= item.unitsOrdered)) {
+                    throw new Error('Error Creating Order: Few Items are out of Stock!!');
                 }
-            } else {
-                throw new Error('Error Creating Order: Item not found!!')
+
+                const productCost = (item.productData?.data?.unitPrice * item.unitsOrdered).toFixed(2);
+                item.productCost = parseFloat(productCost); // Convert back to a float
+                totalCost += item.productCost;
             }
-        }
 
-        // Set up the initial data for the order
-        const orderData = {
-            createdAt: new Date(),
-            distributorID: distributorID,
-            storeID: storeID,
-            currentStatus: "Pending",
-            totalCost: totalCost
-        };
+            // Set up the initial data for the order
+            const orderData = {
+                createdAt: new Date(),
+                distributorID: distributorID,
+                storeID: storeID,
+                currentStatus: "Pending",
+                totalCost: totalCost
+            };
 
-        // Add the order to the "Orders" collection
-        const orderRef = await addDoc(collection(db, 'Orders'), orderData);
+            // Add the order to the "Orders" collection
+            const orderRef = await addDoc(collection(db, 'Orders'), orderData);
 
-        // Add orderItems to the subcollection "orderItems"
-        const batch = writeBatch(db);
-        orderItems.forEach(async (item) => {
+            // Add orderItems to the subcollection "orderItems"
+            for (const item of orderItems) {
+                const itemRef = doc(collection(db, 'Orders', orderRef.id, "orderItems")); // Construct a new DocumentReference for orderItems
+                batch.set(itemRef, item);
+            }
 
-            // Calculate the product cost
-            const productCost = (item.productData?.data?.unitPrice * item.unitsOrdered).toFixed(2);
-            item.productCost = parseFloat(productCost); // Convert back to a float
+            // Commit the batch after adding all order items
+            await batch.commit();
 
-            // Update total cost
-            totalCost += item.productCost;
+            // Update the order document with the new totalCost
+            await updateDoc(orderRef, { totalCost: totalCost });
 
-            const itemRef = doc(collection(orderRef, "orderItems")); // Construct a new DocumentReference for orderItems
-            batch.set(itemRef, item);
+            console.log("Order successfully created:", orderRef.id);
+            return orderRef.id; // Return the ID of the created order
         });
-        await batch.commit();
-
-        // Update the order document with the new totalCost
-        await updateDoc(orderRef, { totalCost: totalCost });
-
-        console.log("Order successfully created:", orderRef.id);
-        return orderRef.id; // Return the ID of the created order
     } catch (error) {
         throw error; // Throw error for handling in UI or higher-level components
     }
