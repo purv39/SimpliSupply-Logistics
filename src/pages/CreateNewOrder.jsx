@@ -6,6 +6,7 @@ import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 import "../styles/LoadingSpinner.css";
 import { useAuth } from '../firebase/firebaseAuth';
+import { message } from 'antd';
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
@@ -31,15 +32,15 @@ const CreateNewOrder = () => {
         const id = `${distributorID}-${productId}`; // Correctly concatenate distributorID and productId
         const product = distributors.find(distributor => distributor.id === distributorID)
             .data.productsData.find(product => product.id === productId);
-    
+
         // Ensure quantity doesn't exceed available stock
         if (parseInt(quantity) > product.data.unitsInStock) {
             quantity = product.data.unitsInStock.toString();
         }
-    
+
         // Filter out + and - symbols
         quantity = quantity.replace(/[+-]/g, '');
-    
+
         // Check if quantity is a valid number
         if (!isNaN(quantity) && quantity !== '') {
             setOrderQuantities(prevState => ({
@@ -48,28 +49,38 @@ const CreateNewOrder = () => {
             }));
         }
     };
-    
 
-    const handlePlaceOrder = (storeID, distributorID) => {
+
+    const handlePlaceOrder = async (storeID, distributorID) => {
         // Gather order items
-        const orderItems = [];        
-        distributors.forEach(distributor => {
-            if (distributor.id === distributorID) {
-                distributor.data.productsData.forEach(product => {
-                    const quantity = orderQuantities[`${distributor.id}-${product.id}`] || 0;
-                    if (quantity > 0) {
-                        orderItems.push({
-                            productData: product,
-                            unitsOrdered: quantity
-                        });
-                    }
-                });
-            }
-        });
+        try {
+            const orderItems = [];
+            distributors.forEach(distributor => {
+                if (distributor.id === distributorID) {
+                    distributor.data.productsData.forEach(product => {
+                        const quantity = orderQuantities[`${distributor.id}-${product.id}`] || 0;
+                        if (quantity > 0) {
+                            orderItems.push({
+                                productData: product,
+                                unitsOrdered: quantity
+                            });
+                        }
+                    });
+                }
+            });
 
-        if(orderItems?.length !== 0) {
-            CreateNewOrderForStore(storeID, distributorID, orderItems);
+            if (orderItems?.length !== 0) {
+                await CreateNewOrderForStore(storeID, distributorID, orderItems);
+                message.success('Order Placed Successfully');
+                setExpanded(false);
+                setOrderQuantities({});
+            } else {
+                throw new Error('Order Failed: Please make sure the quantity is set properly!!');
+            }
+        } catch (error) {
+            message.error(error.message);
         }
+
     };
 
 
