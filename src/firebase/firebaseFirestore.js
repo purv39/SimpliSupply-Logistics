@@ -243,9 +243,6 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
             // Commit the batch after adding all order items
             await batch.commit();
 
-            // Update the order document with the new totalCost
-            await updateDoc(orderRef, { totalCost: totalCost });
-
             console.log("Order successfully created:", orderRef.id);
             return orderRef.id; // Return the ID of the created order
         });
