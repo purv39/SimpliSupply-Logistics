@@ -38,6 +38,8 @@ const App = () => {
           <Route path="/AddDistributor" element={<StoreOperatorPrivateRoute><AddDistributor /></StoreOperatorPrivateRoute>} />
           <Route path="/CreateNewOrder" element={<StoreOperatorPrivateRoute><CreateNewOrder /></StoreOperatorPrivateRoute> } />
           <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
+
+          <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
           <Route path="/AddProducts" element={<DistributorPrivateRoute><AddProducts /></DistributorPrivateRoute>} />
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
 
