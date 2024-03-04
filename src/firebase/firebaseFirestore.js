@@ -2,7 +2,6 @@ import { db } from "./firebaseConfig";
 import { collection, doc, setDoc, addDoc, deleteDoc, updateDoc, arrayUnion, getDocs, getDoc, query, where, arrayRemove, runTransaction } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
-
 export const AddNewUserToFirestore = (uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role) => {
     let storeOperator = false;
     let distributor = false;
@@ -142,7 +141,6 @@ export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gs
     }
 }
 
-
 // Function to add a new Invitation for store
 export const AddInvitation = async (distributorID, storeID) => {
     try {
@@ -197,8 +195,6 @@ export const FetchInvitationsForDistributor = async (distributorID) => {
         throw error;
     }
 };
-
-
 
 export const FetchDistributorStore = async () => {
     try {
@@ -340,6 +336,44 @@ export const FetchDistributorsInfo = async (distributorsList) => {
         return distributorsData;
     } catch (error) {
         console.error('Error fetching distributors information:', error);
+        throw error; // Rethrow the error to handle it at a higher level
+    }
+};
+
+export const fetchOrderHistoryForDistributor = async (distributorID) => {
+    try {
+        console.log("Fetching order history for distributor:", distributorID);
+        const ordersQuery = query(collection(db, 'Orders'), where('distributorID', '==', distributorID));
+        const ordersSnapshot = await getDocs(ordersQuery);
+
+        const ordersData = [];
+        for (const orderDoc of ordersSnapshot.docs) {
+            const orderData = orderDoc.data();
+            console.log("Order data:", orderData);
+            
+            const orderItemsSnapshot = await getDocs(collection(orderDoc.ref, 'orderItems'));
+            const orderItemsData = orderItemsSnapshot.docs.map((doc) => doc.data());
+            console.log("Order items data:", orderItemsData);
+            
+            orderData.orderItems = orderItemsData;
+
+            // Fetch store name using store ID
+            const storeDocRef = await doc(collection(db, 'Retail Stores'), orderData.storeID);
+            const storeSnapshot = await getDoc(storeDocRef);
+
+            if (storeSnapshot.exists()) {
+                orderData.storeName = storeSnapshot.data().storeName;
+            } else {
+                orderData.storeName = "Unknown Store"; // Placeholder if store not found
+            }
+
+            ordersData.push({ id: orderDoc.id, ...orderData });
+        }
+
+        console.log("Order history fetched successfully:", ordersData);
+        return ordersData;
+    } catch (error) {
+        console.error('Error fetching orders:', error);
         throw error; // Rethrow the error to handle it at a higher level
     }
 };

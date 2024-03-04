@@ -16,6 +16,7 @@ import PageNotFound from './pages/PageNotFound';
 import StoreOperatorPrivateRoute from './components/StoreOperatorPrivateRoute';
 import AddProducts from './pages/AddProducts'; // Import the AddProducts component
 import Invitations from './pages/Invitations';
+import ShipmentHistory from './pages/ShipmentHistory';
 import DistributorPrivateRoute from './components/DistributorPrivateRoute';
 import StoreHome from './pages/StoreHome';
 import DistributorHome from './pages/DistributorHome';
@@ -42,8 +43,8 @@ const App = () => {
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
           <Route path="/AddProducts" element={<DistributorPrivateRoute><AddProducts /></DistributorPrivateRoute>} />
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
-
           <Route path="/Invitations" element={<DistributorPrivateRoute><Invitations /></DistributorPrivateRoute>} />
+          <Route path="/ShipmentHistory" element={<DistributorPrivateRoute><ShipmentHistory /></DistributorPrivateRoute>} />
           
         </Routes>
       </AuthContextProvider>
