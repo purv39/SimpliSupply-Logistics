@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography, Button, Paper } from '@mui/material';
+import { Grid, Typography, Button, Paper, IconButton } from '@mui/material';
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchInvitationsForDistributor, AcceptInvitation, DeclineInvitation } from "../firebase/firebaseFirestore";
 import { message } from 'antd';
 import MainNavBar from '../components/MainNavBar';
+import { CheckCircleOutlineOutlined, CancelOutlined } from '@mui/icons-material'; // Import icons
 
 const Invitations = () => {
     const [invitations, setInvitations] = useState([]);
@@ -61,8 +62,12 @@ const Invitations = () => {
                         <Grid item xs={12} key={invitation.id}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="subtitle1">Store ID: {invitation.data.storeID}</Typography>
-                                <Button onClick={() => handleAcceptInvitation(invitation.id, invitation.data.storeID)}>Accept</Button>
-                                <Button onClick={() => handleDeclineInvitation(invitation.id, invitation.data.storeID)}>Decline</Button>
+                                <IconButton onClick={() => handleAcceptInvitation(invitation.id, invitation.data.storeID)} color="success" aria-label="accept invitation">
+                                    <CheckCircleOutlineOutlined /> Accept
+                                </IconButton>
+                                <IconButton onClick={() => handleDeclineInvitation(invitation.id, invitation.data.storeID)} color="error" aria-label="decline invitation">
+                                    <CancelOutlined /> Decline
+                                </IconButton>
                             </Paper>
                         </Grid>
                     ))}
