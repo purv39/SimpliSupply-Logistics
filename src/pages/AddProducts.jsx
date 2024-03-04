@@ -73,11 +73,12 @@ const AddProducts = () => {
           required
         />
         <TextField
+          label="Unit Price"
           name="unitPrice"
           type='number'
           value={product.unitPrice}
           onChange={handleChange}
-          
+          required
         />
         <TextField
           label="Units In Stock"
