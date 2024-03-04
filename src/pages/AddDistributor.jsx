@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import MainNavBar from '../components/MainNavBar';
 import { TableContainer, Table, TableBody, TableRow, TableCell, Paper } from '@mui/material';
 import Button from '@mui/material/Button';
-import { FetchDistributorStore, FetchDistributionStoreDetails, AddInvitation, CheckForExistingInvitation  } from "../firebase/firebaseFirestore"; // Make sure to implement this function
+import { FetchDistributorStore, FetchDistributionStoreDetails, AddInvitation, CheckForExistingInvitation } from "../firebase/firebaseFirestore"; // Make sure to implement this function
 import '../styles/AddDistributor.css';
 import { RiseLoader } from 'react-spinners';
 import { message } from 'antd';
@@ -30,7 +30,7 @@ const AddDistributor = () => {
         setLoading(false);
       }
     };
-  
+
     fetchDistributors();
   }, []);
 
@@ -40,12 +40,12 @@ const AddDistributor = () => {
     setLoading(true);
     try {
       const storeDetails = await FetchDistributionStoreDetails(storeId);
-      console.log("Store details fetched: ", storeDetails); 
-  
+      console.log("Store details fetched: ", storeDetails);
+
       if (storeDetails) {
         setUserInfo({
           ...storeDetails,
-          name: storeDetails.storeName, 
+          name: storeDetails.storeName,
           address: storeDetails.storeAddress,
           businessNumber: storeDetails.businessNumber,
         });
@@ -70,20 +70,20 @@ const AddDistributor = () => {
       return;
     }
     const distributionID = selectedDistributor;
-    const retailStoreID = currentUser.storesList[0]; 
+    const retailStoreID = currentUser.storesList[0];
     try {
 
-    const existingInvitation = await CheckForExistingInvitation(selectedDistributor, retailStoreID);
-    if (existingInvitation) {
-      message.error("It has already been requested.");
-      return;
-    }
-  
-    // If no existing invitation, proceed to create a new one
+      const existingInvitation = await CheckForExistingInvitation(selectedDistributor, retailStoreID);
+      if (existingInvitation) {
+        message.error("It has already been requested.");
+        return;
+      }
+
+      // If no existing invitation, proceed to create a new one
       const invitationID = await AddInvitation(distributionID, retailStoreID);
       console.log("Invitation created with ID:", invitationID);
 
-      message.Error('Invitation Sent Successfully!!');
+      message.success('Invitation Sent Successfully!!');
 
     } catch (error) {
       console.error("Error creating invitation:", error);
@@ -96,9 +96,9 @@ const AddDistributor = () => {
       <MainNavBar />
       <h2 className="text-center mb-4">Add Distributor</h2>
       {loading ? (
-          <div className="loading-spinner">
-            <RiseLoader color="#36D7B7" loading={loading} size={10} />
-          </div>
+        <div className="loading-spinner">
+          <RiseLoader color="#36D7B7" loading={loading} size={10} />
+        </div>
       ) : error ? (
         <p>Error: {error}</p>
       ) : (
@@ -153,9 +153,9 @@ const AddDistributor = () => {
             <Button variant="contained" color="primary" onClick={handleAddDistributor}>
               Add Distributor
             </Button>
-          </div>  
+          </div>
         </>
-        
+
       )}
     </div>
   );

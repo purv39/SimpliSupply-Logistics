@@ -216,13 +216,13 @@ export const AcceptInvitation = async (distributorID, storeID, invitationID) => 
     try {
         const distributorRef = doc(db, 'Distribution Stores', distributorID);
         await updateDoc(distributorRef, {
-            invites: arrayRemove(storeID), // Remove the store from the invites array
+            invites: arrayRemove(invitationID), // Remove the store from the invites array
             storesConnected: arrayUnion(storeID) // Add the store to the storesConnected array
         });
 
         const storeRef = doc(db, 'Retail Stores', storeID);
         await updateDoc(storeRef, {
-            invitations: arrayRemove(distributorID), // Remove the distributor from the invitations array
+            invites: arrayRemove(invitationID), // Remove the distributor from the invitations array
             distributorsConnected: arrayUnion(distributorID) // Add the distributor to the distributorsConnected array
         });
 
@@ -257,12 +257,12 @@ export const DeclineInvitation = async (distributorID, storeID, invitationID) =>
     try {
         const distributorRef = doc(db, 'Distribution Stores', distributorID);
         await updateDoc(distributorRef, {
-            invites: arrayRemove(storeID) // Remove the store from the invites array
+            invites: arrayRemove(invitationID) // Remove the store from the invites array
         });
 
         const storeRef = doc(db, 'Retail Stores', storeID);
         await updateDoc(storeRef, {
-            invitations: arrayRemove(distributorID) // Remove the distributor from the invitations array
+            invites: arrayRemove(invitationID) // Remove the distributor from the invitations array
         });
 
         // Delete the invitation document
