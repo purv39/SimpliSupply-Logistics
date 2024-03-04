@@ -8,6 +8,7 @@ import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 import "../styles/LoadingSpinner.css";
 import { useAuth } from '../firebase/firebaseAuth';
+import { Typography } from 'antd';
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
@@ -44,6 +45,8 @@ const OrderHistory = () => {
                 <div className="loading-spinner">
                     <RiseLoader color="#36D7B7" loading={loading} size={10} />
                 </div>
+            ) : orders.length === 0 ? (
+                <Typography>No orders in order history</Typography>
             ) : (
                 <TableContainer component={Paper}>
                     <Table aria-label="collapsible table">
