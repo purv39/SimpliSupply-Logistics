@@ -37,7 +37,7 @@ const BusinessDetails = ({
 
             <div className="form-group">
                 <label>Tax File:</label>
-                <input type="file" key={taxFile ? taxFile.name : 'taxFile'}  onChange={(e) => { setTaxFile(e.target.files[0]); }} />
+                <input type="file"  onChange={(e) => { setTaxFile(e.target.files[0]); }} />
             </div>
             <div className="form-group">
                 <label>Contact Number:</label>
