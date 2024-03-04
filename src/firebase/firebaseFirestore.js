@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, query, where, arrayRemove, runTransaction } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, deleteDoc, updateDoc, arrayUnion, getDocs, getDoc, query, where, arrayRemove, runTransaction } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
 
@@ -212,25 +212,30 @@ export const FetchDistributorStore = async () => {
 }
 
 // Function to accept an invitation
-export const AcceptInvitation = async (distributorID, storeID) => {
+export const AcceptInvitation = async (distributorID, storeID, invitationID) => {
     try {
         const distributorRef = doc(db, 'Distribution Stores', distributorID);
         await updateDoc(distributorRef, {
             invites: arrayRemove(storeID), // Remove the store from the invites array
             storesConnected: arrayUnion(storeID) // Add the store to the storesConnected array
         });
+
         const storeRef = doc(db, 'Retail Stores', storeID);
         await updateDoc(storeRef, {
             invitations: arrayRemove(distributorID), // Remove the distributor from the invitations array
             distributorsConnected: arrayUnion(distributorID) // Add the distributor to the distributorsConnected array
         });
+
+        // Delete the invitation document
+        const invitationRef = doc(db, 'Invitations', invitationID);
+        await deleteDoc(invitationRef);
+
         return true;
     } catch (error) {
         console.error('Error accepting invitation:', error);
         throw error;
     }
 };
-
 
 export const FetchDistributionStoreDetails = async (storeId) => {
     try {
@@ -248,23 +253,28 @@ export const FetchDistributionStoreDetails = async (storeId) => {
 }
 
 // Function to decline an invitation
-export const DeclineInvitation = async (distributorID, storeID) => {
+export const DeclineInvitation = async (distributorID, storeID, invitationID) => {
     try {
         const distributorRef = doc(db, 'Distribution Stores', distributorID);
         await updateDoc(distributorRef, {
             invites: arrayRemove(storeID) // Remove the store from the invites array
         });
+
         const storeRef = doc(db, 'Retail Stores', storeID);
         await updateDoc(storeRef, {
             invitations: arrayRemove(distributorID) // Remove the distributor from the invitations array
         });
+
+        // Delete the invitation document
+        const invitationRef = doc(db, 'Invitations', invitationID);
+        await deleteDoc(invitationRef);
+
         return true;
     } catch (error) {
         console.error('Error declining invitation:', error);
         throw error;
     }
 };
-
 
 export const CheckForExistingInvitation = async (distributorID, storeID) => {
     const invitationsRef = collection(db, 'Invitations');

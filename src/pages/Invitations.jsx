@@ -25,7 +25,7 @@ const Invitations = () => {
 
     const handleAcceptInvitation = async (invitationId, storeID) => {
         try {
-            await AcceptInvitation(distributorID, storeID);
+            await AcceptInvitation(distributorID, storeID, invitationId);
             setInvitations(invitations.filter(invitation => invitation.id !== invitationId));
             // Remove the invitation from the invitations state array
             message.success('Invitation accepted successfully!');
@@ -33,11 +33,11 @@ const Invitations = () => {
             console.error('Error accepting invitation:', error);
             message.error('Failed to accept invitation. Please try again later.');
         }
-    };
+    };    
     
     const handleDeclineInvitation = async (invitationId, storeID) => {
         try {
-            await DeclineInvitation(distributorID, storeID);
+            await DeclineInvitation(distributorID, storeID, invitationId);
             setInvitations(invitations.filter(invitation => invitation.id !== invitationId));
             // Remove the invitation from the invitations state array
             message.success('Invitation declined successfully!');
@@ -45,7 +45,7 @@ const Invitations = () => {
             console.error('Error declining invitation:', error);
             message.error('Failed to decline invitation. Please try again later.');
         }
-    };
+    };    
     
     return (
         <div>
