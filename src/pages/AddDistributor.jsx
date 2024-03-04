@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import { FetchDistributorStore, FetchDistributionStoreDetails, AddInvitation, CheckForExistingInvitation  } from "../firebase/firebaseFirestore"; // Make sure to implement this function
 import '../styles/AddDistributor.css';
 import { RiseLoader } from 'react-spinners';
+import { message } from 'antd';
 
 const AddDistributor = () => {
   const [loading, setLoading] = useState(true);
@@ -65,7 +66,7 @@ const AddDistributor = () => {
 
   const handleAddDistributor = async () => {
     if (!selectedDistributor) {
-      alert('Please select a distributor.');
+      message.error('Please select a distributor.');
       return;
     }
     const distributionID = selectedDistributor;
@@ -74,7 +75,7 @@ const AddDistributor = () => {
 
     const existingInvitation = await CheckForExistingInvitation(selectedDistributor, retailStoreID);
     if (existingInvitation) {
-      alert("It has already been requested.");
+      message.error("It has already been requested.");
       return;
     }
   
@@ -82,10 +83,11 @@ const AddDistributor = () => {
       const invitationID = await AddInvitation(distributionID, retailStoreID);
       console.log("Invitation created with ID:", invitationID);
 
-      alert('Completed!!');
+      message.Error('Invitation Sent Successfully!!');
 
     } catch (error) {
       console.error("Error creating invitation:", error);
+      message.error("Error creating invitation: " + error);
     }
   };
 

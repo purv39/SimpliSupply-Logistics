@@ -166,6 +166,8 @@ export const AddInvitation = async (distributorID, storeID) => {
         return invitationRef.id;
     } catch (error) {
         console.error("Error creating invitation:", error);
+    }
+}
 
 export const FetchInvitationsForDistributor = async (distributorID) => {
     try {
@@ -206,6 +208,8 @@ export const FetchDistributorStore = async () => {
         return storeSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
         console.error('Error fetching distribution stores:', error);
+    }
+}
 
 // Function to accept an invitation
 export const AcceptInvitation = async (distributorID, storeID) => {
@@ -240,6 +244,8 @@ export const FetchDistributionStoreDetails = async (storeId) => {
         }
     } catch (error) {
         console.error('Error fetching distribution store details:', error);
+    }
+}
 
 // Function to decline an invitation
 export const DeclineInvitation = async (distributorID, storeID) => {
@@ -339,7 +345,7 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
                 const docRef = doc(productsInfoRef, item.productData.id);
                 const productSnapshot = await transaction.get(docRef);
                 const productData = productSnapshot.data();
-                
+
                 if (!(productData.unitsInStock >= item.unitsOrdered)) {
                     throw new Error('Error Creating Order: Few Items are out of Stock!!');
                 }

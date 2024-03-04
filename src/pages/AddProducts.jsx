@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { TextField, Button } from '@mui/material'; // Import form components from Material-UI
 import { AddProductToInventory } from '../firebase/firebaseFirestore'; // Import function to add product to database
 import {useAuth} from '../firebase/firebaseAuth';
+import { message } from 'antd';
+import MainNavBar from '../components/MainNavBar';
 
 const AddProducts = () => {
   
@@ -41,11 +43,12 @@ const AddProducts = () => {
       unitsInStock: ''
     });
     // Provide feedback to the user
-    alert('Product added successfully!');
+    message.success('Product added successfully!');
   };
 
   return (
     <div>
+      <MainNavBar />
       <h2>Add Products</h2>
       <form onSubmit={handleSubmit}>
         <TextField

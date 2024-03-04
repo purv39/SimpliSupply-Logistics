@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Typography, Button, Paper } from '@mui/material';
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchInvitationsForDistributor, AcceptInvitation, DeclineInvitation } from "../firebase/firebaseFirestore";
+import { message } from 'antd';
+import MainNavBar from '../components/MainNavBar';
 
 const Invitations = () => {
     const [invitations, setInvitations] = useState([]);
@@ -26,10 +28,10 @@ const Invitations = () => {
             await AcceptInvitation(distributorID, storeID);
             setInvitations(invitations.filter(invitation => invitation.id !== invitationId));
             // Remove the invitation from the invitations state array
-            alert('Invitation accepted successfully!');
+            message.success('Invitation accepted successfully!');
         } catch (error) {
             console.error('Error accepting invitation:', error);
-            alert('Failed to accept invitation. Please try again later.');
+            message.error('Failed to accept invitation. Please try again later.');
         }
     };
     
@@ -38,15 +40,16 @@ const Invitations = () => {
             await DeclineInvitation(distributorID, storeID);
             setInvitations(invitations.filter(invitation => invitation.id !== invitationId));
             // Remove the invitation from the invitations state array
-            alert('Invitation declined successfully!');
+            message.success('Invitation declined successfully!');
         } catch (error) {
             console.error('Error declining invitation:', error);
-            alert('Failed to decline invitation. Please try again later.');
+            message.error('Failed to decline invitation. Please try again later.');
         }
     };
     
     return (
         <div>
+            <MainNavBar />
             <Typography variant="h4" gutterBottom>
                 Invitations
             </Typography>
