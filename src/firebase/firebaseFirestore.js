@@ -345,14 +345,17 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
                 const docRef = doc(productsInfoRef, item.productData.id);
                 const productSnapshot = await transaction.get(docRef);
                 const productData = productSnapshot.data();
-
                 if (!(productData.unitsInStock >= item.unitsOrdered)) {
-                    throw new Error('Error Creating Order: Few Items are out of Stock!!');
+                    throw new Error('Error Creating Order: Few Items are out of Stocks!!');
                 }
 
                 const productCost = (item.productData?.data?.unitPrice * item.unitsOrdered).toFixed(2);
                 item.productCost = parseFloat(productCost); // Convert back to a float
                 totalCost += item.productCost;
+
+                // Update unitsInStock within the transaction
+                const newUnitsInStock = productData.unitsInStock - item.unitsOrdered;
+                transaction.update(docRef, { unitsInStock: newUnitsInStock });
             }
 
             // Set up the initial data for the order
