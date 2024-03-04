@@ -31,8 +31,8 @@ const AddProducts = () => {
       product.productName,
       product.category,
       product.quantityPerUnit,
-      product.unitPrice,
-      product.unitsInStock
+      parseFloat(product.unitPrice),
+      parseInt(product.unitsInStock)
     );
     // Reset form fields
     setProduct({
@@ -73,15 +73,16 @@ const AddProducts = () => {
           required
         />
         <TextField
-          label="Unit Price"
           name="unitPrice"
+          type='number'
           value={product.unitPrice}
           onChange={handleChange}
-          required
+          
         />
         <TextField
           label="Units In Stock"
           name="unitsInStock"
+          type='number'
           value={product.unitsInStock}
           onChange={handleChange}
           required
