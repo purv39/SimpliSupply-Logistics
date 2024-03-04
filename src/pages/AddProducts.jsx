@@ -18,7 +18,6 @@ const AddProducts = () => {
   });
 
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
@@ -32,6 +31,11 @@ const AddProducts = () => {
     // Form validation
     if (!product.productName || !product.category || !product.quantityPerUnit || !product.unitPrice || !product.unitsInStock) {
       setError('Please fill out all fields.');
+      return;
+    }
+
+    if (parseFloat(product.unitPrice) <= 0 || parseInt(product.unitsInStock) <= 0) {
+      setError('Unit price and units in stock must be positive numbers.');
       return;
     }
 
