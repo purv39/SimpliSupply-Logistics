@@ -1,14 +1,14 @@
 import { db } from "./firebaseConfig";
-import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, writeBatch, query, where } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, updateDoc, arrayUnion, getDocs, getDoc, query, where, arrayRemove, runTransaction } from 'firebase/firestore';
 import { AddTaxFileToStorage } from "./firebaseStorage";
 
 
 export const AddNewUserToFirestore = (uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role) => {
     let storeOperator = false;
     let distributor = false;
-    if (role === 'store') {
+    if (role === 'Store') {
         storeOperator = true;
-    } else if (role === 'distributor') {
+    } else if (role === 'Distributor') {
         distributor = true;
     }
 
@@ -76,6 +76,29 @@ export const AddNewDistributionStoreForOperator = async (uuid, storeName, busine
     }
 }
 
+// Function to add a new product to the distributor's inventory
+export const AddProductToInventory = async (distributorID, productName, category, quantityPerUnit, unitPrice, unitsInStock) => {
+    try {
+        // Construct the product object
+        const productData = {
+            productName: productName,
+            categoryName: category,
+            quantityPerUnit: quantityPerUnit,
+            unitPrice: unitPrice,
+            unitsInStock: unitsInStock
+        };
+
+        // Add the product to the "products" subcollection of the distributor
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        const productRef = await addDoc(collection(distributorRef, 'products'), productData);
+
+        console.log("Product added successfully:", productRef.id);
+        return productRef.id; // Return the ID of the added product
+    } catch (error) {
+        console.error("Error adding product:", error);
+        throw error; // Throw error for handling in UI or higher-level components
+    }
+};
 
 // Function to add a new store for operator
 export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gstNumber, taxFile, storeContactNumber, storeAddress, storeCity, storePostalCode, storeProvince) => {
@@ -143,9 +166,36 @@ export const AddInvitation = async (distributorID, storeID) => {
         return invitationRef.id;
     } catch (error) {
         console.error("Error creating invitation:", error);
+
+export const FetchInvitationsForDistributor = async (distributorID) => {
+    try {
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        const distributorSnap = await getDoc(distributorRef);
+        if (distributorSnap.exists()) {
+            const invites = distributorSnap.data().invites;
+            if (invites.length > 0) {
+                const invitationsData = [];
+                for (const invitationId of invites) {
+                    const invitationRef = doc(db, 'Invitations', invitationId);
+                    const invitationSnap = await getDoc(invitationRef);
+                    if (invitationSnap.exists()) {
+                        invitationsData.push({
+                            id: invitationSnap.id,
+                            data: invitationSnap.data()
+                        });
+                    } else {
+                    }
+                }
+                return invitationsData;
+            } else {
+            }
+        } else {
+        }
+    } catch (error) {
         throw error;
     }
 };
+
 
 
 export const FetchDistributorStore = async () => {
@@ -156,9 +206,27 @@ export const FetchDistributorStore = async () => {
         return storeSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
         console.error('Error fetching distribution stores:', error);
+
+// Function to accept an invitation
+export const AcceptInvitation = async (distributorID, storeID) => {
+    try {
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        await updateDoc(distributorRef, {
+            invites: arrayRemove(storeID), // Remove the store from the invites array
+            storesConnected: arrayUnion(storeID) // Add the store to the storesConnected array
+        });
+        const storeRef = doc(db, 'Retail Stores', storeID);
+        await updateDoc(storeRef, {
+            invitations: arrayRemove(distributorID), // Remove the distributor from the invitations array
+            distributorsConnected: arrayUnion(distributorID) // Add the distributor to the distributorsConnected array
+        });
+        return true;
+    } catch (error) {
+        console.error('Error accepting invitation:', error);
         throw error;
     }
 };
+
 
 export const FetchDistributionStoreDetails = async (storeId) => {
     try {
@@ -172,9 +240,25 @@ export const FetchDistributionStoreDetails = async (storeId) => {
         }
     } catch (error) {
         console.error('Error fetching distribution store details:', error);
+
+// Function to decline an invitation
+export const DeclineInvitation = async (distributorID, storeID) => {
+    try {
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        await updateDoc(distributorRef, {
+            invites: arrayRemove(storeID) // Remove the store from the invites array
+        });
+        const storeRef = doc(db, 'Retail Stores', storeID);
+        await updateDoc(storeRef, {
+            invitations: arrayRemove(distributorID) // Remove the distributor from the invitations array
+        });
+        return true;
+    } catch (error) {
+        console.error('Error declining invitation:', error);
         throw error;
     }
 };
+
 
 export const CheckForExistingInvitation = async (distributorID, storeID) => {
     const invitationsRef = collection(db, 'Invitations');
@@ -200,6 +284,7 @@ export const FetchAllDistributorsForStore = async (storeID) => {
             }
         }
     } catch (error) {
+        throw error; // Rethrow the error to handle it at a higher level
 
     }
 }
@@ -243,52 +328,52 @@ export const FetchDistributorsInfo = async (distributorsList) => {
     }
 };
 
-
 export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
     try {
-        var totalCost = 0;
+        await runTransaction(db, async (transaction) => {
+            const distributorRef = doc(db, 'Distribution Stores', distributorID);
+            const productsInfoRef = collection(distributorRef, "products");
+            var totalCost = 0;
 
-        // Set up the initial data for the order
-        const orderData = {
-            createdAt: new Date(),
-            distributorID: distributorID,
-            storeID: storeID,
-            currentStatus: "Pending",
-            totalCost: totalCost
-        };
+            for (const item of orderItems) {
+                const docRef = doc(productsInfoRef, item.productData.id);
+                const productSnapshot = await transaction.get(docRef);
+                const productData = productSnapshot.data();
+                
+                if (!(productData.unitsInStock >= item.unitsOrdered)) {
+                    throw new Error('Error Creating Order: Few Items are out of Stock!!');
+                }
 
+                const productCost = (item.productData?.data?.unitPrice * item.unitsOrdered).toFixed(2);
+                item.productCost = parseFloat(productCost); // Convert back to a float
+                totalCost += item.productCost;
+            }
 
-        // Add the order to the "Orders" collection
-        const orderRef = await addDoc(collection(db, 'Orders'), orderData);
+            // Set up the initial data for the order
+            const orderData = {
+                createdAt: new Date(),
+                distributorID: distributorID,
+                storeID: storeID,
+                currentStatus: "Pending",
+                totalCost: totalCost
+            };
 
-        // Add orderItems to the subcollection "orderItems"
-        const batch = writeBatch(db);
-        orderItems.forEach(async (item) => {
+            // Add the order to the "Orders" collection
+            const orderRef = doc(collection(db, 'Orders'));
+            transaction.set(orderRef, orderData);
 
-            // Calculate the product cost
-            const productCost = (item.productData?.data?.unitPrice * item.unitsOrdered).toFixed(2);
-            item.productCost = parseFloat(productCost); // Convert back to a float
+            // Add orderItems to the subcollection "orderItems"
+            for (const item of orderItems) {
+                const itemRef = doc(collection(db, 'Orders', orderRef.id, "orderItems")); // Construct a new DocumentReference for orderItems
+                transaction.set(itemRef, item);
+            }
 
-            // Update total cost
-            totalCost += item.productCost;
-
-            const itemRef = doc(collection(orderRef, "orderItems")); // Construct a new DocumentReference for orderItems
-            batch.set(itemRef, item);
+            return orderRef.id; // Return the ID of the created order
         });
-        await batch.commit();
-
-
-        // Update the order document with the new totalCost
-        await updateDoc(orderRef, { totalCost: totalCost });
-
-        console.log("Order successfully created:", orderRef.id);
-        return orderRef.id; // Return the ID of the created order
     } catch (error) {
-        console.error("Error creating order:", error);
         throw error; // Throw error for handling in UI or higher-level components
     }
 };
-
 
 export const fetchOrderHistoryForStore = async (storeID) => {
     try {
@@ -319,6 +404,8 @@ export const fetchOrderHistoryForStore = async (storeID) => {
         return ordersData;
     } catch (error) {
         console.error('Error fetching orders:', error);
+        throw error; // Rethrow the error to handle it at a higher level
+
     }
 };
 
