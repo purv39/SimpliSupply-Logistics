@@ -1,28 +1,42 @@
 /* AddDistributor.css */
-.formContainer {
-    max-width: 60%; 
-    margin-right: auto;
-    margin-left: auto;
-    padding: 15px;
-  }
-  
+.tableContainer {
+  max-width: 850px; /* Or any other width you prefer */
+  margin: auto; /* This will center the table on the page */
+}
 
-  .addButton {
-    width: 100px; 
-    height: 40px; 
-  }
-  
-  .addButtonLocation {
-    display: flex;
-    justify-content: flex-end; 
-    align-items: flex-end; 
-    height: 100%; 
-  }
-  .list-group-item {
-    display: flex;
-    justify-content: space-between; 
-  }
-  
-  .list-group-item .badge {
-    margin-left: auto; 
-  }
+.addButtonContainer {
+  text-align: center; /* This will center the button */
+  margin-top: 20px; /* Adds some space above the button */
+}
+
+.select-dropdown option[value=""][disabled] {
+  text-align: center;
+  color: grey;
+}
+
+
+.select-dropdown {
+  width: auto; /* or you can specify a width like 200px */
+  max-width: 100%; /* Ensure it doesn't exceed the parent width */
+  padding: 8px 16px; /* Adjust padding to your preference */
+  text-align-last: center;
+}
+
+.select-dropdown option {
+  text-align: center;
+}
+
+.select-dropdown:focus {
+  outline: none; /* Removes the default focus outline */
+  border: 1px solid #0366d6; /* You can set a custom border for focus */
+}
+
+.distributor-invitation-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto; /* Adjust as necessary to center the container */
+  padding: 0 30px; /* Adjust as necessary for padding */
+}
+.distributor-table-container, .invitations-list-container {
+  flex: 1; /* Assigns equal width to both containers */
+}

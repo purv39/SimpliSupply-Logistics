@@ -1,176 +1,166 @@
-// AddDistributor.jsx
-import '../styles/AddDistributor.css';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../firebase/firebaseAuth';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from "../firebase/firebaseConfig";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { collection, addDoc } from 'firebase/firestore';
 import MainNavBar from '../components/MainNavBar';
+import { TableContainer, Table, TableBody, TableRow, TableCell, Paper } from '@mui/material';
+import Button from '@mui/material/Button';
+import { FetchDistributorStore, FetchDistributionStoreDetails, AddInvitation, CheckForExistingInvitation } from "../firebase/firebaseFirestore"; // Make sure to implement this function
+import '../styles/AddDistributor.css';
+import { RiseLoader } from 'react-spinners';
+import { message } from 'antd';
 
 const AddDistributor = () => {
-
-  const distributorOptions = ['Distributor A', 'Distributor B', 'Distributor C', 'Distributor D', 'Distributor E'];
-  const [selectedDistributor, setSelectedDistributor] = useState(distributorOptions[0]);
+  const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
-  const [userInfo, setUserInfo] = useState({
-    fullName: '',
-    address: '',
-    contactNumber: '',
-    storeName: '',
-    storeNumber: '',
-    storeAddress: ''
-  });
-  const [distributors, setDistributors] = useState([]);
+  const [userInfo, setUserInfo] = useState(null);
+  const [distributorOptions, setDistributorOptions] = useState([]);
+  const [selectedDistributor, setSelectedDistributor] = useState('');
+
   const [error, setError] = useState('');
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (currentUser?.uid) {
-        try {
-          const userRef = doc(db, 'Users', currentUser.uid);
-          const docSnap = await getDoc(userRef);
-
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
-            const fullName = `${userData.firstName} ${userData.lastName}`;
-            const firstStoreId = userData.storesList?.length > 0 ? userData.storesList[0] : null;
-            let storeName = '';
-            let storeNumber = '';
-            let storeAddress = '';
-
-            if (firstStoreId) {
-              const storeRef = doc(db, 'Retail Stores', firstStoreId);
-              const storeSnap = await getDoc(storeRef);
-              if (storeSnap.exists()) {
-                storeName = storeSnap.data().storeName;
-                storeNumber = storeSnap.data().businessNumber;
-                storeAddress = storeSnap.data().storeAddress;
-              }
-            }
-
-            setUserInfo({
-              fullName,
-              address: `${userData.address}, ${userData.city}, ${userData.province}, ${userData.postalCode}`,
-              contactNumber: userData.contactNumber,
-              storeName,
-              storeNumber,
-              storeAddress
-            });
-          } else {
-            setError('No user data found.');
-          }
-        } catch (error) {
-          console.error("Error fetching user data: ", error);
-          setError("Failed to load user data.");
-        }
+    const fetchDistributors = async () => {
+      try {
+        const stores = await FetchDistributorStore();
+        setDistributorOptions(stores);
+      } catch (error) {
+        console.error("Error fetching distribution stores:", error);
+        setError(error.message);
       }
+      setLoading(false);
     };
+  
+    fetchDistributors();
+  }, []);
 
-    fetchUserData();
-  }, [currentUser]);
+  const handleDistributorChange = async (event) => {
+    const storeId = event.target.value;
+    setSelectedDistributor(storeId);
+    setLoading(true);
+    try {
+      const storeDetails = await FetchDistributionStoreDetails(storeId);
+      console.log("Store details fetched: ", storeDetails);
+
+      if (storeDetails) {
+        setUserInfo({
+          ...storeDetails,
+          name: storeDetails.storeName,
+          address: storeDetails.storeAddress,
+          businessNumber: storeDetails.businessNumber,
+        });
+      } else {
+        setUserInfo(null);
+        setError('Distributor details not found.');
+      }
+    } catch (error) {
+      console.error("Error fetching distribution store details:", error);
+      setError(error.message);
+      setUserInfo(null);
+    }
+    setLoading(false);
+  };
+  const formatAddress = (userInfo) => {
+    return userInfo ? `${userInfo.storeAddress}, ${userInfo.storeCity}, ${userInfo.storeProvince}, ${userInfo.storePostalCode}` : '';
+  };
 
   const handleAddDistributor = async () => {
-    if (distributors.some(distributor => distributor.name === selectedDistributor)) {
-      alert('This distributor has already been added.');
+    if (!selectedDistributor) {
+      message.error('Please select a distributor.');
       return;
     }
-
-    // Add distributor to Firestore
+    const distributionID = selectedDistributor;
+    const retailStoreID = currentUser.storesList[0];
     try {
-      const docRef = await addDoc(collection(db, "distributors"), {
-        name: selectedDistributor,
-        // Add the userInfo object instead of just the user ID
-        userInfo: {
-          fullName: userInfo.fullName,
-          address: userInfo.address,
-          contactNumber: userInfo.contactNumber,
-          storeName: userInfo.storeName,
-          storeNumber: userInfo.storeNumber,
-          storeAddress: userInfo.storeAddress,
-        },
-        status: 'Waiting'
-      });
-      console.log("Document written with ID: ", docRef.id);
-      // Update local state
-      setDistributors([...distributors, { id: docRef.id, name: selectedDistributor, status: 'Waiting' }]);
-    } catch (e) {
-      console.error("Error adding document: ", e);
+
+      const existingInvitation = await CheckForExistingInvitation(selectedDistributor, retailStoreID);
+      if (existingInvitation) {
+        message.error("It has already been requested.");
+        return;
+      }
+
+      // If no existing invitation, proceed to create a new one
+      const invitationID = await AddInvitation(distributionID, retailStoreID);
+      console.log("Invitation created with ID:", invitationID);
+
+      message.success('Invitation Sent Successfully!!');
+
+    } catch (error) {
+      console.error("Error creating invitation:", error);
+      message.error("Error creating invitation: " + error);
     }
   };
 
   return (
     <div>
-      <MainNavBar />
-      <div className="formContainer">
-        <h2 className="text-center mb-4">Add Distributor</h2>
-        <div className="row">
-          <div className="col-md-6">
-            {error && <div className="alert alert-danger" role="alert">{error}</div>}
-            <form>
-              <label>* required</label>
-              <div className="mb-3">
-                <label htmlFor="distributorSelect" className="form-label">Select Distributor *</label>
-                <select
-                  className="form-select"
-                  id="distributorSelect"
-                  aria-label="Distributor select"
-                  value={selectedDistributor}
-                  onChange={(e) => setSelectedDistributor(e.target.value)}
-                >
-                  {distributorOptions.map((option, index) => (
-                    <option key={index} value={option}>{option}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Owner Name */}
-              <div className="mb-3">
-                <p><strong>Name:</strong> {userInfo.fullName}</p>
-              </div>
-
-              {/* Business Name */}
-              <div className="mb-3">
-                <p><strong>Address:</strong> {userInfo.address}</p>
-              </div>
-
-              {/* Business Address */}
-              <div className="mb-3">
-                <p><strong>Contact Number:</strong> {userInfo.contactNumber}</p>
-              </div>
-
-              <div className="mb-3">
-                <p><strong>Store Name:</strong> {userInfo.storeName}</p>
-              </div>
-
-              <div className="mb-3">
-                <p><strong>Store Number:</strong> {userInfo.storeNumber}</p>
-              </div>
-
-              <div className="mb-3">
-                <p><strong>Store Address:</strong> {userInfo.storeAddress}</p>
-
-              </div>
-
-              <div className="d-grid gap-2 addButtonLocation">
-                <button className="btn btn-primary" type="button" onClick={handleAddDistributor}>ADD</button>
-              </div>
-            </form>
-          </div>
-
-          <div className="col-md-6">
-            <div className="list-group">
-              {distributors.map((distributor, index) => (
-                <div key={index} className="list-group-item d-flex justify-content-between align-items-center" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>{distributor.name}</span>
-                  <span className="badge bg-warning text-dark" style={{ marginLeft: 'auto' }}>Waiting</span>
-                </div>
-              ))}
-            </div>
+    <MainNavBar />
+    <h2 className="text-center mb-4">Add Distributor</h2>
+    {loading ? (
+      <div className="loading-spinner">
+        <RiseLoader color="#36D7B7" loading={loading} size={10} />
+      </div>
+    ) : error ? (
+      <p>Error: {error}</p>
+    ) : (
+      <div className="distributor-invitation-container">
+        <div className="distributor-table-container">
+          <TableContainer component={Paper} className="tableContainer">
+            <Table aria-label="distributor selection table">
+              <TableBody>
+                <TableRow>
+                  <TableCell>Select Distributor</TableCell>
+                  <TableCell align="right">
+                    <select
+                      value={selectedDistributor}
+                      onChange={handleDistributorChange}
+                      className="select-dropdown"
+                    >
+                      <option value="" disabled>
+                        ----------- Select Distributor -----------
+                      </option>
+                      {distributorOptions.map((distributor) => (
+                        <option key={distributor.id} value={distributor.id}>
+                          {distributor.storeName}
+                        </option>
+                      ))}
+                    </select>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          
+          {userInfo && (
+            <TableContainer component={Paper} className="tableContainer">
+              <Table aria-label="user information table">
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell align="right">{userInfo.storeName}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Address</TableCell>
+                    <TableCell align="right">{formatAddress(userInfo)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Business Number</TableCell>
+                    <TableCell align="right">{userInfo.businessNumber}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+          
+          <div className="addButtonContainer">
+            <Button variant="contained" color="primary" onClick={handleAddDistributor}>
+              Add Distributor
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
 
+      </div>
+    )}
+  </div>
   );
 };
+
 export default AddDistributor;
