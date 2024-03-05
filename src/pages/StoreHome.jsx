@@ -15,6 +15,7 @@ const StoreHome = () => {
 
   useEffect(() => {
     const fetchInventory = async () => {
+      setLoading(true);
       const inventoryData = await FetchStoreInventory(storeID);
       setInventory(inventoryData);
       setLoading(false); // Set loading to false when data is fetched

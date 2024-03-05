@@ -5,11 +5,11 @@ import { AddNewStoreForOperator } from '../firebase/firebaseFirestore';
 import { message } from 'antd';
 import MainNavBar from "../components/MainNavBar";
 import BusinessDetails from "../components/BusinessDetails";
- 
+
 const AddStore = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
- 
+
   const [businessName, setBusinessName] = useState('');
   const [businessAddress, setBusinessAddress] = useState('');
   const [businessNumber, setBusinessNumber] = useState('');
@@ -19,19 +19,19 @@ const AddStore = () => {
   const [businessCity, setBusinessCity] = useState('');
   const [businessPostalCode, setBusinessPostalCode] = useState('');
   const [businessProvince, setBusinessProvince] = useState('');
- 
+
   const reloadNavbar = () => {
     // Force re-render MainNavBar by updating state
     setKey((prevKey) => prevKey + 1);
   };
- 
+
   const [key, setKey] = useState(0);
- 
+
   const handleStore = async () => {
     try {
       const uuid = currentUser.user.uid;
       const storeId = await AddNewStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
- 
+
       console.log("storeID:" + storeId);
       currentUser.storesList.push(storeId);
       message.success("New Store has been Added")
@@ -46,17 +46,17 @@ const AddStore = () => {
       setBusinessProvince('');
       // Reload the navbar
       reloadNavbar();
-     // navigate('/StoreHome');
+      // navigate('/StoreHome');
     } catch (error) {
       message.error('store add  failed: ' + error.message);
     }
   };
- 
+
   return (
-<div>
-<MainNavBar key={key} reloadNavbar={reloadNavbar} />
-<div className='col-4'>
-<BusinessDetails
+    <div>
+      <MainNavBar key={key} reloadNavbar={reloadNavbar} />
+      <div className='col-4'>
+        <BusinessDetails
           businessName={businessName}
           setBusinessName={setBusinessName}
           businessAddress={businessAddress}
@@ -76,12 +76,12 @@ const AddStore = () => {
           businessProvince={businessProvince}
           setBusinessProvince={setBusinessProvince}
         />
-<div className="d-grid gap-2 addButtonLocation">
-<button className="btn btn-primary" type="button" onClick={handleStore}>ADD</button>
-</div>
-</div>
-</div>
+        <div className="d-grid gap-2 addButtonLocation">
+          <button className="btn btn-primary" type="button" onClick={handleStore}>ADD</button>
+        </div>
+      </div>
+    </div>
   );
 };
- 
+
 export default AddStore;

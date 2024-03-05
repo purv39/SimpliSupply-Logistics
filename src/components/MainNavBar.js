@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../firebase/firebaseAuth';
 import { FetchStoreDataByID } from '../firebase/firebaseFirestore';
- 
+
 const MainNavBar = ({ reloadNavbar }) => {
   const navigate = useNavigate();
-  const { LogOut, currentUser } = useAuth();
+  const { LogOut, currentUser, setCurrentUser } = useAuth(); // Assuming setCurrentUser is a function to update currentUser state
   const role = currentUser.currentRole;
- 
+
   const navigateTo = (path) => {
     navigate(path);
   };
- 
+
   const handleLogout = async () => {
     try {
       await LogOut();
@@ -21,7 +21,7 @@ const MainNavBar = ({ reloadNavbar }) => {
       console.error('Logout failed:', error.message);
     }
   };
- 
+
   const [storesData, setStoresData] = useState([]);
   useEffect(() => {
     async function fetchStoresData() {
@@ -30,37 +30,49 @@ const MainNavBar = ({ reloadNavbar }) => {
     }
     fetchStoresData();
   }, [currentUser.storesList]);
- 
+
+  const handleStoreChange = (e) => {
+    const selectedStore = e.target.value;
+    setCurrentUser(prevUser => ({
+      ...prevUser,
+      selectedStore: selectedStore
+    }));
+    sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+  };
+
   return (
-<div className="navbar">
-<div className="logo" onClick={() => {
+    <div className="navbar">
+      <div className="logo" onClick={() => {
         if (role === 'Store') {
           navigateTo('/StoreHome')
         } else {
           navigateTo('/DistributorHome')
         }
       }}>SimpliSupply Logistics</div>
-<nav>
-<ul>
+      <nav>
+        <ul>
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/DistributorList')}>Distributor List</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/OrderHistory')}>Order History</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/Addstore')}>Add Store</button></li>}
-</ul>
-</nav>
-<div className="mb-3">
-<select
+        </ul>
+      </nav>
+      <div className="mb-3">
+        <select
           className="form-select"
           id="storeSelect"
-          onChange={(e) => { currentUser.selectedStore = e.target.value; console.log(currentUser.selectedStore) }}
->
-          {storesData.map((storeName, index) => (<option key={index} value={currentUser.storesList[index]}>{storeName}</option>))}
-</select>
-</div>
-<button className="logout-button" onClick={handleLogout}>Logout</button>
-</div>
+          value={currentUser.selectedStore}
+          onChange={handleStoreChange}
+        >
+          {storesData.map((storeName, index) => (
+            <option key={index} value={currentUser.storesList[index]}>{storeName}</option>
+          ))}
+        </select>
+      </div>
+      <button className="logout-button" onClick={handleLogout}>Logout</button>
+    </div>
   )
 }
- 
+
 export default MainNavBar;
