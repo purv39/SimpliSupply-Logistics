@@ -179,6 +179,16 @@ export const FetchInvitationsForStore = async (storeID) => {
     }
   };
 
+  export const RemoveInvitation = async (invitationId) => {
+    try {
+      await deleteDoc(doc(db, 'Invitations', invitationId));
+      console.log(`Invitation with ID ${invitationId} has been removed.`);
+    } catch (error) {
+      console.error('Error removing invitation:', error);
+      throw new Error(error);
+    }
+  };
+
 
 export const FetchInvitationsForDistributor = async (distributorID) => {
     try {

@@ -3,9 +3,8 @@ import { useAuth } from '../firebase/firebaseAuth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainNavBar from '../components/MainNavBar';
 import { TableContainer, Table, TableBody, TableRow, TableCell, Paper } from '@mui/material';
-import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
-import { FetchDistributorStore, FetchDistributionStoreDetails, AddInvitation, CheckForExistingInvitation, FetchInvitationsForStore } from "../firebase/firebaseFirestore"; // Make sure to implement this function
+import { FetchDistributorStore, FetchDistributionStoreDetails, AddInvitation, CheckForExistingInvitation } from "../firebase/firebaseFirestore"; // Make sure to implement this function
 import '../styles/AddDistributor.css';
 import { RiseLoader } from 'react-spinners';
 import { message } from 'antd';
@@ -16,7 +15,6 @@ const AddDistributor = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [distributorOptions, setDistributorOptions] = useState([]);
   const [selectedDistributor, setSelectedDistributor] = useState('');
-  const [invitations, setInvitations] = useState([]);
 
   const [error, setError] = useState('');
 
@@ -32,31 +30,8 @@ const AddDistributor = () => {
       setLoading(false);
     };
   
-    const fetchInvitations = async () => {
-      if (currentUser && currentUser.storesList && currentUser.storesList.length > 0) {
-        const storeID = currentUser.storesList[0]; // Assuming the first store is the relevant one
-        try {
-          const fetchedInvitations = await FetchInvitationsForStore(storeID); // Make sure this function is implemented correctly
-          const invitationsWithDistributorNames = await Promise.all(fetchedInvitations.map(async (invitation) => {
-            const distributorDetails = await FetchDistributionStoreDetails(invitation.distributorID); // Make sure this function is implemented correctly
-            return {
-              ...invitation,
-              distributorName: distributorDetails.storeName, // Assuming storeName is the name field
-            };
-          }));
-          setInvitations(invitationsWithDistributorNames);
-        } catch (error) {
-          console.error("Error fetching invitations:", error);
-        }
-      }
-    };
-  
-  
     fetchDistributors();
-    fetchInvitations();
-  }, [currentUser]);
-
-  console.log("Invitations:", invitations); // Debug line
+  }, []);
 
   const handleDistributorChange = async (event) => {
     const storeId = event.target.value;
@@ -182,26 +157,6 @@ const AddDistributor = () => {
           </div>
         </div>
 
-        <div className="invitations-list-container">
-          <TableContainer component={Paper} className="tableContainer">
-            <Table aria-label="invitations table">
-              <TableBody>
-                {invitations.length > 0 ? invitations.map((invitation) => (
-                  <TableRow key={invitation.id}>
-                    <TableCell>{invitation.distributorName || 'Unknown Distributor'}</TableCell>
-                    <TableCell align="right">
-                      <Chip label="Waiting" color="primary" variant="outlined" />
-                    </TableCell>
-                  </TableRow>
-                )) : (
-                  <TableRow>
-                    <TableCell colSpan={2}>No invitations found</TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
       </div>
     )}
   </div>
