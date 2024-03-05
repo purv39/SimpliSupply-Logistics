@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
-import { AddNewStoreForOperator } from '../firebase/firebaseFirestore';
+import { AddNewDistributionStoreForOperator, AddNewStoreForOperator } from '../firebase/firebaseFirestore';
 import { message } from 'antd';
 import MainNavBar from "../components/MainNavBar";
 import BusinessDetails from "../components/BusinessDetails";
 
 const AddStore = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, setCurrentUser } = useAuth();
   const navigate = useNavigate();
 
   const [businessName, setBusinessName] = useState('');
@@ -30,10 +30,23 @@ const AddStore = () => {
   const handleStore = async () => {
     try {
       const uuid = currentUser.user.uid;
-      const storeId = await AddNewStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
 
-      console.log("storeID:" + storeId);
-      currentUser.storesList.push(storeId);
+      if(currentUser.currentRole === "Store") {
+        const storeId = await AddNewStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
+        setCurrentUser(prevUser => ({
+          ...prevUser,
+          storesList: [...prevUser.storesList, storeId] 
+        }));
+        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));  
+      } else if (currentUser.currentRole === "Distributor") {
+        const storeId = await AddNewDistributionStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
+        setCurrentUser(prevUser => ({
+          ...prevUser,
+          storesList: [...prevUser.storesList, storeId] 
+        }));
+        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+      }
+        
       message.success("New Store has been Added")
       setBusinessName('');
       setBusinessAddress('');
@@ -46,7 +59,12 @@ const AddStore = () => {
       setBusinessProvince('');
       // Reload the navbar
       reloadNavbar();
-      // navigate('/StoreHome');
+      if(currentUser.currentRole === "Distributor") {
+        navigate('/DistributorHome');
+      } else if (currentUser.currentRole === "Store") {
+        navigate('/StoreHome');
+
+      }
     } catch (error) {
       message.error('store add  failed: ' + error.message);
     }

@@ -68,6 +68,8 @@ const MainNavBar = ({ reloadNavbar }) => {
           {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/AddProducts')}>Add Products</button></li>}
           {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/Invitations')}>Invitations</button></li>}
           {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/ShipmentHistory')}>Shipment History</button></li>}
+          {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/AddDistributionStore')}>Add Distribution Center</button></li>}
+
         </ul>
       </nav>
       <div className="mb-3">

@@ -3,7 +3,7 @@ import { useAuth } from '../../firebase/firebaseAuth';
 import { useNavigate } from 'react-router-dom';
 import companyLogo from '../../assets/logo1.png'; // Import your company logo
 import loginImage from '../../assets/loginVector.png'; // Import the cool-looking picture
-import { Button, Steps, message } from 'antd'; // Import Button and Steps from Ant Des
+import { Button, message } from 'antd'; // Import Button and Steps from Ant Des
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

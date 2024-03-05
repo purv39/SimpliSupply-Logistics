@@ -19,6 +19,7 @@ const ShipmentHistory = () => {
 
     useEffect(() => {
         const fetchShipments = async () => {
+            setLoading(true);
             const shipmentData = await fetchOrderHistoryForDistributor(distributorID);
             setShipments(shipmentData);
             setLoading(false);

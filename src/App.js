@@ -46,6 +46,7 @@ const App = () => {
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
           <Route path="/Invitations" element={<DistributorPrivateRoute><Invitations /></DistributorPrivateRoute>} />
           <Route path="/ShipmentHistory" element={<DistributorPrivateRoute><ShipmentHistory /></DistributorPrivateRoute>} />
+          <Route path="/AddDistributionStore" element={<DistributorPrivateRoute><AddStore /></DistributorPrivateRoute>} />
           
         </Routes>
       </AuthContextProvider>
