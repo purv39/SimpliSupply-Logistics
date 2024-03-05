@@ -23,14 +23,13 @@ const AddDistributor = () => {
       try {
         const stores = await FetchDistributorStore();
         setDistributorOptions(stores);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching distribution stores:", error);
         setError(error.message);
-        setLoading(false);
       }
+      setLoading(false);
     };
-
+  
     fetchDistributors();
   }, []);
 
@@ -93,16 +92,17 @@ const AddDistributor = () => {
 
   return (
     <div>
-      <MainNavBar />
-      <h2 className="text-center mb-4">Add Distributor</h2>
-      {loading ? (
-        <div className="loading-spinner">
-          <RiseLoader color="#36D7B7" loading={loading} size={10} />
-        </div>
-      ) : error ? (
-        <p>Error: {error}</p>
-      ) : (
-        <>
+    <MainNavBar />
+    <h2 className="text-center mb-4">Add Distributor</h2>
+    {loading ? (
+      <div className="loading-spinner">
+        <RiseLoader color="#36D7B7" loading={loading} size={10} />
+      </div>
+    ) : error ? (
+      <p>Error: {error}</p>
+    ) : (
+      <div className="distributor-invitation-container">
+        <div className="distributor-table-container">
           <TableContainer component={Paper} className="tableContainer">
             <Table aria-label="distributor selection table">
               <TableBody>
@@ -128,7 +128,7 @@ const AddDistributor = () => {
               </TableBody>
             </Table>
           </TableContainer>
-
+          
           {userInfo && (
             <TableContainer component={Paper} className="tableContainer">
               <Table aria-label="user information table">
@@ -149,15 +149,17 @@ const AddDistributor = () => {
               </Table>
             </TableContainer>
           )}
+          
           <div className="addButtonContainer">
             <Button variant="contained" color="primary" onClick={handleAddDistributor}>
               Add Distributor
             </Button>
           </div>
-        </>
+        </div>
 
-      )}
-    </div>
+      </div>
+    )}
+  </div>
   );
 };
 

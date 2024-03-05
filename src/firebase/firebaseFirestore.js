@@ -167,6 +167,29 @@ export const AddInvitation = async (distributorID, storeID) => {
     }
 }
 
+export const FetchInvitationsForStore = async (storeID) => {
+    try {
+      const invitationsRef = collection(db, 'Invitations');
+      const q = query(invitationsRef, where("storeID", "==", storeID));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error("Error fetching invitations for store:", error);
+      throw error;
+    }
+  };
+
+  export const RemoveInvitation = async (invitationId) => {
+    try {
+      await deleteDoc(doc(db, 'Invitations', invitationId));
+      console.log(`Invitation with ID ${invitationId} has been removed.`);
+    } catch (error) {
+      console.error('Error removing invitation:', error);
+      throw new Error(error);
+    }
+  };
+
+
 export const FetchInvitationsForDistributor = async (distributorID) => {
     try {
         const distributorRef = doc(db, 'Distribution Stores', distributorID);
@@ -499,4 +522,20 @@ export const FetchStoreInventory = async (storeID) => {
         throw error; // Rethrow the error to handle it at a higher level
     }
 
+}
+
+export const DisconnectDistributorStore = async (storeID, distributorID) => {
+    try {
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        await updateDoc(distributorRef, {
+            storesConnected: arrayRemove(storeID) // Add the store to the storesConnected array
+        });
+
+        const storeRef = doc(db, 'Retail Stores', storeID);
+        await updateDoc(storeRef, {
+            distributorsConnected: arrayRemove(distributorID) // Add the distributor to the distributorsConnected array
+        });
+    } catch (error) {
+        throw error
+    }
 }

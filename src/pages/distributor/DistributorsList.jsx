@@ -1,90 +1,106 @@
 import React, { useState, useEffect } from 'react';
-import { db } from "../../firebase/firebaseConfig";
-import { collection, getDocs, getDoc, deleteDoc, doc } from 'firebase/firestore'; 
+import { useAuth } from '../../firebase/firebaseAuth';
+import { Checkbox, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Chip, Button } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainNavBar from '../../components/MainNavBar';
+import { DisconnectDistributorStore, FetchAllDistributorsForStore, FetchDistributionStoreDetails, FetchInvitationsForStore, RemoveInvitation } from "../../firebase/firebaseFirestore";
+import '../../styles/DistributorList.css';
+import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
+import "../../styles/LoadingSpinner.css";
 
 const DistributorsList = () => {
-  const [distributors, setDistributors] = useState([]);
-  const [selectedDistributor, setSelectedDistributor] = useState(null);
-  const [userInfo, setUserInfo] = useState({
-    fullName: '',
-    address: '',
-    contactNumber: '',
-    storeName: '', 
-    storeNumber: '',
-    storeAddress: ''
-  });
+  const { currentUser } = useAuth();
+  const [connectedDistributors, setConnectedDistributors] = useState([]);
+  const [selectedDistributors, setSelecteDistributors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const storeID = currentUser.selectedStore;
 
 
+  const FetchConnectedDistributors = async (storeID) => {
+    setLoading(true);
+    const distributorData = await FetchAllDistributorsForStore(storeID);
+    setConnectedDistributors(distributorData);
+    setLoading(false); // Set loading to false when data is fetched
+  };
 
   useEffect(() => {
-    const fetchDistributors = async () => {
-        const querySnapshot = await getDocs(collection(db, "distributors"));
-        const distributorsData = querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          console.log(data); // Log to see if `userId` is present
-          return { id: doc.id, ...data };
-        });
-        setDistributors(distributorsData);
-      };
+    FetchConnectedDistributors(storeID);
+  }, [storeID])
 
-    fetchDistributors();
-  }, []);
-
-  const handleRemoveDistributor = async (id) => {
-    await deleteDoc(doc(db, "distributors", id));
-    setDistributors(distributors.filter(distributor => distributor.id !== id));
+  const handleSelectDistributor = (invitationId) => {
+    setSelecteDistributors(prevSelectedInvitations => ({
+      ...prevSelectedInvitations,
+      [invitationId]: !prevSelectedInvitations[invitationId]
+    }));
   };
 
-  const handleSelectDistributor = async (distributor) => {
-
-    if (!distributor.userId) {
-        console.error("Selected distributor does not have a userId property.");
-        return;
-      }
-      const userInfoRef = doc(db, "Users", distributor.userId); 
-      const userInfoSnap = await getDoc(userInfoRef);
-    if (userInfoSnap.exists()) {
-      const userData = userInfoSnap.data();
-      setUserInfo({
-        fullName: `${userData.firstName} ${userData.lastName}`,
-        address: `${userData.address}, ${userData.city}, ${userData.province}, ${userData.postalCode}`,
-        contactNumber: userData.contactNumber,
-        storeName: distributor.storeName, 
-        storeNumber: distributor.storeNumber, 
-        storeAddress: distributor.storeAddress
-      });
+  const handleRemoveSelected = async () => {
+    const selectedIds = Object.keys(selectedDistributors).filter(id => selectedDistributors[id]);
+    if (selectedIds.length === 0) {
+      alert('Please select at least one invitation to remove.');
+      return;
     }
-    setSelectedDistributor(distributor);
+    try {
+      await Promise.all(selectedIds.map(id => DisconnectDistributorStore(storeID, id)));
+      setConnectedDistributors(connectedDistributors.filter(distributor => !selectedIds.includes(distributor.id)));
+      setSelecteDistributors({}); // Reset the selected invitations
+      alert('Selected invitations have been successfully removed.');
+    } catch (error) {
+      console.error('Error removing selected invitations:', error);
+      alert('Failed to remove selected invitations. Please try again.');
+    }
   };
+
 
   return (
     <div>
       <MainNavBar />
       <h2>Distributors List</h2>
-      <ul className="list-group">
-        {distributors.map((distributor) => (
-          <li key={distributor.id} className="list-group-item d-flex justify-content-between align-items-center">
-            {distributor.name}
-            <div>
-              <button className="btn btn-primary me-2" onClick={() => handleSelectDistributor(distributor)}>View</button>
-              <button className="btn btn-danger" onClick={() => handleRemoveDistributor(distributor.id)}>Remove</button>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {selectedDistributor && (
-        <div className="card mt-3">
-          <div className="card-body">
-            <h5 className="card-title">{selectedDistributor.storeName}</h5>
-            <h6 className="card-subtitle mb-2 text-muted">{selectedDistributor.fullName}</h6>
-            <p className="card-text">Contact Number: {selectedDistributor.contactNumber}</p>
-            <p className="card-text">Store Number: {selectedDistributor.storeNumber}</p>
-            <p className="card-text">Store Address: {selectedDistributor.storeAddress}</p>
+      {loading ? ( // Render loading spinner if loading is true
+        <div className="loading-spinner">
+          <RiseLoader color="#36D7B7" loading={loading} size={10} />
+        </div>
+      ) : (
+        <div>
+          <TableContainer component={Paper} className="tableContainer">
+            <Table aria-label="invitations table">
+              <TableHead>
+                <TableRow>
+                  <TableCell padding="checkbox"></TableCell>
+                  <TableCell>Distributor</TableCell>
+                  <TableCell align="right">Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {connectedDistributors?.length > 0 ? connectedDistributors.map((distributor) => (
+                  <TableRow key={distributor.id} selected={selectedDistributors[distributor.id]}>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={!!selectedDistributors[distributor.id]}
+                        onChange={() => handleSelectDistributor(distributor.id)}
+                      />
+                    </TableCell>
+                    <TableCell>{distributor?.data?.storeName || 'Unknown Distributor'}</TableCell>
+                    <TableCell align="right">
+                      <Chip label="Connected" color="primary" variant="outlined" />
+                    </TableCell>
+                  </TableRow>
+                )) : (
+                  <TableRow>
+                    <TableCell colSpan={3}>No Distributors found</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <div className="removeButtonContainer">
+            <Button variant="contained" color="error" onClick={handleRemoveSelected}>
+              Remove
+            </Button>
           </div>
         </div>
-      )}
+      )
+      }
     </div>
   );
 };
