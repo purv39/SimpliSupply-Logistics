@@ -30,3 +30,13 @@
   outline: none; /* Removes the default focus outline */
   border: 1px solid #0366d6; /* You can set a custom border for focus */
 }
+
+.distributor-invitation-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto; /* Adjust as necessary to center the container */
+  padding: 0 30px; /* Adjust as necessary for padding */
+}
+.distributor-table-container, .invitations-list-container {
+  flex: 1; /* Assigns equal width to both containers */
+}

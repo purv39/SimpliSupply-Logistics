@@ -167,6 +167,19 @@ export const AddInvitation = async (distributorID, storeID) => {
     }
 }
 
+export const FetchInvitationsForStore = async (storeID) => {
+    try {
+      const invitationsRef = collection(db, 'Invitations');
+      const q = query(invitationsRef, where("storeID", "==", storeID));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error("Error fetching invitations for store:", error);
+      throw error;
+    }
+  };
+
+
 export const FetchInvitationsForDistributor = async (distributorID) => {
     try {
         const distributorRef = doc(db, 'Distribution Stores', distributorID);
