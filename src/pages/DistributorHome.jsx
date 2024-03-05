@@ -6,6 +6,7 @@ import { useAuth } from '../firebase/firebaseAuth';
 import { FetchDistributorsInfo } from '../firebase/firebaseFirestore';
 import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 import "../styles/LoadingSpinner.css";
+import { Typography } from 'antd';
 
 const DistributorHome = () => {
     const [inventory, setInventory] = useState([]);
@@ -24,11 +25,6 @@ const DistributorHome = () => {
         fetchInventory();
     }, [distributionStoreID]);
 
-    const handleOrder = (productId) => {
-        // Implement logic to handle order
-        console.log(`Order placed for product ID: ${productId}`);
-    };
-
     return (
         <div className="dashboard">
             <MainNavBar />
@@ -38,6 +34,8 @@ const DistributorHome = () => {
                     <div className="loading-spinner">
                         <RiseLoader color="#36D7B7" loading={loading} size={10} />
                     </div>
+                ) : inventory.length === 0 ? (
+                    <Typography>No items in inventory</Typography>
                 ) : (
                     <table className="table">
                         <thead>
@@ -56,14 +54,7 @@ const DistributorHome = () => {
                                     <td>{item.data.categoryName}</td>
                                     <td>{item.data.quantityPerUnit}</td>
                                     <td>{item.data.unitsInStock}</td>
-                                    <td>
-                                        <button
-                                            className="btn btn-primary"
-                                            onClick={() => handleOrder(item.id)}
-                                        >
-                                            Order
-                                        </button>
-                                    </td>
+                                    <td>${item.data.unitPrice}</td>                        
                                 </tr>
                             ))}
                         </tbody>

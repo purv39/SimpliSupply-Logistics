@@ -6,7 +6,7 @@ import { useAuth } from '../firebase/firebaseAuth';
 import { FetchStoreInventory } from '../firebase/firebaseFirestore';
 import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 import "../styles/LoadingSpinner.css";
-
+import { Typography } from '@mui/material';
 const StoreHome = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true); // State for loading status
@@ -38,6 +38,8 @@ const StoreHome = () => {
           <div className="loading-spinner">
             <RiseLoader color="#36D7B7" loading={loading} size={10} />
           </div>
+        ) : inventory.length === 0 ? (
+          <Typography>No items in inventory</Typography>
         ) : (
           <table className="table">
             <thead>

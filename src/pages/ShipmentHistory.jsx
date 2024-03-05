@@ -2,33 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { fetchOrderHistoryForStore } from '../firebase/firebaseFirestore';
-import OrderDetailsTable from '../components/OrderDetailsTable';
+import { fetchOrderHistoryForDistributor } from '../firebase/firebaseFirestore';
+import ShipmentDetailsTable from '../components/ShipmentDetailsTable';
 import MainNavBar from '../components/MainNavBar';
-import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
+import { RiseLoader } from 'react-spinners';
 import "../styles/LoadingSpinner.css";
 import { useAuth } from '../firebase/firebaseAuth';
 import { Typography } from 'antd';
 
-const OrderHistory = () => {
-    const [orders, setOrders] = useState([]);
+const ShipmentHistory = () => {
+    const [shipments, setShipments] = useState([]);
     const [expandedOrderId, setExpandedOrderId] = useState(null);
-    const [loading, setLoading] = useState(true); // State for loading status
+    const [loading, setLoading] = useState(true);
     const { currentUser } = useAuth();
-    const storeID = currentUser.selectedStore;
+    const distributorID = currentUser.selectedStore;
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            setLoading(true);
-            const orderData = await fetchOrderHistoryForStore(storeID);
-            setOrders(orderData);
-            setLoading(false); // Set loading to false when data is fetched
-        }
+        const fetchShipments = async () => {
+            const shipmentData = await fetchOrderHistoryForDistributor(distributorID);
+            setShipments(shipmentData);
+            setLoading(false);
+        };
 
-        fetchOrders();
-    }, [storeID]);
+        fetchShipments();
+    }, [distributorID]);
 
-    // Function to format timestamp into a human-readable date string
     const formatDate = (timestamp) => {
         const date = new Date(timestamp.seconds * 1000);
         return date.toLocaleString();
@@ -41,20 +39,20 @@ const OrderHistory = () => {
     return (
         <div>
             <MainNavBar />
-            <h2>Order History</h2>
-            {loading ? ( // Render loading spinner if loading is true
+            <h2>Shipment History</h2>
+            {loading ? (
                 <div className="loading-spinner">
                     <RiseLoader color="#36D7B7" loading={loading} size={10} />
                 </div>
-            ) : orders.length === 0 ? (
-                <Typography>No orders in order history</Typography>
+            ) : shipments.length === 0 ? (
+                <Typography>No shipments in shipment history</Typography>
             ) : (
                 <TableContainer component={Paper}>
                     <Table aria-label="collapsible table">
                         <TableHead>
                             <TableRow>
                                 <TableCell>Order ID</TableCell>
-                                <TableCell>Distributor Name</TableCell>
+                                <TableCell>Store Name</TableCell>
                                 <TableCell>Total Cost</TableCell>
                                 <TableCell>Created At</TableCell>
                                 <TableCell>Status</TableCell>
@@ -62,14 +60,14 @@ const OrderHistory = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orders.map((order) => (
+                            {shipments.map((order) => (
                                 <React.Fragment key={order.id}>
                                     <TableRow onClick={() => handleExpandClick(order.id)}>
-                                        <TableCell>{`${order.id}`}</TableCell>
-                                        <TableCell>{`${order.distributorName}`}</TableCell>
+                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{order.storeName}</TableCell>
                                         <TableCell>{`$${order.totalCost}`}</TableCell>
-                                        <TableCell>{`${formatDate(order.createdAt)}`}</TableCell>
-                                        <TableCell>{`${order.currentStatus}`}</TableCell>
+                                        <TableCell>{formatDate(order.createdAt)}</TableCell>
+                                        <TableCell>{order.currentStatus}</TableCell>
                                         <TableCell>
                                             <IconButton
                                                 aria-label="expand row"
@@ -80,16 +78,15 @@ const OrderHistory = () => {
                                             </IconButton>
                                         </TableCell>
                                     </TableRow>
-                                    <OrderDetailsTable order={order} expandedOrderId={expandedOrderId} />
+                                    <ShipmentDetailsTable order={order} expandedOrderId={expandedOrderId} />
                                 </React.Fragment>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
-            )
-            }
-        </div >
+            )}
+        </div>
     );
 };
 
-export default OrderHistory;
+export default ShipmentHistory;
