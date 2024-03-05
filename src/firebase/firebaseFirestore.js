@@ -523,3 +523,19 @@ export const FetchStoreInventory = async (storeID) => {
     }
 
 }
+
+export const DisconnectDistributorStore = async (storeID, distributorID) => {
+    try {
+        const distributorRef = doc(db, 'Distribution Stores', distributorID);
+        await updateDoc(distributorRef, {
+            storesConnected: arrayRemove(storeID) // Add the store to the storesConnected array
+        });
+
+        const storeRef = doc(db, 'Retail Stores', storeID);
+        await updateDoc(storeRef, {
+            distributorsConnected: arrayRemove(distributorID) // Add the distributor to the distributorsConnected array
+        });
+    } catch (error) {
+        throw error
+    }
+}
