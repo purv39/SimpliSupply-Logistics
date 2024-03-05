@@ -403,6 +403,8 @@ export const fetchOrderHistoryForDistributor = async (distributorID) => {
 
 export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
     try {
+        const updateMap = new Map(); // Map to store docRef and newUnitsInStock
+
         await runTransaction(db, async (transaction) => {
             const distributorRef = doc(db, 'Distribution Stores', distributorID);
             const productsInfoRef = collection(distributorRef, "products");
@@ -420,9 +422,8 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
                 item.productCost = parseFloat(productCost); // Convert back to a float
                 totalCost += item.productCost;
 
-                // Update unitsInStock within the transaction
-                const newUnitsInStock = productData.unitsInStock - item.unitsOrdered;
-                transaction.update(docRef, { unitsInStock: newUnitsInStock });
+                // Store docRef and newUnitsInStock in the map
+                updateMap.set(docRef, productData.unitsInStock - item.unitsOrdered);
             }
 
             // Set up the initial data for the order
@@ -443,6 +444,11 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
                 const itemRef = doc(collection(db, 'Orders', orderRef.id, "orderItems")); // Construct a new DocumentReference for orderItems
                 transaction.set(itemRef, item);
             }
+
+            // Update unitsInStock after all readings are done
+            updateMap.forEach((newUnitsInStock, docRef) => {
+                transaction.update(docRef, { unitsInStock: newUnitsInStock });
+            });
 
             return orderRef.id; // Return the ID of the created order
         });
