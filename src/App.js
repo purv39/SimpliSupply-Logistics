@@ -20,6 +20,7 @@ import ShipmentHistory from './pages/ShipmentHistory';
 import DistributorPrivateRoute from './components/DistributorPrivateRoute';
 import StoreHome from './pages/StoreHome';
 import DistributorHome from './pages/DistributorHome';
+import AddStore from "./pages/AddStore";
 
 const App = () => {
   return (
@@ -39,7 +40,7 @@ const App = () => {
           <Route path="/AddDistributor" element={<StoreOperatorPrivateRoute><AddDistributor /></StoreOperatorPrivateRoute>} />
           <Route path="/CreateNewOrder" element={<StoreOperatorPrivateRoute><CreateNewOrder /></StoreOperatorPrivateRoute> } />
           <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
-
+          <Route path="/Addstore" element={<StoreOperatorPrivateRoute><AddStore /></StoreOperatorPrivateRoute> } />
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
           <Route path="/AddProducts" element={<DistributorPrivateRoute><AddProducts /></DistributorPrivateRoute>} />
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />

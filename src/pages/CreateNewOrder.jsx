@@ -17,6 +17,7 @@ const CreateNewOrder = () => {
     const storeID = currentUser.selectedStore;
 
     const handleDistributorClick = async (storeID) => {
+        setLoading(true);
         const distributorData = await FetchAllDistributorsForStore(storeID);
         setDistributors(distributorData);
         setLoading(false); // Set loading to false when data is fetched
