@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../firebase/firebaseAuth';
-import { FetchStoreDataByID } from '../firebase/firebaseFirestore';
+import { FetchDistributorDataByID, FetchStoreDataByID } from '../firebase/firebaseFirestore';
 
 const MainNavBar = ({ reloadNavbar }) => {
   const navigate = useNavigate();
@@ -25,8 +25,13 @@ const MainNavBar = ({ reloadNavbar }) => {
   const [storesData, setStoresData] = useState([]);
   useEffect(() => {
     async function fetchStoresData() {
-      const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchStoreDataByID(option)));
-      setStoresData(fetchedData);
+      if(currentUser.currentRole === 'Store') {
+        const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchStoreDataByID(option)));
+        setStoresData(fetchedData);
+      } else if (currentUser.currentRole === 'Distributor') {
+        const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchDistributorDataByID(option)));
+        setStoresData(fetchedData);
+      }
     }
     fetchStoresData();
   }, [currentUser.storesList]);
@@ -56,6 +61,13 @@ const MainNavBar = ({ reloadNavbar }) => {
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/DistributorList')}>Distributor List</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/OrderHistory')}>Order History</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/Addstore')}>Add Store</button></li>}
+        </ul>
+      </nav>
+      <nav>
+        <ul>
+          {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/AddProducts')}>Add Products</button></li>}
+          {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/Invitations')}>Invitations</button></li>}
+          {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/ShipmentHistory')}>Shipment History</button></li>}
         </ul>
       </nav>
       <div className="mb-3">

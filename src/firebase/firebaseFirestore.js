@@ -271,6 +271,15 @@ export const FetchStoreDataByID = async (uuid) => {
     return userData.storeName;
 }
 
+// fetching store name by store id.
+export const FetchDistributorDataByID = async (uuid) => {
+    const userDataRef = doc(db, 'Distribution Stores', uuid);
+    const userDataSnapshot = await getDoc(userDataRef);
+    const userData = userDataSnapshot.data();
+    console.log("storeData:" + userData.storeName);
+    return userData.storeName;
+}
+
 export const FetchStoreInventory = async (storeID) => {
     try {
         var storeData = {};
