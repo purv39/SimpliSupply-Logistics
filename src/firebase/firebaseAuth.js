@@ -60,6 +60,7 @@ export const AuthContextProvider = ({ children }) => {
 
     const value = {
         currentUser,
+        setCurrentUser,
         Login,
         LogOut,
         SignUp,

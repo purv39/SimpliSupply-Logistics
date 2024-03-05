@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography, Button, Paper, IconButton } from '@mui/material';
+import { Grid, Typography, Paper, IconButton } from '@mui/material';
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchInvitationsForDistributor, AcceptInvitation, DeclineInvitation } from "../firebase/firebaseFirestore";
 import { message } from 'antd';

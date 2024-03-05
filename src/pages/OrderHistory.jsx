@@ -19,6 +19,7 @@ const OrderHistory = () => {
 
     useEffect(() => {
         const fetchOrders = async () => {
+            setLoading(true);
             const orderData = await fetchOrderHistoryForStore(storeID);
             setOrders(orderData);
             setLoading(false); // Set loading to false when data is fetched

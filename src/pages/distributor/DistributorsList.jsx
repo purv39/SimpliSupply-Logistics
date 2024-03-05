@@ -3,7 +3,7 @@ import { useAuth } from '../../firebase/firebaseAuth';
 import { Checkbox, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Chip, Button } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainNavBar from '../../components/MainNavBar';
-import { DisconnectDistributorStore, FetchAllDistributorsForStore, FetchDistributionStoreDetails, FetchInvitationsForStore, RemoveInvitation } from "../../firebase/firebaseFirestore";
+import { DisconnectDistributorStore, FetchAllDistributorsForStore } from "../../firebase/firebaseFirestore";
 import '../../styles/DistributorList.css';
 import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 import "../../styles/LoadingSpinner.css";
