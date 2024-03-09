@@ -37,7 +37,16 @@ const MainNavBar = ({ reloadNavbar }) => {
   }, [currentUser.storesList]);
 
   const handleStoreChange = (e) => {
-    const selectedStore = e.target.value;
+    let selectedStore = e.target.value;
+    //console.log("select Change",e.target.key);
+    const input = e.target; 
+        const datalist = input.list; 
+            const options = Array.from(datalist.options);   
+                   const selectedOption = options.find(option => option.value === selectedStore);
+                        if (selectedOption) { const selectedStoreId = selectedOption.getAttribute('data-storeid'); 
+                                console.log("Selected Store Id:", selectedStoreId);  
+                                selectedStore=selectedStoreId;
+                                 } else {         console.log("No option selected");     }
     setCurrentUser(prevUser => ({
       ...prevUser,
       selectedStore: selectedStore
@@ -73,16 +82,20 @@ const MainNavBar = ({ reloadNavbar }) => {
         </ul>
       </nav>
       <div className="mb-3">
-        <select
+        <input
+        list='storeNameList'
           className="form-select"
           id="storeSelect"
-          value={currentUser.selectedStore}
+         // value={currentUser.selectedStore}
           onChange={handleStoreChange}
-        >
+        />
+          <datalist id="storeNameList">
           {storesData.map((storeName, index) => (
-            <option key={index} value={currentUser.storesList[index]}>{storeName}</option>
+          //  <option key={index} value={currentUser.storesList[index]}>{storeName}</option>
+          <option key={index} data-storeid= {currentUser.storesList[index]} value={storeName}></option>
+
           ))}
-        </select>
+        </datalist>
       </div>
       <button className="logout-button" onClick={handleLogout}>Logout</button>
     </div>
