@@ -457,6 +457,20 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
     }
 };
 
+export const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+        const orderRef = doc(db, 'Orders', orderId);
+        await updateDoc(orderRef, {
+            currentStatus: newStatus
+        });
+        console.log(`Order status updated successfully: ${orderId} -> ${newStatus}`);
+        return; // Return nothing if the update is successful
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        throw error; // Throw error for handling in UI or higher-level components
+    }
+};
+
 export const fetchOrderHistoryForStore = async (storeID) => {
     try {
         const ordersQuery = query(collection(db, 'Orders'), where('storeID', '==', storeID));
