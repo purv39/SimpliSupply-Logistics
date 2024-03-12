@@ -23,18 +23,34 @@ const MainNavBar = ({ reloadNavbar }) => {
   };
 
   const [storesData, setStoresData] = useState([]);
+  // useEffect(() => {
+  //   async function fetchStoresData() {
+  //     if(currentUser.currentRole === 'Store') {
+  //       const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchStoreDataByID(option)));
+  //       setStoresData(fetchedData);
+  //     } else if (currentUser.currentRole === 'Distributor') {
+  //       const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchDistributorDataByID(option)));
+  //       setStoresData(fetchedData);
+  //     }
+  //   }
+  //   fetchStoresData();
+  // }, [currentUser.storesList]);
+
   useEffect(() => {
     async function fetchStoresData() {
-      if(currentUser.currentRole === 'Store') {
-        const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchStoreDataByID(option)));
-        setStoresData(fetchedData);
-      } else if (currentUser.currentRole === 'Distributor') {
-        const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchDistributorDataByID(option)));
-        setStoresData(fetchedData);
+      if(currentUser && currentUser.storesList && currentUser.storesList.length > 0) {
+        if(currentUser.currentRole === 'Store') {
+          const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchStoreDataByID(option)));
+          setStoresData(fetchedData);
+        } else if (currentUser.currentRole === 'Distributor') {
+          const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchDistributorDataByID(option)));
+          setStoresData(fetchedData);
+        }
       }
     }
     fetchStoresData();
-  }, [currentUser.storesList]);
+  }, [currentUser]);
+  
 
   const handleStoreChange = (e) => {
     let selectedStore = e.target.value;
