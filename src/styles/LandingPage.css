@@ -45,16 +45,18 @@
 
 .about-us {
   display: flex;
-  flex-direction: column; /* Adjust for smaller screens */
+  justify-content: space-between;
+  align-items: center;
 }
 
 .about-us-text {
-  max-width: 100%; /* Adjust for smaller screens */
+  flex: 1;
+  max-width: 50%;
   text-align: left;
 }
 
 .about-us-image {
-  max-width: 100%; /* Adjust for smaller screens */
+  flex: 1;
 }
 
 .landing-footer {
@@ -67,7 +69,7 @@
 /* Add additional styles for smaller screens using media queries */
 @media only screen and (max-width: 768px) {
   /* LandingPage.css */
-  
+
   .company-logo img {
     max-width: 100%; /* Ensure the image doesn't overflow its container */
     display: block; /* Ensure the image behaves as a block element */
@@ -91,5 +93,10 @@
     max-width: 100%; /* Ensure the image doesn't overflow its container */
     height: auto; /* Maintain the aspect ratio */
     display: block; /* Ensure the image behaves as a block element */
+  }
+
+  .company-logo img {
+    max-width: 100%; /* Adjust images and text to fit smaller screens */
+    width: 100%; /* Ensure images and text take full width */
   }
 }
