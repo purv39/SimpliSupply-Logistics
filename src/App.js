@@ -21,6 +21,7 @@ import DistributorPrivateRoute from './components/DistributorPrivateRoute';
 import StoreHome from './pages/StoreHome';
 import DistributorHome from './pages/DistributorHome';
 import AddStore from "./pages/AddStore";
+import CompareProducts from './pages/CompareProducts';
 
 const App = () => {
   return (
@@ -41,6 +42,8 @@ const App = () => {
           <Route path="/CreateNewOrder" element={<StoreOperatorPrivateRoute><CreateNewOrder /></StoreOperatorPrivateRoute> } />
           <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
           <Route path="/Addstore" element={<StoreOperatorPrivateRoute><AddStore /></StoreOperatorPrivateRoute> } />
+          <Route path="/CompareProducts" element={<StoreOperatorPrivateRoute><CompareProducts /></StoreOperatorPrivateRoute> } />
+
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
           <Route path="/AddProducts" element={<DistributorPrivateRoute><AddProducts /></DistributorPrivateRoute>} />
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />

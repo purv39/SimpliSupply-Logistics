@@ -1,0 +1,24 @@
+.hit-container {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.hit-item {
+    margin-bottom: 10px;
+}
+
+.hit-label {
+    font-weight: bold;
+}
+
+.hit-value {
+    margin-left: 10px;
+}
+
+
+.hits-list {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+}
