@@ -1,75 +1,95 @@
 /* LandingPage.css */
 
 .landing-page {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.landing-header {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+.navbar ul li:last-child {
+  margin-right: 0;
+}
+
+.navbar ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.landing-content {
+  padding: 20px;
+}
+
+.about-us {
+  display: flex;
+  flex-direction: column; /* Adjust for smaller screens */
+}
+
+.about-us-text {
+  max-width: 100%; /* Adjust for smaller screens */
+  text-align: left;
+}
+
+.about-us-image {
+  max-width: 100%; /* Adjust for smaller screens */
+}
+
+.landing-footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Add additional styles for smaller screens using media queries */
+@media only screen and (max-width: 768px) {
+  /* LandingPage.css */
   
-  .landing-header {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .company-logo img {
+    max-width: 100%; /* Ensure the image doesn't overflow its container */
+    display: block; /* Ensure the image behaves as a block element */
+    margin: 0 auto; /* Center the logo horizontally */
   }
-  
-  .logo {
-    font-size: 24px;
-  }
-  
-  .navbar ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-  
+
+
   .navbar ul li {
-    display: inline;
-    margin-right: 20px;
-  }
-  
-  .navbar ul li:last-child {
-    margin-right: 0;
-  }
-  
-  .navbar ul li a {
-    color: #fff;
-    text-decoration: none;
-  }
-  
-  .landing-content {
-    padding: 20px;
+    margin-right: 10px; /*Adjust margin for smaller screens */
   }
   
   .about-us {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; /* Change flex direction for smaller screens */
   }
-  
+
   .about-us-text {
-    flex: 1;
-    max-width: 50%;
-    text-align: left;
-  }
-  
-  .about-us-image {
-    flex: 1;
-  }
-  
-  .landing-footer {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
+    max-width: none; /* Remove max-width for smaller screens */
   }
 
-  /* LandingPage.css */
-
-.company-logo {
-    max-width: 150px; /* Increase the size as needed */
-    margin-bottom: 50px; /* Adjust the margin to move the logo up */
+  .about-us-image img {
+    max-width: 100%; /* Ensure the image doesn't overflow its container */
+    height: auto; /* Maintain the aspect ratio */
+    display: block; /* Ensure the image behaves as a block element */
+  }
 }
-
