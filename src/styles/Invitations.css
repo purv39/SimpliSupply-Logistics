@@ -1,0 +1,16 @@
+/* invitations.css */
+
+.invitations-container {
+    padding: 20px;
+  }
+  
+  .invitation-paper {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .invitation-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
