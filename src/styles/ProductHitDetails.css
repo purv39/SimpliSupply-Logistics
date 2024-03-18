@@ -42,7 +42,6 @@
   font-size: 1.2rem;
   color: #4e4e4e; /* Dark gray */
   margin-bottom: 8px;
-  cursor: pointer;
 }
 
 .product-name {
@@ -50,6 +49,9 @@
   font-size: 1.2rem; /* Increase font size for emphasis */
   color: #1f1f1f; /* Darker gray */
   margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for overflow */
+  white-space: nowrap; /* Prevent text from wrapping */
 }
 
 .product-price {
