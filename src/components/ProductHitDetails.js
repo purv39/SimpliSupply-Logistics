@@ -19,37 +19,15 @@ const ProductHitDetails = ({ hit, showConnectedHits, connectedDistributors }) =>
     // Render null if hit is not connected or if there are no connected distributors
     if (!displayHit || connectedDistributors.length === 0) return null;
 
-    // If hit is connected, render the hit details with styling
+    // If hit is connected, render the hit details with styling and a "Create Order" button
     return (
-        <div className="hit-container">
-            <div className="hit-item">
-                <div className="hit-label">Distributor Name:</div>
-                <div className="hit-value">{hit.distributorStoreName}</div>
-            </div>
-            <div className="hit-item">
-                <div className="hit-label">Distributor ID:</div>
-                <div className="hit-value">{hit.distributorID}</div>
-            </div>
-            <div className="hit-item">
-                <div className="hit-label">Product Name:</div>
-                <div className="hit-value">{hit.productName}</div>
-            </div>
-            <div className="hit-item">
-                <div className="hit-label">Description:</div>
-                <div className="hit-value">{hit.productDescription}</div>
-            </div>
-            <div className="hit-item">
-                <div className="hit-label">Price:</div>
-                <div className="hit-value">${hit.unitPrice}</div>
-            </div>
-            <div className="hit-item">
-                <div className="hit-label">Units in Stock:</div>
-                <div className="hit-value">{hit.unitsInStock}</div>
-            </div>
-            <div className="hit-item">
-                <div className="hit-label">MOQ:</div>
-                <div className="hit-value">{hit.moq}</div>
-            </div>
+        <div className="product-catalog-item">
+            <div className="product-name">{hit.productName}</div>
+
+            <div className="product-brand">{hit.distributorStoreName}</div>
+            <div className="product-quantity">Quantity Per Unit: {hit.quantityPerUnit}</div>
+            <div className="product-price">Price: ${hit.unitPrice}</div>
+            <button className="create-order-button">Create Order</button>
         </div>
     );
 };

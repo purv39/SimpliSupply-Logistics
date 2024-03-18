@@ -1,24 +1,87 @@
-.hit-container {
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
+.compare-products-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.hit-item {
-    margin-bottom: 10px;
+.search-container {
+  margin-top: 20px;
 }
 
-.hit-label {
-    font-weight: bold;
+.search-box-container {
+  margin-bottom: 20px;
 }
 
-.hit-value {
-    margin-left: 10px;
+.custom-searchbox {
+  width: 70%; /* Adjust the width as per your requirement */
+  height: 40px; /* Adjust the height as per your requirement */
+  font-size: 16px; /* Adjust the font size as per your requirement */
+  padding: 8px; /* Adjust padding as per your requirement */
+  border-radius: 4px; /* Adjust border radius as per your requirement */
+  outline: none; /* Remove outline */
 }
 
+.product-catalog-item {
+  background-color: #fff5e6;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-.hits-list {
-    list-style-type: none; /* Remove default list styling */
-    padding: 0; /* Remove default padding */
+.product-catalog-item:hover {
+  transform: translateY(-5px);
+}
+
+.product-brand {
+  font-weight: normal; /* Remove bold font weight */
+  font-size: 1.2rem;
+  color: #4e4e4e; /* Dark gray */
+  margin-bottom: 8px;
+}
+
+.product-name {
+  font-weight: bold; /* Make the product name bold */
+  font-size: 1.2rem; /* Increase font size for emphasis */
+  color: #1f1f1f; /* Darker gray */
+  margin-bottom: 8px;
+}
+
+.product-price {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #82559d; /* Blue */
+  margin-bottom: 8px;
+}
+
+.product-quantity {
+  font-size: 0.9rem;
+  color: #666666;
+  margin-bottom: 8px;
+}
+
+.create-order-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4caf50;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.create-order-button:hover {
+  background-color: #45a049;
+}
+
+.ais-Hits-item {
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0px;
 }
