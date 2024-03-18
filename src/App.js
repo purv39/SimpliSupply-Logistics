@@ -21,6 +21,7 @@ import DistributorPrivateRoute from './components/DistributorPrivateRoute';
 import StoreHome from './pages/StoreHome';
 import DistributorHome from './pages/DistributorHome';
 import AddStore from "./pages/AddStore";
+import RemoveStore from "./pages/RemoveStore";
 
 const App = () => {
   return (
@@ -47,6 +48,8 @@ const App = () => {
           <Route path="/Invitations" element={<DistributorPrivateRoute><Invitations /></DistributorPrivateRoute>} />
           <Route path="/ShipmentHistory" element={<DistributorPrivateRoute><ShipmentHistory /></DistributorPrivateRoute>} />
           <Route path="/AddDistributionStore" element={<DistributorPrivateRoute><AddStore /></DistributorPrivateRoute>} />
+          <Route path="/RemoveStore" element={<StoreOperatorPrivateRoute><RemoveStore /></StoreOperatorPrivateRoute> } />
+
           
         </Routes>
       </AuthContextProvider>
