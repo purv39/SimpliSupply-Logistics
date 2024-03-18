@@ -39,7 +39,7 @@ const App = () => {
           
           <Route path="/DistributorList" element={<StoreOperatorPrivateRoute><DistributorsList/></StoreOperatorPrivateRoute>} />
           <Route path="/AddDistributor" element={<StoreOperatorPrivateRoute><AddDistributor /></StoreOperatorPrivateRoute>} />
-          <Route path="/CreateNewOrder" element={<StoreOperatorPrivateRoute><CreateNewOrder /></StoreOperatorPrivateRoute> } />
+          <Route path="/CreateNewOrder/:distributorID?" element={<StoreOperatorPrivateRoute><CreateNewOrder /></StoreOperatorPrivateRoute> } />
           <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
           <Route path="/Addstore" element={<StoreOperatorPrivateRoute><AddStore /></StoreOperatorPrivateRoute> } />
           <Route path="/CompareProducts" element={<StoreOperatorPrivateRoute><CompareProducts /></StoreOperatorPrivateRoute> } />

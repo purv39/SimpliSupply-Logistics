@@ -7,6 +7,7 @@ import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spi
 import "../styles/LoadingSpinner.css";
 import { useAuth } from '../firebase/firebaseAuth';
 import { message } from 'antd';
+import { useParams } from 'react-router-dom';
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
@@ -15,6 +16,7 @@ const CreateNewOrder = () => {
     const [loading, setLoading] = useState(true); // State for loading status
     const { currentUser } = useAuth();
     const storeID = currentUser.selectedStore;
+    const {distributorID: paramsDistributorID} = useParams();
 
     const handleDistributorClick = async (storeID) => {
         setLoading(true);
@@ -87,6 +89,10 @@ const CreateNewOrder = () => {
     useEffect(() => {
         // Call handleDistributorClick when the component mounts
         handleDistributorClick(storeID);
+
+        if(paramsDistributorID) {
+            setExpanded(paramsDistributorID)
+        }
     }, [storeID]); // Empty dependency array ensures this effect runs only once on mount
 
     return (

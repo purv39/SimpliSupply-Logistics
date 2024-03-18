@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { InstantSearch, SearchBox, Hits } from "react-instantsearch";
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchAllDistributorsForStore } from "../firebase/firebaseFirestore";
-import ProductHitDetails from "../components/ProductHitDetails";
 import "../styles/CompareProducts.css";
 import { Switch } from "antd";
 import 'instantsearch.css/themes/algolia-min.css';
+import ConnectedDistributorsProductHits from "../components/ConnectedDistributorsProductHits";
+import OtherDistributorsProductHits from "../components/OtherDistributorsProductHits";
 
 const CompareProducts = () => {
     const { currentUser } = useAuth();
@@ -58,9 +59,9 @@ const CompareProducts = () => {
                                         if (connectedDistributors !== undefined) {
                                             const isConnected = connectedDistributors.some(distributor => distributor.id === hit.hit.distributorID);
                                             if (isConnected && showConnected) {
-                                                return <ProductHitDetails {...hit} />;
+                                                return <ConnectedDistributorsProductHits {...hit} />;
                                             } else if (!isConnected && !showConnected) {
-                                                return <ProductHitDetails {...hit} />;
+                                                return <OtherDistributorsProductHits {...hit} />;
                                             }
                                         }
                                         return null;

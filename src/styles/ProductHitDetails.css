@@ -42,6 +42,7 @@
   font-size: 1.2rem;
   color: #4e4e4e; /* Dark gray */
   margin-bottom: 8px;
+  cursor: pointer;
 }
 
 .product-name {
