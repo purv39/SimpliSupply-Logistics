@@ -1,0 +1,10 @@
+.store-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .store-form > div {
+    width: 100%;
+    max-width: 500px;
+  }

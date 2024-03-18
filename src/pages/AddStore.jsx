@@ -5,6 +5,7 @@ import { AddNewDistributionStoreForOperator, AddNewStoreForOperator } from '../f
 import { message } from 'antd';
 import MainNavBar from "../components/MainNavBar";
 import BusinessDetails from "../components/BusinessDetails";
+import { Button } from 'react-bootstrap'; // Import Bootstrap Button component
 
 const AddStore = () => {
   const { currentUser, setCurrentUser } = useAuth();
@@ -31,22 +32,20 @@ const AddStore = () => {
     try {
       const uuid = currentUser.user.uid;
 
+      let addStoreFunction;
       if(currentUser.currentRole === "Store") {
-        const storeId = await AddNewStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
-        setCurrentUser(prevUser => ({
-          ...prevUser,
-          storesList: [...prevUser.storesList, storeId] 
-        }));
-        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));  
+        addStoreFunction = AddNewStoreForOperator;
       } else if (currentUser.currentRole === "Distributor") {
-        const storeId = await AddNewDistributionStoreForOperator(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
-        setCurrentUser(prevUser => ({
-          ...prevUser,
-          storesList: [...prevUser.storesList, storeId] 
-        }));
-        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+        addStoreFunction = AddNewDistributionStoreForOperator;
       }
-        
+
+      const storeId = await addStoreFunction(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
+      setCurrentUser(prevUser => ({
+        ...prevUser,
+        storesList: [...prevUser.storesList, storeId] 
+      }));
+      sessionStorage.setItem('currentUser', JSON.stringify(currentUser));  
+
       message.success("New Store has been Added")
       setBusinessName('');
       setBusinessAddress('');
@@ -63,7 +62,6 @@ const AddStore = () => {
         navigate('/DistributorHome');
       } else if (currentUser.currentRole === "Store") {
         navigate('/StoreHome');
-
       }
     } catch (error) {
       message.error('store add  failed: ' + error.message);
@@ -73,29 +71,31 @@ const AddStore = () => {
   return (
     <div>
       <MainNavBar key={key} reloadNavbar={reloadNavbar} />
-      <div className='col-4'>
-        <BusinessDetails
-          businessName={businessName}
-          setBusinessName={setBusinessName}
-          businessAddress={businessAddress}
-          setBusinessAddress={setBusinessAddress}
-          businessNumber={businessNumber}
-          setBusinessNumber={setBusinessNumber}
-          gstNumber={gstNumber}
-          setGSTNumber={setGSTNumber}
-          taxFile={taxFile}
-          setTaxFile={setTaxFile}
-          businessContact={businessContact}
-          setBusinessContact={setBusinessContact}
-          businessCity={businessCity}
-          setBusinessCity={setBusinessCity}
-          businessPostalCode={businessPostalCode}
-          setBusinessPostalCode={setBusinessPostalCode}
-          businessProvince={businessProvince}
-          setBusinessProvince={setBusinessProvince}
-        />
-        <div className="d-grid gap-2 addButtonLocation">
-          <button className="btn btn-primary" type="button" onClick={handleStore}>ADD</button>
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <BusinessDetails
+            businessName={businessName}
+            setBusinessName={setBusinessName}
+            businessAddress={businessAddress}
+            setBusinessAddress={setBusinessAddress}
+            businessNumber={businessNumber}
+            setBusinessNumber={setBusinessNumber}
+            gstNumber={gstNumber}
+            setGSTNumber={setGSTNumber}
+            taxFile={taxFile}
+            setTaxFile={setTaxFile}
+            businessContact={businessContact}
+            setBusinessContact={setBusinessContact}
+            businessCity={businessCity}
+            setBusinessCity={setBusinessCity}
+            businessPostalCode={businessPostalCode}
+            setBusinessPostalCode={setBusinessPostalCode}
+            businessProvince={businessProvince}
+            setBusinessProvince={setBusinessProvince}
+          />
+          <div className="d-grid gap-2 mt-3">
+            <Button variant="primary" onClick={handleStore}>ADD</Button>
+          </div>
         </div>
       </div>
     </div>

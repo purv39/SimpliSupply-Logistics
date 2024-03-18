@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, IconButton, Button } from '@mui/material';
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, IconButton, Button, Typography, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { fetchOrderHistoryForDistributor, updateOrderStatus } from '../firebase/firebaseFirestore'; // Import the function to update order status
 import ShipmentDetailsTable from '../components/ShipmentDetailsTable';
 import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners';
-import "../styles/LoadingSpinner.css";
 import { useAuth } from '../firebase/firebaseAuth';
-import { Typography } from 'antd';
 
 const ShipmentHistory = () => {
     const [shipments, setShipments] = useState([]);
@@ -56,13 +54,15 @@ const ShipmentHistory = () => {
     return (
         <div>
             <MainNavBar />
-            <h2>Shipment History</h2>
+            <Typography variant="h4" gutterBottom>
+                Shipment History
+            </Typography>
             {loading ? (
                 <div className="loading-spinner">
                     <RiseLoader color="#36D7B7" loading={loading} size={10} />
                 </div>
             ) : shipments.length === 0 ? (
-                <Typography>No shipments in shipment history</Typography>
+                <Typography variant="body1">No shipments in shipment history</Typography>
             ) : (
                 <TableContainer component={Paper}>
                     <Table aria-label="collapsible table">
@@ -80,7 +80,7 @@ const ShipmentHistory = () => {
                         <TableBody>
                             {shipments.map((order) => (
                                 <React.Fragment key={order.id}>
-                                    <TableRow onClick={() => handleExpandClick(order.id)}>
+                                    <TableRow>
                                         <TableCell>{order.id}</TableCell>
                                         <TableCell>{order.storeName}</TableCell>
                                         <TableCell>{`$${order.totalCost}`}</TableCell>
