@@ -2,6 +2,7 @@
 .tableContainer {
   max-width: 850px; /* Or any other width you prefer */
   margin: auto; /* This will center the table on the page */
+  overflow-x: auto; /* Allow horizontal scrolling if necessary */
 }
 
 .addButtonContainer {
@@ -32,11 +33,44 @@
 }
 
 .distributor-invitation-container {
+  max-width: 100%;
   display: flex;
   justify-content: space-between;
   margin: 0 auto; /* Adjust as necessary to center the container */
   padding: 0 30px; /* Adjust as necessary for padding */
 }
 .distributor-table-container, .invitations-list-container {
+  max-width: 100%;
   flex: 1; /* Assigns equal width to both containers */
+}
+
+/* Add additional styles for smaller screens using media queries */
+@media only screen and (max-width: 768px) {
+  .tableContainer {
+     padding: 0; /* Adjust the max-width to fit smaller screens */
+  }
+  
+  .addButtonContainer {
+    margin-top: 30px; /* Increase margin for better spacing */
+  }
+  
+  .select-dropdown {
+    width: auto; /* or you can specify a width like 200px */
+    max-width: 100%; /* Ensure it doesn't exceed the parent width */
+    padding: 8px 16px; /* Adjust padding to your preference */
+    text-align-last: center;
+  }
+  
+  .select-dropdown option {
+    text-align: center;
+    max-width: 100%; /* Set maximum width for options */
+    overflow: hidden; /* Hide overflow text */
+    white-space: nowrap; /* Prevent line breaks */
+    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  }
+  
+  .select-dropdown:focus {
+    outline: none; /* Removes the default focus outline */
+    border: 1px solid #0366d6; /* You can set a custom border for focus */
+  }
 }
