@@ -64,6 +64,7 @@ const ProductDetailsModal = ({ visible, handleCancel, hit }) => {
             message.success("Order Placed Successfully!")
             handleCancel(); // Close the modal after successful order placement
         } catch (error) {
+            message.error("Error placing order: " +  error)
             console.error("Error placing order:", error);
         }
     };
