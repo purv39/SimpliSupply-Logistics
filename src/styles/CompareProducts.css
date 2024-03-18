@@ -40,3 +40,14 @@
     font-size: 24px; /* Larger font size for subheading */
     color: #333; /* Dark text color */
 }
+
+.ais-Hits-item {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0px;
+}
+
+.ais-Hits-list li:empty {
+    display: none;
+}
+  

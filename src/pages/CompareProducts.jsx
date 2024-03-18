@@ -10,13 +10,14 @@ import { Switch } from "antd";
 import 'instantsearch.css/themes/algolia-min.css';
 
 const CompareProducts = () => {
-    const [searchClient, setSearchClient] = useState(null);
     const { currentUser } = useAuth();
     const [connectedDistributors, setConnectedDistributors] = useState([]);
-    const [hits, setHits] = useState([]);
     const storeID = currentUser.selectedStore;
     const [showConnected, setShowConnected] = useState(true); // State to track the current view mode
-
+    const searchClient = algoliasearch(
+        'F3OFLXS7ZR',
+        'bae3813dadf5491de4dcf43446a50dbd'
+      );
     useEffect(() => {
         const fetchDistributionStores = async () => {
             const distributors = await FetchAllDistributorsForStore(storeID);
@@ -25,10 +26,6 @@ const CompareProducts = () => {
 
         fetchDistributionStores();
     }, [storeID]);
-
-    useEffect(() => {
-        setSearchClient(algoliasearch('F3OFLXS7ZR', 'bae3813dadf5491de4dcf43446a50dbd'));
-    }, []);
 
     const handleToggle = () => {
         setShowConnected(prev => !prev); // Toggle the state
@@ -43,32 +40,39 @@ const CompareProducts = () => {
 
                 {searchClient && (
                     <div className="search-container">
-                        <InstantSearch searchClient={searchClient} indexName="products">
+                        <InstantSearch searchClient={searchClient} indexName="products" future={{
+                            preserveSharedStateOnUnmount: true,
+                        }}>
                             <div className="search-box-container">
-                                <SearchBox placeholder={'Browse Products'} searchAsYouType={false} className="custom-searchbox" />
+                                <SearchBox placeholder={'Browse Products'} searchAsYouType={true} className="custom-searchbox" />
                             </div>
                             <div className="toggle-container">
                                 <h4>Toggle Connected Distributors</h4>
                                 <Switch onChange={handleToggle} defaultChecked />
                             </div>
 
-                            {showConnected ? (
-                                <div>
-                                    <h2 className="hits-heading">Connected Distributor Hits</h2>
-                                    <Hits hitComponent={(hit) => <ProductHitDetails {...hit} showConnectedHits={true} connectedDistributors={connectedDistributors}  />} />
-                                </div>
-                            ) : (
-                                <div>
-                                    <h2 className="hits-heading">Other Distributor Lists</h2>
-                                    <Hits hitComponent={(hit) => <ProductHitDetails {...hit} showConnectedHits={false} connectedDistributors={connectedDistributors}  />} />
-                                </div>
-                            )}
+                            <div>
+                                <h2 className="hits-heading"> {showConnected ? ("Connected Distributor Hits") : ("Other Distributors Hits")}</h2>
+                                <Hits
+                                    hitComponent={(hit) => {
+                                        if (connectedDistributors !== undefined) {
+                                            const isConnected = connectedDistributors.some(distributor => distributor.id === hit.hit.distributorID);
+                                            if (isConnected && showConnected) {
+                                                return <ProductHitDetails {...hit} />;
+                                            } else if (!isConnected && !showConnected) {
+                                                return <ProductHitDetails {...hit} />;
+                                            }
+                                        }
+                                        return null;
+                                    }}
+                                />
+                            </div>
+
                         </InstantSearch>
                     </div>
                 )}
             </div>
-        </div>
-
+        </div >
     );
 };
 
