@@ -30,9 +30,9 @@ const ForgotPassword = () => {
     <div className="login-container" style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'auto', backgroundColor: '#eaf9f5' }}>
       <div className="login-content" style={{ display: 'flex', flex: 1 }}>
         <div className="login-image" style={{ maxWidth: '100%', justifyContent: 'center', display: 'flex' }}>
-          <img src={loginImage} alt="Login" style={{ width: '100%', marginTop: '8%' }} />
+          <img src={loginImage} alt="Login" />
         </div>
-        <div className="login-form" style={{ flex: '0 0 50%', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', maxWidth: '90%', margin: '0 auto' }}>
+        <div className="login-form" style={{ flex: '0 0 50%', padding: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', maxWidth: '90%', margin: '0 auto' }}>
           <header style={{ display: 'flex', justifyContent: 'center' }}>
             <img src={companyLogo} alt="Company Logo" style={{ width: '100%', marginTop: '-90px' }} />
           </header>

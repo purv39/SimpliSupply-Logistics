@@ -14,7 +14,7 @@ const CreateNewOrder = () => {
     const [loading, setLoading] = useState(true);
     const { currentUser } = useAuth();
     const storeID = currentUser.selectedStore;
-    const {distributorID: paramsDistributorID} = useParams();
+    const { distributorID: paramsDistributorID } = useParams();
 
     const handleDistributorClick = async (storeID) => {
         setLoading(true);
@@ -78,14 +78,14 @@ const CreateNewOrder = () => {
 
     useEffect(() => {
         handleDistributorClick(storeID);
-      
-        if(paramsDistributorID) {
+
+        if (paramsDistributorID) {
             setExpanded(paramsDistributorID)
         }
     }, [storeID, paramsDistributorID]); // Empty dependency array ensures this effect runs only once on mount
 
     return (
-        <Box p={4}>
+        <Box>
             <MainNavBar />
             <h2>Distributors</h2>
             {loading ? (
@@ -105,7 +105,7 @@ const CreateNewOrder = () => {
                                     aria-controls="panel1bh-content"
                                     id="panel1bh-header"
                                 >
-                                    <h2>{distributor.data.storeName}</h2>
+                                    <h4>{distributor.data.storeName}</h4>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <TableContainer component={Paper}>
