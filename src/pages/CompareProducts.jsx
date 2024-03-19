@@ -5,7 +5,7 @@ import { InstantSearch, SearchBox, Hits } from "react-instantsearch";
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchAllDistributorsForStore } from "../firebase/firebaseFirestore";
 import "../styles/CompareProducts.css";
-import { Switch } from "antd";
+import { Switch, Typography } from "antd";
 import 'instantsearch.css/themes/algolia-min.css';
 import ConnectedDistributorsProductHits from "../components/ConnectedDistributorsProductHits";
 import OtherDistributorsProductHits from "../components/OtherDistributorsProductHits";
@@ -61,10 +61,13 @@ const CompareProducts = () => {
                                             if (isConnected && showConnected) {
                                                 return <ConnectedDistributorsProductHits {...hit} />;
                                             } else if (!isConnected && !showConnected) {
+                                                console.log("here");
                                                 return <OtherDistributorsProductHits {...hit} />;
                                             }
                                         }
-                                        return null;
+                                        if(!showConnected) {
+                                            return <OtherDistributorsProductHits {...hit} />;
+                                        }
                                     }}
                                 />
                             </div>
