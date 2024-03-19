@@ -403,6 +403,19 @@ export const fetchOrderHistoryForDistributor = async (distributorID) => {
     }
 };
 
+export const UpdateUserData = async (userId, updatedInfo) => {
+    const userRef = doc(db, 'Users', userId);
+    try {
+      await updateDoc(userRef, {
+        ...updatedInfo, // Spread the updatedInfo object to only update the provided fields
+      });
+      console.log("User data updated successfully");
+    } catch (error) {
+      console.error("Error updating user data:", error);
+      throw new Error(error);
+    }
+  };
+
 export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
     try {
         const updateMap = new Map(); // Map to store docRef and newUnitsInStock
@@ -507,6 +520,8 @@ export const fetchOrderHistoryForStore = async (storeID) => {
     }
 };
 
+
+
 export const FetchUserData = async (uuid) => {
     const userDataRef = doc(db, 'Users', uuid);
     const userDataSnapshot = await getDoc(userDataRef);
@@ -536,6 +551,29 @@ export const FetchStoresDetailsByIDs = async (storeIDs) => {
       throw new Error('Error fetching stores details');
     }
   };
+
+
+export const FetchDistributionStoresDetailsByUID = async (storeIDs) => {
+    try {
+        const storesData = await Promise.all(storeIDs.map(async (storeID) => {
+            const storeRef = doc(db, 'Distribution Stores', storeID);
+    
+            const storeSnap = await getDoc(storeRef);
+            if (!storeSnap.exists()) {
+                console.error(`No data found for store with ID: ${storeID}`);
+                return null; // This will ensure that non-existing stores do not cause errors.
+            }
+            return { id: storeID, ...storeSnap.data() };
+        }));
+
+        // Filter out any potential null values if some stores were not found.
+        return storesData.filter(store => store !== null);
+    } catch (error) {
+        console.error('Error fetching stores details:', error);
+        throw new Error('Error fetching stores details');
+    }
+};
+
 
   export const FetchStoreDetails = async (storeId) => {
     try {
