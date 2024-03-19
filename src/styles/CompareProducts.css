@@ -1,0 +1,53 @@
+.compare-products-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.compare-products-heading {
+    margin-top: 20px;
+    font-size: 32px; /* Larger font size for heading */
+    color: #333; /* Dark text color */
+}
+
+.search-container {
+    margin-bottom: 40px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 90%; /* Adjust width as needed */
+}
+
+.search-box-container {
+    margin-bottom: 20px;
+}
+
+.toggle-container {
+    margin-bottom: 20px;
+}
+
+.hits-container {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Adjust width as needed */
+}
+
+.hits-heading {
+    margin-bottom: 20px;
+    font-size: 24px; /* Larger font size for subheading */
+    color: #333; /* Dark text color */
+}
+
+.ais-Hits-item {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0px;
+}
+
+.ais-Hits-list li:empty {
+    display: none;
+}
+  

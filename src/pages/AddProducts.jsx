@@ -1,3 +1,4 @@
+// Imports...
 import { useState } from 'react';
 import { TextField, Button, Typography, Grid } from '@mui/material';
 import { AddProductToInventory } from '../firebase/firebaseFirestore';
@@ -12,9 +13,11 @@ const AddProducts = () => {
   const [product, setProduct] = useState({
     productName: '',
     category: '',
+    description: '', // Added description field
     quantityPerUnit: '',
     unitPrice: '',
-    unitsInStock: ''
+    unitsInStock: '',
+    moq: '' // Added MOQ field
   });
 
   const [loading, setLoading] = useState(false);
@@ -29,13 +32,13 @@ const AddProducts = () => {
     e.preventDefault();
 
     // Form validation
-    if (!product.productName || !product.category || !product.quantityPerUnit || !product.unitPrice || !product.unitsInStock) {
+    if (!product.productName || !product.category || !product.quantityPerUnit || !product.unitPrice || !product.unitsInStock || !product.description || !product.moq) {
       setError('Please fill out all fields.');
       return;
     }
 
-    if (parseFloat(product.unitPrice) <= 0 || parseInt(product.unitsInStock) <= 0) {
-      setError('Unit price and units in stock must be positive numbers.');
+    if (parseFloat(product.unitPrice) <= 0 || parseInt(product.unitsInStock) <= 0 || parseInt(product.moq) <= 0) {
+      setError('Unit price, units in stock, and MOQ must be positive numbers.');
       return;
     }
 
@@ -48,18 +51,22 @@ const AddProducts = () => {
         selectedStore,
         product.productName,
         product.category,
+        product.description,
         product.quantityPerUnit,
         parseFloat(product.unitPrice),
-        parseInt(product.unitsInStock)
+        parseInt(product.unitsInStock),
+        parseInt(product.moq)
       );
 
       // Reset form fields
       setProduct({
         productName: '',
         category: '',
+        description: '',
         quantityPerUnit: '',
         unitPrice: '',
-        unitsInStock: ''
+        unitsInStock: '',
+        moq: ''
       });
 
       // Provide feedback to the user
@@ -105,6 +112,16 @@ const AddProducts = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              label="Description"
+              name="description"
+              value={product.description}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
               label="Quantity Per Unit"
               name="quantityPerUnit"
               value={product.quantityPerUnit}
@@ -130,6 +147,17 @@ const AddProducts = () => {
               name="unitsInStock"
               type="number"
               value={product.unitsInStock}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Minimum Order Quantity (MOQ)"
+              name="moq"
+              type="number"
+              value={product.moq}
               onChange={handleChange}
               required
               fullWidth

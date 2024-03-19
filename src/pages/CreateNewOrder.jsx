@@ -5,6 +5,7 @@ import { FetchAllDistributorsForStore, CreateNewOrderForStore } from "../firebas
 import MainNavBar from '../components/MainNavBar';
 import { useAuth } from '../firebase/firebaseAuth';
 import { message } from 'antd';
+import { useParams } from 'react-router-dom';
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
@@ -13,6 +14,7 @@ const CreateNewOrder = () => {
     const [loading, setLoading] = useState(true);
     const { currentUser } = useAuth();
     const storeID = currentUser.selectedStore;
+    const {distributorID: paramsDistributorID} = useParams();
 
     const handleDistributorClick = async (storeID) => {
         setLoading(true);
@@ -76,7 +78,11 @@ const CreateNewOrder = () => {
 
     useEffect(() => {
         handleDistributorClick(storeID);
-    }, [storeID]);
+      
+        if(paramsDistributorID) {
+            setExpanded(paramsDistributorID)
+        }
+    }, [storeID, paramsDistributorID]); // Empty dependency array ensures this effect runs only once on mount
 
     return (
         <Box p={4}>
