@@ -11,7 +11,6 @@ const MainNavBar = ({ reloadNavbar }) => {
   const navigateTo = (path) => {
     navigate(path);
   };
-
   const handleLogout = async () => {
     try {
       await LogOut();
@@ -61,6 +60,7 @@ const MainNavBar = ({ reloadNavbar }) => {
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/DistributorList')}>Distributor List</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/OrderHistory')}>Order History</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/Addstore')}>Add Store</button></li>}
+          {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/CompareProducts')}>Compare Products</button></li>}
         </ul>
       </nav>
       <nav>
@@ -69,7 +69,6 @@ const MainNavBar = ({ reloadNavbar }) => {
           {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/Invitations')}>Invitations</button></li>}
           {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/ShipmentHistory')}>Shipment History</button></li>}
           {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/AddDistributionStore')}>Add Distribution Center</button></li>}
-
         </ul>
       </nav>
       <div className="mb-3">
@@ -84,7 +83,10 @@ const MainNavBar = ({ reloadNavbar }) => {
           ))}
         </select>
       </div>
-      <button className="logout-button" onClick={handleLogout}>Logout</button>
+      <div>
+        <button className="nav-button my-page"  onClick={() => navigateTo('/Welcome')}>My Page</button>
+        <button className="logout-button" onClick={handleLogout}>Logout</button> 
+      </div>
     </div>
   )
 }

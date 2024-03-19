@@ -1,0 +1,25 @@
+.add-products-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .add-products-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .add-products-form-row {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .add-products-form-row > div {
+    flex: 1;
+  }
+  
+  .add-products-submit-button {
+    align-self: center;
+    margin-top: 1rem;
+  }

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography, Paper, IconButton } from '@mui/material';
+import { Grid, Typography, Paper, Button } from '@mui/material';
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchInvitationsForDistributor, AcceptInvitation, DeclineInvitation } from "../firebase/firebaseFirestore";
 import { message } from 'antd';
 import MainNavBar from '../components/MainNavBar';
-import { CheckCircleOutlineOutlined, CancelOutlined } from '@mui/icons-material'; // Import icons
+// import { CheckCircleOutlineOutlined, CancelOutlined } from '@mui/icons-material'; 
+import '../styles/Invitations.css'; // Import CSS file
 
 const Invitations = () => {
     const [invitations, setInvitations] = useState([]);
@@ -28,7 +29,6 @@ const Invitations = () => {
         try {
             await AcceptInvitation(distributorID, storeID, invitationId);
             setInvitations(invitations.filter(invitation => invitation.id !== invitationId));
-            // Remove the invitation from the invitations state array
             message.success('Invitation accepted successfully!');
         } catch (error) {
             console.error('Error accepting invitation:', error);
@@ -40,7 +40,6 @@ const Invitations = () => {
         try {
             await DeclineInvitation(distributorID, storeID, invitationId);
             setInvitations(invitations.filter(invitation => invitation.id !== invitationId));
-            // Remove the invitation from the invitations state array
             message.success('Invitation declined successfully!');
         } catch (error) {
             console.error('Error declining invitation:', error);
@@ -49,7 +48,7 @@ const Invitations = () => {
     };    
     
     return (
-        <div>
+        <div className="invitations-container">
             <MainNavBar />
             <Typography variant="h4" gutterBottom>
                 Invitations
@@ -60,14 +59,24 @@ const Invitations = () => {
                 <Grid container spacing={2}>
                     {invitations.map(invitation => (
                         <Grid item xs={12} key={invitation.id}>
-                            <Paper elevation={3} sx={{ p: 2 }}>
-                                <Typography variant="subtitle1">Store ID: {invitation.data.storeID}</Typography>
-                                <IconButton onClick={() => handleAcceptInvitation(invitation.id, invitation.data.storeID)} color="success" aria-label="accept invitation">
-                                    <CheckCircleOutlineOutlined /> Accept
-                                </IconButton>
-                                <IconButton onClick={() => handleDeclineInvitation(invitation.id, invitation.data.storeID)} color="error" aria-label="decline invitation">
-                                    <CancelOutlined /> Decline
-                                </IconButton>
+                            <Paper elevation={3} className="invitation-paper">
+                                <Typography variant="subtitle1" gutterBottom>Store ID: {invitation.data.storeID}</Typography>
+                                    <div className="invitation-buttons">
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        onClick={() => handleAcceptInvitation(invitation.id, invitation.data.storeID)}
+                                    >
+                                        Accept
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        onClick={() => handleDeclineInvitation(invitation.id, invitation.data.storeID)}
+                                    >
+                                        Decline
+                                    </Button>
+                                    </div>
                             </Paper>
                         </Grid>
                     ))}

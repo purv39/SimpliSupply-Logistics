@@ -29,7 +29,7 @@ const AddDistributor = () => {
       }
       setLoading(false);
     };
-  
+
     fetchDistributors();
   }, []);
 
@@ -92,74 +92,76 @@ const AddDistributor = () => {
 
   return (
     <div>
-    <MainNavBar />
-    <h2 className="text-center mb-4">Add Distributor</h2>
-    {loading ? (
-      <div className="loading-spinner">
-        <RiseLoader color="#36D7B7" loading={loading} size={10} />
-      </div>
-    ) : error ? (
-      <p>Error: {error}</p>
-    ) : (
-      <div className="distributor-invitation-container">
-        <div className="distributor-table-container">
-          <TableContainer component={Paper} className="tableContainer">
-            <Table aria-label="distributor selection table">
-              <TableBody>
-                <TableRow>
-                  <TableCell>Select Distributor</TableCell>
-                  <TableCell align="right">
-                    <select
-                      value={selectedDistributor}
-                      onChange={handleDistributorChange}
-                      className="select-dropdown"
-                    >
-                      <option value="" disabled>
-                        ----------- Select Distributor -----------
-                      </option>
-                      {distributorOptions.map((distributor) => (
-                        <option key={distributor.id} value={distributor.id}>
-                          {distributor.storeName}
-                        </option>
-                      ))}
-                    </select>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-          
-          {userInfo && (
+      <MainNavBar />
+      <h2 className="text-center mb-4">Add Distributor</h2>
+      {loading ? (
+        <div className="loading-spinner">
+          <RiseLoader color="#36D7B7" loading={loading} size={10} />
+        </div>
+      ) : error ? (
+        <p>Error: {error}</p>
+      ) : (
+        <div className="distributor-invitation-container">
+          <div className="distributor-table-container">
             <TableContainer component={Paper} className="tableContainer">
-              <Table aria-label="user information table">
+              <Table aria-label="distributor selection table">
                 <TableBody>
                   <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell align="right">{userInfo.storeName}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Address</TableCell>
-                    <TableCell align="right">{formatAddress(userInfo)}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Business Number</TableCell>
-                    <TableCell align="right">{userInfo.businessNumber}</TableCell>
+                    <TableCell>Select Distributor</TableCell>
+                    <TableCell align="right">
+                      <select
+                        value={selectedDistributor}
+                        onChange={handleDistributorChange}
+                        className="select-dropdown"
+                      >
+                        <option value="" disabled>
+                          Select Distributor 
+                        </option>
+                        {distributorOptions.map((distributor) => (
+                          <option key={distributor.id} value={distributor.id}>
+                            {distributor.storeName}
+                          </option>
+                        ))}
+                      </select>
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
-          )}
-          
-          <div className="addButtonContainer">
-            <Button variant="contained" color="primary" onClick={handleAddDistributor}>
-              Add Distributor
-            </Button>
-          </div>
-        </div>
 
-      </div>
-    )}
-  </div>
+            {userInfo && (
+              <TableContainer component={Paper} className="tableContainer">
+                <Table aria-label="user information table">
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell align="right">{userInfo.storeName}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Address</TableCell>
+                      <TableCell align="right">{formatAddress(userInfo)}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Business Number</TableCell>
+                      <TableCell align="right">{userInfo.businessNumber}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+
+          </div>
+
+
+          <div className="add-button-container">
+              <Button variant="contained" color="primary" onClick={handleAddDistributor}>
+                Add Distributor
+              </Button>
+              
+            </div>
+        </div>
+      )}
+    </div>
   );
 };
 
