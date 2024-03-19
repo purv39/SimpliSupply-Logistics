@@ -22,10 +22,16 @@ const AddProducts = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [csvFile, setCsvFile] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProduct({ ...product, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setCsvFile(file);
   };
 
   const handleSubmit = async (e) => {
@@ -82,6 +88,22 @@ const AddProducts = () => {
     setError('');
   };
 
+  const handleCsvSubmit = (e) => {
+    e.preventDefault();
+    if (!csvFile) {
+      setError('Please select a CSV file.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const csvData = event.target.result;
+      // Parse CSV data and validate
+      // Then add products to inventory
+    };
+    reader.readAsText(csvFile);
+  };
+
   return (
     <div>
       <MainNavBar />
@@ -89,6 +111,24 @@ const AddProducts = () => {
         <Typography variant="h4" gutterBottom>
           Add Products
         </Typography>
+        <form className="csv-form" onSubmit={handleCsvSubmit}>
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            className="csv-input"
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+            className="csv-submit-button"
+          >
+            Import from CSV
+          </Button>
+        </form>
+        
         <form className="add-products-form" onSubmit={handleSubmit}>
           <div className="add-products-form-row">
             <TextField
