@@ -40,7 +40,7 @@ const ConnectedDistributorsProductHits = ({ hit }) => {
             <div className="product-quantity">MOQ: {hit.moq}</div>
             <div className="product-price">Price: ${hit.unitPrice}</div>
             <button className="create-order-button" onClick={createOrderForDistributor}>Create Order</button>
-            <ProductDetailsModal visible={visible} handleCancel={handleCancel} hit={hit} />
+            <ProductDetailsModal visible={visible} handleCancel={handleCancel} hit={hit} connected={true}/>
         </div>
     );
 };

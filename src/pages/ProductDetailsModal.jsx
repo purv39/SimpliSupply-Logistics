@@ -5,12 +5,12 @@ import { CreateNewOrderForStore } from '../firebase/firebaseFirestore';
 import { useAuth } from '../firebase/firebaseAuth';
 import { message } from 'antd';
 
-const ProductDetailsModal = ({ visible, handleCancel, hit }) => {
+const ProductDetailsModal = ({ visible, handleCancel, hit, connected }) => {
     const [quantity, setQuantity] = useState(hit.moq);
     const [error, setError] = useState('');
     const [validQuantity, setValidQuantity] = useState(true);
-    const { currentUser } = useAuth();    
-    const [orderItems, setOrderItems] = useState([]);
+    const { currentUser } = useAuth();
+    const [totalPrice, setTotalPrice] = useState(0);
 
     const handleQuantityChange = (value) => {
         setQuantity(prevQuantity => {
@@ -25,7 +25,11 @@ const ProductDetailsModal = ({ visible, handleCancel, hit }) => {
             if (quantity < hit.moq) {
                 setError(`Quantity should be at least ${hit.moq}`);
                 setValidQuantity(false);
-            } else if (quantity > hit.unitsInStock) {
+            } else if (hit.unitsInStock === 0) {
+                setError(`Item out of stock`);
+                setValidQuantity(false);
+            }
+             else if (quantity > hit.unitsInStock) {
                 setError(`Quantity should be less than ${hit.unitsInStock}`);
                 setValidQuantity(false);
             } else {
@@ -34,8 +38,13 @@ const ProductDetailsModal = ({ visible, handleCancel, hit }) => {
             }
         };
 
+        if(connected) {
+            setTotalPrice((hit.unitPrice * quantity).toFixed(2));
+        } else {
+            setTotalPrice((hit.unitPrice * hit.moq).toFixed(2));
+        }
         validateQuantity();
-    }, [quantity, hit.moq, hit.unitsInStock]);
+    }, [quantity, hit.moq, hit.unitsInStock, totalPrice]);
 
     const handlePlaceOrder = async () => {
         try {
@@ -54,22 +63,20 @@ const ProductDetailsModal = ({ visible, handleCancel, hit }) => {
                 },
                 unitsOrdered: quantity
             }];
-            console.log(item)
-
-            setOrderItems([item]); // Set the order items
 
             // Create the new order
             const orderID = await CreateNewOrderForStore(currentUser.selectedStore, hit.distributorID, item);
-            
+
             message.success("Order Placed Successfully!")
             handleCancel(); // Close the modal after successful order placement
         } catch (error) {
-            message.error("Error placing order: " +  error)
+            message.error("Error placing order: " + error)
             console.error("Error placing order:", error);
         }
     };
 
-    const totalPrice = (hit.unitPrice * quantity).toFixed(2); // Limit to 2 decimal places
+    
+   
 
     return (
         <Modal
@@ -80,9 +87,10 @@ const ProductDetailsModal = ({ visible, handleCancel, hit }) => {
                 <Button key="back" onClick={handleCancel}>
                     Close
                 </Button>,
+                connected && (
                 <Button key="submit" type="primary" onClick={handlePlaceOrder} disabled={!validQuantity}>
                     Place Order
-                </Button>,
+                </Button>)
             ]}
             style={{ top: 20 }}
             width={800}
@@ -103,9 +111,10 @@ const ProductDetailsModal = ({ visible, handleCancel, hit }) => {
                 </Typography.Paragraph>
 
                 <Typography.Title level={4}>Order Details</Typography.Title>
-                <Form.Item label="Quantity" validateStatus={error ? 'error' : ''} help={error}>
-                    <Input type="number" value={quantity} onChange={(e) => handleQuantityChange(e.target.value)} />
-                </Form.Item>
+                {connected &&
+                    <Form.Item label="Quantity" validateStatus={error ? 'error' : ''} help={error}>
+                        <Input type="number" value={quantity} onChange={(e) => handleQuantityChange(e.target.value)} />
+                    </Form.Item>}
                 <Typography.Paragraph>
                     <strong>MOQ (Minimum Order Quantity):</strong> {hit.moq}
                 </Typography.Paragraph>

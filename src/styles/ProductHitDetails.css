@@ -93,7 +93,7 @@
 .request-button {
   width: 100%;
   padding: 12px;
-  background-color: #4caf50;
+  background-color: #2c94ef;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -103,7 +103,7 @@
 }
 
 .request-button:hover {
-  background-color: #45a049;
+  background-color: #2467a2;
 }
 
 .request-button[disabled] {
