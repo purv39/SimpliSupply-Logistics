@@ -65,7 +65,7 @@ const CompareProducts = () => {
                                                 return <OtherDistributorsProductHits {...hit} />;
                                             }
                                         }
-                                        if(!showConnected) {
+                                        else if(!showConnected) {
                                             return <OtherDistributorsProductHits {...hit} />;
                                         }
                                     }}
