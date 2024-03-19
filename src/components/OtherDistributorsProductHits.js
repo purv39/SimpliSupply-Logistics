@@ -34,17 +34,22 @@ const OtherDistributorsProductHits = ({ hit }) => {
 
     const sendInvitation = async () => {
         try {
+            const existingInvitation = await CheckForExistingInvitation(hit.distributorID, currentUser.selectedStore);
+            if (existingInvitation) {
+                message.error("It has already been requested.");
+                return;
+            }
             const invitationID = await AddInvitation(hit.distributorID, currentUser.selectedStore);
             setInvitationExists(true);
             message.success("Request sent successfully");
         } catch (error) {
             message.error(error);
         }
-        
+
     }
     return (
         <div className="product-catalog-item">
-            <div className="product-name">{hit.productName} <InfoOutlined onClick={showModal} style={{cursor: "pointer"}}/></div>
+            <div className="product-name">{hit.productName} <InfoOutlined onClick={showModal} style={{ cursor: "pointer" }} /></div>
             <div className="product-brand">{hit.distributorStoreName}</div>
             <div className="product-quantity">Quantity Per Unit: {hit.quantityPerUnit}</div>
             <div className="product-quantity">MOQ: {hit.moq}</div>
@@ -52,7 +57,7 @@ const OtherDistributorsProductHits = ({ hit }) => {
             <button className="request-button" disabled={invitationExists} onClick={sendInvitation}>
                 {invitationExists ? 'Requested' : 'Connect'}
             </button>
-            <ProductDetailsModal visible={visible} handleCancel={handleCancel} hit={hit} connected={false}/>
+            <ProductDetailsModal visible={visible} handleCancel={handleCancel} hit={hit} connected={false} />
 
         </div>
     );
