@@ -44,7 +44,7 @@ const ProductDetailsModal = ({ visible, handleCancel, hit, connected }) => {
             setTotalPrice((hit.unitPrice * hit.moq).toFixed(2));
         }
         validateQuantity();
-    }, [quantity, hit.moq, hit.unitsInStock, totalPrice]);
+    }, [quantity, hit.moq, hit.unitsInStock, totalPrice, connected, hit.unitPrice]);
 
     const handlePlaceOrder = async () => {
         try {
@@ -65,7 +65,7 @@ const ProductDetailsModal = ({ visible, handleCancel, hit, connected }) => {
             }];
 
             // Create the new order
-            const orderID = await CreateNewOrderForStore(currentUser.selectedStore, hit.distributorID, item);
+            await CreateNewOrderForStore(currentUser.selectedStore, hit.distributorID, item);
 
             message.success("Order Placed Successfully!")
             handleCancel(); // Close the modal after successful order placement

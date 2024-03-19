@@ -93,7 +93,7 @@ const CreateNewOrder = () => {
         if(paramsDistributorID) {
             setExpanded(paramsDistributorID)
         }
-    }, [storeID]); // Empty dependency array ensures this effect runs only once on mount
+    }, [storeID, paramsDistributorID]); // Empty dependency array ensures this effect runs only once on mount
 
     return (
         <div>

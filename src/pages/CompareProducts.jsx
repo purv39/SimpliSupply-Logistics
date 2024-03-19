@@ -5,7 +5,7 @@ import { InstantSearch, SearchBox, Hits } from "react-instantsearch";
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchAllDistributorsForStore } from "../firebase/firebaseFirestore";
 import "../styles/CompareProducts.css";
-import { Switch, Typography } from "antd";
+import { Switch } from "antd";
 import 'instantsearch.css/themes/algolia-min.css';
 import ConnectedDistributorsProductHits from "../components/ConnectedDistributorsProductHits";
 import OtherDistributorsProductHits from "../components/OtherDistributorsProductHits";

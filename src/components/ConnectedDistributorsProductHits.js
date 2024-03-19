@@ -1,11 +1,9 @@
-import { useNavigate } from "react-router-dom";
 import "../styles/ProductHitDetails.css";
 import { useState } from "react";
 import ProductDetailsModal from "../pages/ProductDetailsModal";
-import { ForkLeft, InfoOutlined, Launch } from "@mui/icons-material";
+import { InfoOutlined, Launch } from "@mui/icons-material";
 
 const ConnectedDistributorsProductHits = ({ hit }) => {
-    const navigate = useNavigate();
     const distributorID = hit.distributorID;
     
     const navigateToCreateOrder = () => {

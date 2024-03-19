@@ -39,7 +39,7 @@ const OtherDistributorsProductHits = ({ hit }) => {
                 message.error("It has already been requested.");
                 return;
             }
-            const invitationID = await AddInvitation(hit.distributorID, currentUser.selectedStore);
+            await AddInvitation(hit.distributorID, currentUser.selectedStore);
             setInvitationExists(true);
             message.success("Request sent successfully");
         } catch (error) {
