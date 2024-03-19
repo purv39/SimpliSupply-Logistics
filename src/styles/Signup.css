@@ -112,3 +112,30 @@ input:focus {
   display: flex;
   justify-content: space-evenly;
 }
+
+/* Add additional styles for smaller screens using media queries */
+@media only screen and (max-width: 768px) {
+  .container {
+    flex-direction: column; /* Change flex direction for smaller screens */
+  }
+
+  .image-container {
+    max-width: 100%;
+    background-size: cover;
+    border-radius: 0;
+  }
+
+  .register-container {
+    max-width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+    align-items: center;
+  }
+
+  .signup-form {
+    width: 90%; /* Adjust width of the form */
+    max-width: 400px; /* Set maximum width for the form */
+    padding: 20px;
+    border-radius: 20px;
+  }
+}

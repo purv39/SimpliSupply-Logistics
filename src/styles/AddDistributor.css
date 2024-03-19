@@ -1,42 +1,23 @@
-/* AddDistributor.css */
-.tableContainer {
-  max-width: 850px; /* Or any other width you prefer */
-  margin: auto; /* This will center the table on the page */
-}
-
-.addButtonContainer {
-  text-align: center; /* This will center the button */
-  margin-top: 20px; /* Adds some space above the button */
-}
-
-.select-dropdown option[value=""][disabled] {
-  text-align: center;
-  color: grey;
-}
-
-
 .select-dropdown {
-  width: auto; /* or you can specify a width like 200px */
-  max-width: 100%; /* Ensure it doesn't exceed the parent width */
-  padding: 8px 16px; /* Adjust padding to your preference */
-  text-align-last: center;
-}
-
-.select-dropdown option {
-  text-align: center;
+  width: 100%;
+  padding: 8px 16px;
 }
 
 .select-dropdown:focus {
-  outline: none; /* Removes the default focus outline */
-  border: 1px solid #0366d6; /* You can set a custom border for focus */
+  outline: none;
+  border: 1px solid #0366d6;
 }
 
 .distributor-invitation-container {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 auto; /* Adjust as necessary to center the container */
-  padding: 0 30px; /* Adjust as necessary for padding */
+  margin: 0 auto;
+  padding: 0 15px; /* Adjust padding for smaller screens */
 }
-.distributor-table-container, .invitations-list-container {
-  flex: 1; /* Assigns equal width to both containers */
+
+.distributor-table-container {
+  max-width: 100%;
+}
+
+.add-button-container {
+  text-align: center;
+  margin-top: 20px;
 }

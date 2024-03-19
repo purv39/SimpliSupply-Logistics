@@ -459,6 +459,20 @@ export const CreateNewOrderForStore = async (storeID, distributorID, orderItems)
     }
 };
 
+export const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+        const orderRef = doc(db, 'Orders', orderId);
+        await updateDoc(orderRef, {
+            currentStatus: newStatus
+        });
+        console.log(`Order status updated successfully: ${orderId} -> ${newStatus}`);
+        return; // Return nothing if the update is successful
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        throw error; // Throw error for handling in UI or higher-level components
+    }
+};
+
 export const fetchOrderHistoryForStore = async (storeID) => {
     try {
         const ordersQuery = query(collection(db, 'Orders'), where('storeID', '==', storeID));
@@ -500,6 +514,45 @@ export const FetchUserData = async (uuid) => {
 
     return userData;
 }
+
+// This function fetches detailed information for a list of store IDs.
+export const FetchStoresDetailsByIDs = async (storeIDs) => {
+    try {
+      const storesData = await Promise.all(storeIDs.map(async (storeID) => {
+        const storeRef = doc(db, 'Retail Stores', storeID);
+
+        const storeSnap = await getDoc(storeRef);
+        if (!storeSnap.exists()) {
+          console.error(`No data found for store with ID: ${storeID}`);
+          return null; // This will ensure that non-existing stores do not cause errors.
+        }
+        return { id: storeID, ...storeSnap.data() };
+      }));
+  
+      // Filter out any potential null values if some stores were not found.
+      return storesData.filter(store => store !== null);
+    } catch (error) {
+      console.error('Error fetching stores details:', error);
+      throw new Error('Error fetching stores details');
+    }
+  };
+
+  export const FetchStoreDetails = async (storeId) => {
+    try {
+        const storeRef = doc(db, 'Retail Stores', storeId);
+        const storeSnap = await getDoc(storeRef);
+
+        if (storeSnap.exists()) {
+            return { id: storeSnap.id, ...storeSnap.data() };
+        } else {
+            throw new Error('Distribution store details not found.');
+        }
+    } catch (error) {
+        console.error('Error fetching distribution store details:', error);
+    }
+}
+
+
 // fetching store name by store id.
 export const FetchStoreDataByID = async (uuid) => {
     const userDataRef = doc(db, 'Retail Stores', uuid);

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, IconButton } from '@mui/material';
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, IconButton, Button, Typography, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { fetchOrderHistoryForDistributor } from '../firebase/firebaseFirestore';
+import { fetchOrderHistoryForDistributor, updateOrderStatus } from '../firebase/firebaseFirestore'; // Import the function to update order status
 import ShipmentDetailsTable from '../components/ShipmentDetailsTable';
 import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners';
-import "../styles/LoadingSpinner.css";
 import { useAuth } from '../firebase/firebaseAuth';
-import { Typography } from 'antd';
 
 const ShipmentHistory = () => {
     const [shipments, setShipments] = useState([]);
@@ -19,7 +17,6 @@ const ShipmentHistory = () => {
 
     useEffect(() => {
         const fetchShipments = async () => {
-            setLoading(true);
             const shipmentData = await fetchOrderHistoryForDistributor(distributorID);
             setShipments(shipmentData);
             setLoading(false);
@@ -37,16 +34,35 @@ const ShipmentHistory = () => {
         setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
     };
 
+    const handleStatusChange = async (orderId, newStatus) => {
+        try {
+            await updateOrderStatus(orderId, newStatus);
+            // Update the status in the UI
+            const updatedShipments = shipments.map(order => {
+                if (order.id === orderId) {
+                    return { ...order, currentStatus: newStatus };
+                }
+                return order;
+            });
+            setShipments(updatedShipments);
+        } catch (error) {
+            console.error('Error updating order status:', error);
+            // Handle error (e.g., display error message to user)
+        }
+    };
+
     return (
         <div>
             <MainNavBar />
-            <h2>Shipment History</h2>
+            <Typography variant="h4" gutterBottom>
+                Shipment History
+            </Typography>
             {loading ? (
                 <div className="loading-spinner">
                     <RiseLoader color="#36D7B7" loading={loading} size={10} />
                 </div>
             ) : shipments.length === 0 ? (
-                <Typography>No shipments in shipment history</Typography>
+                <Typography variant="body1">No shipments in shipment history</Typography>
             ) : (
                 <TableContainer component={Paper}>
                     <Table aria-label="collapsible table">
@@ -57,18 +73,25 @@ const ShipmentHistory = () => {
                                 <TableCell>Total Cost</TableCell>
                                 <TableCell>Created At</TableCell>
                                 <TableCell>Status</TableCell>
+                                <TableCell>Actions</TableCell> {/* Add a new column for actions */}
                                 <TableCell />
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {shipments.map((order) => (
                                 <React.Fragment key={order.id}>
-                                    <TableRow onClick={() => handleExpandClick(order.id)}>
+                                    <TableRow>
                                         <TableCell>{order.id}</TableCell>
                                         <TableCell>{order.storeName}</TableCell>
                                         <TableCell>{`$${order.totalCost}`}</TableCell>
                                         <TableCell>{formatDate(order.createdAt)}</TableCell>
                                         <TableCell>{order.currentStatus}</TableCell>
+                                        <TableCell>
+                                            <Button variant="outlined" onClick={() => handleStatusChange(order.id, 'Shipped')}>
+                                                Mark as Shipped
+                                            </Button>
+                                            {/* Add more buttons or dropdown menu options for other status changes */}
+                                        </TableCell>
                                         <TableCell>
                                             <IconButton
                                                 aria-label="expand row"
