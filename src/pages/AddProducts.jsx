@@ -29,7 +29,53 @@ const AddProducts = () => {
   };
 
   const handleSubmit = async (e) => {
-    // Form submission logic
+    e.preventDefault();
+
+    // Form validation
+    if (!product.productName || !product.category || !product.quantityPerUnit || !product.unitPrice || !product.unitsInStock || !product.description || !product.moq) {
+      setError('Please fill out all fields.');
+      return;
+    }
+
+    if (parseFloat(product.unitPrice) <= 0 || parseInt(product.unitsInStock) <= 0 || parseInt(product.moq) <= 0) {
+      setError('Unit price, units in stock, and MOQ must be positive numbers.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      // Add product to inventory
+      await AddProductToInventory(
+        selectedStore,
+        product.productName,
+        product.category,
+        product.description,
+        product.quantityPerUnit,
+        parseFloat(product.unitPrice),
+        parseInt(product.unitsInStock),
+        parseInt(product.moq)
+      );
+
+      // Reset form fields
+      setProduct({
+        productName: '',
+        category: '',
+        description: '',
+        quantityPerUnit: '',
+        unitPrice: '',
+        unitsInStock: '',
+        moq: ''
+      });
+
+      // Provide feedback to the user
+      message.success('Product added successfully!');
+    } catch (error) {
+      setError('Failed to add product. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleModalClose = () => {
