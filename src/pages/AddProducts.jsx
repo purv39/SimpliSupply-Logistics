@@ -88,18 +88,107 @@ const AddProducts = () => {
     setError('');
   };
 
-  const handleCsvSubmit = (e) => {
+  const handleCsvSubmit = async (e) => {
     e.preventDefault();
     if (!csvFile) {
       setError('Please select a CSV file.');
       return;
     }
-
+  
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const csvData = event.target.result;
-      // Parse CSV data and validate
-      // Then add products to inventory
+      const productsArray = csvData.split('\n').map(line => line.split(','));
+  
+      // Remove the header row
+      productsArray.shift();
+  
+      // Assuming CSV structure:
+      // productName,category,description,quantityPerUnit,unitPrice,unitsInStock,moq
+      const productsToAdd = [];
+      let invalidProducts = [];
+  
+      for (const fields of productsArray) {
+        const [
+          productName,
+          category,
+          description,
+          quantityPerUnit,
+          unitPrice,
+          unitsInStock,
+          moq
+        ] = fields;
+  
+        // Form validation
+        if (
+          !productName ||
+          !category ||
+          !quantityPerUnit ||
+          !unitPrice ||
+          !unitsInStock ||
+          !description ||
+          !moq
+        ) {
+          invalidProducts.push({ fields, reason: 'Missing fields' });
+          continue;
+        }
+  
+        if (parseFloat(unitPrice) <= 0 || parseInt(unitsInStock) <= 0 || parseInt(moq) <= 0) {
+          invalidProducts.push({ fields, reason: 'Invalid values' });
+          continue;
+        }
+  
+        productsToAdd.push({
+          productName,
+          category,
+          description,
+          quantityPerUnit,
+          unitPrice: parseFloat(unitPrice),
+          unitsInStock: parseInt(unitsInStock),
+          moq: parseInt(moq)
+        });
+      }
+  
+      if (invalidProducts.length > 0) {
+        setError(`Some products were not added due to invalid fields: ${JSON.stringify(invalidProducts)}`);
+      }
+  
+      setLoading(true);
+      setError('');
+  
+      try {
+        for (const product of productsToAdd) {
+          // Add product to inventory
+          await AddProductToInventory(
+            selectedStore,
+            product.productName,
+            product.category,
+            product.description,
+            product.quantityPerUnit,
+            product.unitPrice,
+            product.unitsInStock,
+            product.moq
+          );
+        }
+  
+        // Reset form fields
+        setProduct({
+          productName: '',
+          category: '',
+          description: '',
+          quantityPerUnit: '',
+          unitPrice: '',
+          unitsInStock: '',
+          moq: ''
+        });
+  
+        // Provide feedback to the user
+        message.success('Products added successfully!');
+      } catch (error) {
+        setError('Failed to add products. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
     };
     reader.readAsText(csvFile);
   };
