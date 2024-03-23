@@ -143,6 +143,51 @@ export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gs
     }
 }
 
+
+export const FetchProductsByDistributorID = async (distributorID) => {
+    const productsRef = collection(db, 'Products');
+    const q = query(productsRef, where("distributorID", "==", distributorID));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        name: data.productName,
+        quantity: data.quantityPerUnit,
+        price: data.unitPrice,
+        description: data.productDescription
+      };
+    });
+  };
+
+
+export const FetchDistributorUserInfo = async (distributorID) => {
+    try {
+        // Query the 'Users' collection for a document that contains the 'Distribution Store' ID in its 'distributionStores' array.
+        const usersRef = collection(db, 'Users');
+        const q = query(usersRef, where("distributionStores", "array-contains", distributorID));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+            console.error('No user found with the given distribution store ID:', distributorID);
+            return null;
+        }
+
+        // Assuming there's only one user per distribution store ID
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        console.log('Fetched User Data:', userData);
+        return {
+            name: userData.firstName + ' ' + userData.lastName,
+            phone: userData.contactNumber,
+            email: userData.email
+        };
+
+    } catch (error) {
+        console.error('Error fetching user information:', error);
+        throw new Error('User information not found.');
+    }
+};
+
 // Function to add a new Invitation for store
 export const AddInvitation = async (distributorID, storeID) => {
     try {

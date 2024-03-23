@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../firebase/firebaseAuth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainNavBar from '../components/MainNavBar';
-import { TableContainer, Table, TableBody, TableRow, TableCell, Paper } from '@mui/material';
+import { TableContainer, Table, TableBody, TableRow, TableCell, Paper, TableHead } from '@mui/material';
 import Button from '@mui/material/Button';
-import { FetchDistributorStore, FetchDistributionStoreDetails, AddInvitation, CheckForExistingInvitation } from "../firebase/firebaseFirestore"; // Make sure to implement this function
+import { FetchDistributorStore, FetchDistributionStoreDetails, AddInvitation, CheckForExistingInvitation, FetchDistributorUserInfo, FetchProductsByDistributorID } from "../firebase/firebaseFirestore"; // Make sure to implement this function
 import '../styles/AddDistributor.css';
 import { RiseLoader } from 'react-spinners';
 import { message } from 'antd';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 
 const AddDistributor = () => {
   const [loading, setLoading] = useState(true);
@@ -17,6 +21,14 @@ const AddDistributor = () => {
   const [selectedDistributor, setSelectedDistributor] = useState('');
 
   const [error, setError] = useState('');
+
+  // distributor profile
+  const [profilePopupOpen, setProfilePopupOpen] = useState(false);
+  const [distributorUserInfo, setDistributorUserInfo] = useState(null);
+
+  // products
+  const [products, setProducts] = useState(null);
+
 
   useEffect(() => {
     const fetchDistributors = async () => {
@@ -37,8 +49,12 @@ const AddDistributor = () => {
     const storeId = event.target.value;
     setSelectedDistributor(storeId);
     setLoading(true);
+    setProducts([]); 
     try {
       const storeDetails = await FetchDistributionStoreDetails(storeId);
+      const productsList = await FetchProductsByDistributorID(storeId);
+      setProducts(productsList);
+
       console.log("Store details fetched: ", storeDetails);
 
       if (storeDetails) {
@@ -59,6 +75,8 @@ const AddDistributor = () => {
     }
     setLoading(false);
   };
+
+
   const formatAddress = (userInfo) => {
     return userInfo ? `${userInfo.storeAddress}, ${userInfo.storeCity}, ${userInfo.storeProvince}, ${userInfo.storePostalCode}` : '';
   };
@@ -88,6 +106,27 @@ const AddDistributor = () => {
       console.error("Error creating invitation:", error);
       message.error("Error creating invitation: " + error);
     }
+  };
+
+
+  const handleOpenProfile = async () => {
+    if (!selectedDistributor) {
+      message.error('Please select a distributor to view profile.');
+      return;
+    }
+    console.log( "selected : "+ selectedDistributor);
+
+    setLoading(true);
+    try {
+      const userInfo = await FetchDistributorUserInfo(selectedDistributor); // Implement this function
+      console.log( "user: "+ userInfo);
+
+      setDistributorUserInfo(userInfo);
+      setProfilePopupOpen(true);
+    } catch (error) {
+      message.error("Error fetching user profile: " + error);
+    }
+    setLoading(false);
   };
 
   return (
@@ -149,8 +188,73 @@ const AddDistributor = () => {
                 </Table>
               </TableContainer>
             )}
+            {products === null ? (
+              <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                <h3>Products Provided</h3>
+                <p>Select distributor</p>
+              </div>
+            ) : products.length > 0 ? (
+              
+              <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+                <Table aria-label="products table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell colSpan={5} style={{ textAlign: 'center' }}>
+                      <h3>Products Provided</h3>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>#</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Price</TableCell>
+                    <TableCell>Description</TableCell>
+                  </TableRow>
+                </TableHead>
+                  <TableBody>
+                    {products.map((product, index) => (
+                      <TableRow key={index}>
+                        <TableCell component="th" scope="row">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell>{product.name}</TableCell>
+                        <TableCell>{product.quantity}</TableCell>
+                        <TableCell>${product.price.toFixed(2)}</TableCell>
+                        <TableCell>{product.description}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                <h3>Products Provided</h3>
+                <p>No products available</p>
+              </div>
+            )}
 
           </div>
+          <Dialog open={profilePopupOpen} onClose={() => setProfilePopupOpen(false)}>
+            <DialogTitle>User Profile</DialogTitle>
+            <DialogContent>
+              <p><strong>Name:</strong> {distributorUserInfo?.name}</p>
+              <p><strong>Phone:</strong> {distributorUserInfo?.phone}</p>
+              <p><strong>Email:</strong> {distributorUserInfo?.email}</p>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setProfilePopupOpen(false)} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <div className="check-profile-container">
+            <Button variant="outlined" color="secondary" onClick={handleOpenProfile} className="profile-button">
+              Check Profile
+            </Button>
+          
+          </div>
+
 
 
           <div className="add-button-container">
