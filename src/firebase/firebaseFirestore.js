@@ -76,7 +76,7 @@ export const AddNewDistributionStoreForOperator = async (uuid, storeName, busine
 }
 
 // Function to add a new product to the distributor's inventory
-export const AddProductToInventory = async (distributorID, productName, category, productDescription, quantityPerUnit, unitPrice, unitsInStock, moq) => {
+export const AddProductToInventory = async (distributorID, productName, category, productDescription, quantityPerUnit, unitPrice, unitsInStock, moq, brandName , url) => {
     try {
         // Construct the product object
         const productData = {
@@ -86,7 +86,10 @@ export const AddProductToInventory = async (distributorID, productName, category
             moq: moq,
             quantityPerUnit: quantityPerUnit,
             unitPrice: unitPrice,
-            unitsInStock: unitsInStock
+            unitsInStock: unitsInStock,
+            brandName: brandName,
+            url:url
+
         };
 
         // Add the product to the "products" subcollection of the distributor

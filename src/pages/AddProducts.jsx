@@ -17,7 +17,10 @@ const AddProducts = () => {
     quantityPerUnit: '',
     unitPrice: '',
     unitsInStock: '',
-    moq: ''
+    moq: '' ,
+    url: '' ,
+    brandName: ''
+
   });
 
   const [loading, setLoading] = useState(false);
@@ -38,7 +41,7 @@ const AddProducts = () => {
     e.preventDefault();
 
     // Form validation
-    if (!product.productName || !product.category || !product.quantityPerUnit || !product.unitPrice || !product.unitsInStock || !product.description || !product.moq) {
+    if (!product.productName || !product.category || !product.quantityPerUnit || !product.unitPrice || !product.unitsInStock || !product.description || !product.moq || !product.brandName) {
       setError('Please fill out all fields.');
       return;
     }
@@ -61,7 +64,9 @@ const AddProducts = () => {
         product.quantityPerUnit,
         parseFloat(product.unitPrice),
         parseInt(product.unitsInStock),
-        parseInt(product.moq)
+        parseInt(product.moq) ,
+        product.brandName,
+        product.url
       );
 
       // Reset form fields
@@ -72,7 +77,9 @@ const AddProducts = () => {
         quantityPerUnit: '',
         unitPrice: '',
         unitsInStock: '',
-        moq: ''
+        moq: '',
+        brandName: '',
+        url: ''
       });
 
       // Provide feedback to the user
@@ -116,7 +123,9 @@ const AddProducts = () => {
           quantityPerUnit,
           unitPrice,
           unitsInStock,
-          moq
+          moq ,
+          brandName,
+          url
         ] = fields;
   
         // Form validation
@@ -127,7 +136,8 @@ const AddProducts = () => {
           !unitPrice ||
           !unitsInStock ||
           !description ||
-          !moq
+          !moq ||
+          !brandName
         ) {
           invalidProducts.push({ fields, reason: 'Missing fields' });
           continue;
@@ -145,7 +155,9 @@ const AddProducts = () => {
           quantityPerUnit,
           unitPrice: parseFloat(unitPrice),
           unitsInStock: parseInt(unitsInStock),
-          moq: parseInt(moq)
+          moq: parseInt(moq) ,
+          brandName ,
+          url
         });
       }
   
@@ -167,7 +179,9 @@ const AddProducts = () => {
             product.quantityPerUnit,
             product.unitPrice,
             product.unitsInStock,
-            product.moq
+            product.moq,
+            product.brandName,
+            product.url
           );
         }
   
@@ -179,7 +193,9 @@ const AddProducts = () => {
           quantityPerUnit: '',
           unitPrice: '',
           unitsInStock: '',
-          moq: ''
+          moq: '',
+          brandName: '',
+          url: '',
         });
   
         // Provide feedback to the user
@@ -275,6 +291,26 @@ const AddProducts = () => {
               fullWidth
             />
           </div>
+
+          <div className="add-products-form-row">
+            <TextField
+              label="Brand Name"
+              name="brandName"
+              value={product.brandName}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="url"
+              name="url"
+              value={product.url}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+          </div>
+
           <div className="add-products-form-row">
             <TextField
               label="Minimum Order Quantity (MOQ)"
