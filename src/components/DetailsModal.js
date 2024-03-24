@@ -75,7 +75,7 @@ const DetailsModal = ({ isOpen, onClose, product }) => {
                         <FlexItem>
                             <img
                                 src="https://target.scene7.com/is/image/Target/GUEST_ba963a5a-ff10-43c3-a3c6-1deb83f24990"
-                                alt="Product image"
+                                alt="Product"
                                 onError={(event) => {
                                     event.target.onerror = null;
                                     event.target.src = 'https://via.placeholder.com/150'; // Replace with your own default image URL

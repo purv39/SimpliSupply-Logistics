@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, CircularProgress, Grid, Box } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, Grid, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FetchAllDistributorsForStore, CreateNewOrderForStore } from "../firebase/firebaseFirestore";
 import MainNavBar from '../components/MainNavBar';
@@ -7,6 +7,7 @@ import { useAuth } from '../firebase/firebaseAuth';
 import { message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { Pagination } from 'antd';
+import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
@@ -16,6 +17,8 @@ const CreateNewOrder = () => {
     const [currentPage, setCurrentPage] = useState(1); // State for current page
     const [productPage, setProductPage] = useState({}); // State for product page
     const [itemsPerPage, setItemsPerPage] = useState(5); // Number of items per page
+    const [searchQueryDistributor, setSearchQueryDistributor] = useState(''); // State for distributor search query
+    const [searchQueryProduct, setSearchQueryProduct] = useState(''); // State for product search query
     const { currentUser } = useAuth();
     const storeID = currentUser.selectedStore;
     const { distributorID: paramsDistributorID } = useParams();
@@ -26,6 +29,14 @@ const CreateNewOrder = () => {
         setDistributors(distributorData);
         setLoading(false);
     };
+
+    useEffect(() => {
+        handleDistributorClick(storeID);
+
+        if (paramsDistributorID) {
+            setExpanded(paramsDistributorID);
+        }
+    }, [storeID, paramsDistributorID]); // Empty dependency array ensures this effect runs only once on mount
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : null);
@@ -81,18 +92,13 @@ const CreateNewOrder = () => {
         }
     };
 
-    useEffect(() => {
-        handleDistributorClick(storeID);
-
-        if (paramsDistributorID) {
-            setExpanded(paramsDistributorID);
-        }
-    }, [storeID, paramsDistributorID]); // Empty dependency array ensures this effect runs only once on mount
-
-    // Logic to get current distributors based on pagination
+    // Logic to get current distributors based on pagination and search query
+    const filteredDistributors = distributors.filter(distributor =>
+        distributor.data.storeName.toLowerCase().includes(searchQueryDistributor.toLowerCase())
+    );
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentDistributors = distributors.slice(indexOfFirstItem, indexOfLastItem);
+    const currentDistributors = filteredDistributors.slice(indexOfFirstItem, indexOfLastItem);
 
     // Change page
     const onPageChange = (page) => setCurrentPage(page);
@@ -105,13 +111,38 @@ const CreateNewOrder = () => {
         }));
     };
 
+    // Handle search input change for distributors
+    const handleSearchDistributorInputChange = (event) => {
+        setSearchQueryDistributor(event.target.value);
+        setCurrentPage(1); // Reset to first page when searching
+    };
+
+    // Handle search input change for products
+    const handleSearchProductInputChange = (event) => {
+        setSearchQueryProduct(event.target.value);
+    };
+
+    // Function to filter products based on search query
+    const filterProducts = (productsData) => {
+        return productsData.filter(product =>
+            product.data.productName.toLowerCase().includes(searchQueryProduct.toLowerCase())
+        );
+    };
+
     return (
         <Box>
             <MainNavBar />
             <h2>Distributors</h2>
+            <input
+                type="text"
+                placeholder="Search distributors..."
+                value={searchQueryDistributor}
+                onChange={handleSearchDistributorInputChange}
+                className='search-input'
+            />
             {loading ? (
                 <Grid container justifyContent="center">
-                    <CircularProgress color="primary" />
+                    <RiseLoader color="#36D7B7" loading={loading} size={10} />
                 </Grid>
             ) : (
                 <Grid container spacing={2}>
@@ -129,6 +160,16 @@ const CreateNewOrder = () => {
                                     <h4>{distributor.data.storeName}</h4>
                                 </AccordionSummary>
                                 <AccordionDetails>
+                                    <Box width="100%">
+                                        <TextField
+                                            type="text"
+                                            placeholder="Search products..."
+                                            value={searchQueryProduct}
+                                            onChange={handleSearchProductInputChange}
+                                            fullWidth
+                                            style={{ marginBottom: '10px' }}
+                                        />
+                                    </Box>
                                     <TableContainer component={Paper}>
                                         <Table>
                                             <TableHead>
@@ -142,7 +183,7 @@ const CreateNewOrder = () => {
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {distributor.data.productsData
+                                                {filterProducts(distributor.data.productsData)
                                                     .slice((productPage[distributor.id] - 1) * itemsPerPage, productPage[distributor.id] * itemsPerPage)
                                                     .map(product => (
                                                         <TableRow key={product.id}>
@@ -179,27 +220,27 @@ const CreateNewOrder = () => {
                                         <Pagination
                                             current={productPage[distributor.id]}
                                             pageSize={itemsPerPage}
-                                            total={distributor.data.productsData.length}
+                                            total={filterProducts(distributor.data.productsData).length}
                                             onChange={(page) => handleProductPageChange(distributor.id, page)}
                                             showQuickJumper
                                         />
                                     </Box>
                                 </AccordionDetails>
                             </Accordion>
+                            <Box mt={4} display="flex" justifyContent="center">
+                                <Pagination
+                                    current={currentPage}
+                                    pageSize={itemsPerPage}
+                                    total={filteredDistributors.length}
+                                    onChange={onPageChange}
+                                    showQuickJumper
+                                />
+                            </Box>
                         </Grid>
                     ))}
                 </Grid>
             )}
-            {/* Pagination for distributors */}
-            <Box mt={4} display="flex" justifyContent="center">
-                <Pagination
-                    current={currentPage}
-                    pageSize={itemsPerPage}
-                    total={distributors.length}
-                    onChange={onPageChange}
-                    showQuickJumper
-                />
-            </Box>
+
         </Box>
     );
 }

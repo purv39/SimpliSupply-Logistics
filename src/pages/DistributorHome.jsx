@@ -18,6 +18,7 @@ const DistributorHome = () => {
     const [selectedProduct, setSelectedProduct] = useState(null); // State for selected product
     const [currentPage, setCurrentPage] = useState(1); // State for current page
     const [itemsPerPage, setItemsPerPage] = useState(8); // Number of items per page
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
     useEffect(() => {
         const fetchInventory = async () => {
@@ -34,19 +35,36 @@ const DistributorHome = () => {
         setIsModalOpen(true);
     }
 
-    // Logic to get current items based on pagination
+    // Logic to get current items based on pagination and search query
+    const filteredItems = inventory.filter(item =>
+        item.data.productName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = inventory.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     // Change page
     const onPageChange = (page) => setCurrentPage(page);
+
+    // Handle search input change
+    const handleSearchInputChange = (event) => {
+        setSearchQuery(event.target.value);
+        setCurrentPage(1); // Reset to first page when searching
+    };
 
     return (
         <div className="dashboard">
             <MainNavBar />
             <div className="content">
                 <h2>Inventory</h2>
+                <input
+                    type="text"
+                    placeholder="Browse Products"
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                    className="search-input"
+
+                />
                 {loading ? (
                     <div className="loading-spinner">
                         <RiseLoader color="#36D7B7" loading={loading} size={10} />
@@ -87,7 +105,7 @@ const DistributorHome = () => {
                             <Pagination
                                 current={currentPage}
                                 pageSize={itemsPerPage}
-                                total={inventory.length}
+                                total={filteredItems.length}
                                 onChange={onPageChange}
                                 showQuickJumper
                             />

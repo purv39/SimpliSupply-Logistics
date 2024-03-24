@@ -15,6 +15,7 @@ const StoreHome = () => {
   const { currentUser } = useAuth();
   const [currentPage, setCurrentPage] = useState(1); // State for current page
   const [itemsPerPage, setItemsPerPage] = useState(8); // Number of items per page
+  const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
   const storeID = currentUser.selectedStore;
 
@@ -34,25 +35,41 @@ const StoreHome = () => {
     console.log(`Order placed for product ID: ${productId}`);
   };
 
-  // Logic to get current items based on pagination
+  // Logic to get current items based on pagination and search query
+  const filteredItems = inventory.filter(item =>
+    item.data.productName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = inventory.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
   // Change page
   const onPageChange = (page) => setCurrentPage(page);
+
+  // Handle search input change
+  const handleSearchInputChange = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
 
   return (
     <div className="dashboard">
       <MainNavBar />
       <div className="content">
         <h2>Inventory</h2>
+        <input
+          type="text"
+          placeholder="Browse Products"
+          value={searchQuery}
+          onChange={handleSearchInputChange}
+          className='search-input'
+        />
         {loading ? (
           <div className="loading-spinner">
             <RiseLoader color="#36D7B7" loading={loading} size={10} />
           </div>
-        ) : inventory.length === 0 ? (
-          <Typography>No items in inventory</Typography>
+        ) : filteredItems.length === 0 ? (
+          <Typography>No items found</Typography>
         ) : (
           <>
             <table className="table">
@@ -68,7 +85,7 @@ const StoreHome = () => {
                 </tr>
               </thead>
               <tbody>
-                {inventory.map((item) => (
+                {currentItems.map((item) => (
                   <tr key={item.id}>
                     <td>{item.data.productName}</td>
                     <td>{item.data.categoryName}</td>
@@ -92,7 +109,7 @@ const StoreHome = () => {
               <Pagination
                 current={currentPage}
                 pageSize={itemsPerPage}
-                total={inventory.length}
+                total={filteredItems.length}
                 onChange={onPageChange}
                 showQuickJumper
               />
