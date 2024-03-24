@@ -33,7 +33,7 @@ const MainNavBar = ({ reloadNavbar }) => {
       }
     }
     fetchStoresData();
-  }, [currentUser.storesList]);
+  }, [currentUser.storesList, currentUser.currentRole]);
 
   const handleStoreChange = (e) => {
     const selectedStore = e.target.value;
