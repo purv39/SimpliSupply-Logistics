@@ -5,15 +5,18 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { fetchOrderHistoryForStore } from '../firebase/firebaseFirestore';
 import OrderDetailsTable from '../components/OrderDetailsTable';
 import MainNavBar from '../components/MainNavBar';
-import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
+import { RiseLoader } from 'react-spinners';
 import "../styles/LoadingSpinner.css";
 import { useAuth } from '../firebase/firebaseAuth';
 import { Typography } from 'antd';
+import { Pagination } from 'antd'; // Import Pagination from Ant Design
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [expandedOrderId, setExpandedOrderId] = useState(null);
     const [loading, setLoading] = useState(true); // State for loading status
+    const [currentPage, setCurrentPage] = useState(1); // State for current page
+    const [itemsPerPage, setItemsPerPage] = useState(8); // Number of items per page
     const { currentUser } = useAuth();
     const storeID = currentUser.selectedStore;
 
@@ -38,56 +41,74 @@ const OrderHistory = () => {
         setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
     };
 
+    // Logic to get current orders based on pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Change page
+    const onPageChange = (page) => setCurrentPage(page);
+
     return (
         <div>
             <MainNavBar />
             <h2>Order History</h2>
-            {loading ? ( // Render loading spinner if loading is true
+            {loading ? (
                 <div className="loading-spinner">
                     <RiseLoader color="#36D7B7" loading={loading} size={10} />
                 </div>
             ) : orders.length === 0 ? (
                 <Typography>No orders in order history</Typography>
             ) : (
-                <TableContainer component={Paper}>
-                    <Table aria-label="collapsible table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Order ID</TableCell>
-                                <TableCell>Distributor Name</TableCell>
-                                <TableCell>Total Cost</TableCell>
-                                <TableCell>Created At</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell />
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {orders.map((order) => (
-                                <React.Fragment key={order.id}>
-                                    <TableRow onClick={() => handleExpandClick(order.id)}>
-                                        <TableCell>{`${order.id}`}</TableCell>
-                                        <TableCell>{`${order.distributorName}`}</TableCell>
-                                        <TableCell>{`$${order.totalCost}`}</TableCell>
-                                        <TableCell>{`${formatDate(order.createdAt)}`}</TableCell>
-                                        <TableCell>{`${order.currentStatus}`}</TableCell>
-                                        <TableCell>
-                                            <IconButton
-                                                aria-label="expand row"
-                                                size="small"
-                                                onClick={() => handleExpandClick(order.id)}
-                                            >
-                                                {expandedOrderId === order.id ? <KeyboardArrowUpIcon /> : <ExpandMoreIcon />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    <OrderDetailsTable order={order} expandedOrderId={expandedOrderId} />
-                                </React.Fragment>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )
-            }
+                <div>
+                    <TableContainer component={Paper}>
+                        <Table aria-label="collapsible table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Order ID</TableCell>
+                                    <TableCell>Distributor Name</TableCell>
+                                    <TableCell>Total Cost</TableCell>
+                                    <TableCell>Created At</TableCell>
+                                    <TableCell>Status</TableCell>
+                                    <TableCell />
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {currentOrders.map((order) => (
+                                    <React.Fragment key={order.id}>
+                                        <TableRow onClick={() => handleExpandClick(order.id)}>
+                                            <TableCell>{`${order.id}`}</TableCell>
+                                            <TableCell>{`${order.distributorName}`}</TableCell>
+                                            <TableCell>{`$${order.totalCost}`}</TableCell>
+                                            <TableCell>{`${formatDate(order.createdAt)}`}</TableCell>
+                                            <TableCell>{`${order.currentStatus}`}</TableCell>
+                                            <TableCell>
+                                                <IconButton
+                                                    aria-label="expand row"
+                                                    size="small"
+                                                    onClick={() => handleExpandClick(order.id)}
+                                                >
+                                                    {expandedOrderId === order.id ? <KeyboardArrowUpIcon /> : <ExpandMoreIcon />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <OrderDetailsTable order={order} expandedOrderId={expandedOrderId} />
+                                    </React.Fragment>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <div className="pagination-container">
+                        <Pagination
+                            current={currentPage}
+                            pageSize={itemsPerPage}
+                            total={orders.length}
+                            onChange={onPageChange}
+                            showQuickJumper
+                        />
+                    </div>
+                </div>
+            )}
         </div >
     );
 };

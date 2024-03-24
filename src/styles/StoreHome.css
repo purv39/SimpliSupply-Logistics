@@ -59,3 +59,9 @@
   max-width: 100%; /* Ensure the image does not exceed its original size */
   max-height: 50%; /* Ensure the image does not exceed its original size */
 }
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}

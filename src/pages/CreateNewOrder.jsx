@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, CircularProgress, Grid, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FetchAllDistributorsForStore, CreateNewOrderForStore } from "../firebase/firebaseFirestore";
@@ -6,12 +6,16 @@ import MainNavBar from '../components/MainNavBar';
 import { useAuth } from '../firebase/firebaseAuth';
 import { message } from 'antd';
 import { useParams } from 'react-router-dom';
+import { Pagination } from 'antd';
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
     const [expanded, setExpanded] = useState(null);
     const [orderQuantities, setOrderQuantities] = useState({});
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1); // State for current page
+    const [productPage, setProductPage] = useState({}); // State for product page
+    const [itemsPerPage, setItemsPerPage] = useState(5); // Number of items per page
     const { currentUser } = useAuth();
     const storeID = currentUser.selectedStore;
     const { distributorID: paramsDistributorID } = useParams();
@@ -25,6 +29,7 @@ const CreateNewOrder = () => {
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : null);
+        handleProductPageChange(panel, 1);
     };
 
     const handleQuantityChange = (productId, distributorID, quantity) => {
@@ -80,9 +85,25 @@ const CreateNewOrder = () => {
         handleDistributorClick(storeID);
 
         if (paramsDistributorID) {
-            setExpanded(paramsDistributorID)
+            setExpanded(paramsDistributorID);
         }
     }, [storeID, paramsDistributorID]); // Empty dependency array ensures this effect runs only once on mount
+
+    // Logic to get current distributors based on pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentDistributors = distributors.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Change page
+    const onPageChange = (page) => setCurrentPage(page);
+
+    // Product page change handler
+    const handleProductPageChange = (distributorID, page) => {
+        setProductPage(prevState => ({
+            ...prevState,
+            [distributorID]: page
+        }));
+    };
 
     return (
         <Box>
@@ -94,7 +115,7 @@ const CreateNewOrder = () => {
                 </Grid>
             ) : (
                 <Grid container spacing={2}>
-                    {distributors.map(distributor => (
+                    {currentDistributors.map(distributor => (
                         <Grid item xs={12} key={distributor.id}>
                             <Accordion
                                 expanded={expanded === distributor.id}
@@ -121,25 +142,27 @@ const CreateNewOrder = () => {
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {distributor.data.productsData.map(product => (
-                                                    <TableRow key={product.id}>
-                                                        <TableCell>{product.data.categoryName}</TableCell>
-                                                        <TableCell>{product.data.productName}</TableCell>
-                                                        <TableCell>{product.data.quantityPerUnit}</TableCell>
-                                                        <TableCell>${product.data.unitPrice}</TableCell>
-                                                        <TableCell>{product.data.unitsInStock}</TableCell>
-                                                        <TableCell>
-                                                            <TextField
-                                                                type="number"
-                                                                value={orderQuantities[`${distributor.id}-${product.id}`] || ''}
-                                                                onChange={(e) => handleQuantityChange(product.id, distributor.id, e.target.value)}
-                                                                inputProps={{ min: '0', max: product.data.unitsInStock }}
-                                                                fullWidth
-                                                                variant="outlined"
-                                                            />
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
+                                                {distributor.data.productsData
+                                                    .slice((productPage[distributor.id] - 1) * itemsPerPage, productPage[distributor.id] * itemsPerPage)
+                                                    .map(product => (
+                                                        <TableRow key={product.id}>
+                                                            <TableCell>{product.data.categoryName}</TableCell>
+                                                            <TableCell>{product.data.productName}</TableCell>
+                                                            <TableCell>{product.data.quantityPerUnit}</TableCell>
+                                                            <TableCell>${product.data.unitPrice}</TableCell>
+                                                            <TableCell>{product.data.unitsInStock}</TableCell>
+                                                            <TableCell>
+                                                                <TextField
+                                                                    type="number"
+                                                                    value={orderQuantities[`${distributor.id}-${product.id}`] || ''}
+                                                                    onChange={(e) => handleQuantityChange(product.id, distributor.id, e.target.value)}
+                                                                    inputProps={{ min: '0', max: product.data.unitsInStock }}
+                                                                    fullWidth
+                                                                    variant="outlined"
+                                                                />
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
@@ -151,14 +174,35 @@ const CreateNewOrder = () => {
                                     >
                                         Place Order
                                     </Button>
+                                    {/* Pagination for products */}
+                                    <Box mt={2} display="flex" justifyContent="center">
+                                        <Pagination
+                                            current={productPage[distributor.id]}
+                                            pageSize={itemsPerPage}
+                                            total={distributor.data.productsData.length}
+                                            onChange={(page) => handleProductPageChange(distributor.id, page)}
+                                            showQuickJumper
+                                        />
+                                    </Box>
                                 </AccordionDetails>
                             </Accordion>
                         </Grid>
                     ))}
                 </Grid>
             )}
+            {/* Pagination for distributors */}
+            <Box mt={4} display="flex" justifyContent="center">
+                <Pagination
+                    current={currentPage}
+                    pageSize={itemsPerPage}
+                    total={distributors.length}
+                    onChange={onPageChange}
+                    showQuickJumper
+                />
+            </Box>
         </Box>
     );
 }
 
 export default CreateNewOrder;
+
