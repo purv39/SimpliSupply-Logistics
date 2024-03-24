@@ -8,6 +8,8 @@ import { message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { Pagination } from 'antd';
 import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
+import { InfoOutlined } from '@mui/icons-material';
+import DetailsModal from '../components/DetailsModal';
 
 const CreateNewOrder = () => {
     const [distributors, setDistributors] = useState([]);
@@ -22,6 +24,8 @@ const CreateNewOrder = () => {
     const { currentUser } = useAuth();
     const storeID = currentUser.selectedStore;
     const { distributorID: paramsDistributorID } = useParams();
+    const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+    const [selectedProduct, setSelectedProduct] = useState(null); // State for selected product
 
     const handleDistributorClick = async (storeID) => {
         setLoading(true);
@@ -129,6 +133,11 @@ const CreateNewOrder = () => {
         );
     };
 
+    const handleOpenModal = (product) => {
+        setSelectedProduct(product);
+        setIsModalOpen(true);
+    }
+
     return (
         <Box>
             <MainNavBar />
@@ -179,6 +188,7 @@ const CreateNewOrder = () => {
                                                     <TableCell>Quantity Per Unit</TableCell>
                                                     <TableCell>Unit Price</TableCell>
                                                     <TableCell>Units In Stock</TableCell>
+                                                    <TableCell>Action</TableCell>
                                                     <TableCell>Quantity to Order</TableCell>
                                                 </TableRow>
                                             </TableHead>
@@ -192,6 +202,13 @@ const CreateNewOrder = () => {
                                                             <TableCell>{product.data.quantityPerUnit}</TableCell>
                                                             <TableCell>${product.data.unitPrice}</TableCell>
                                                             <TableCell>{product.data.unitsInStock}</TableCell>
+                                                            <TableCell>
+                                                                <button className="btn btn-primary" onClick={() => handleOpenModal(product)}>
+                                                                    Details
+                                                                </button>
+
+                                                            </TableCell>
+
                                                             <TableCell>
                                                                 <TextField
                                                                     type="number"
@@ -224,6 +241,8 @@ const CreateNewOrder = () => {
                                             onChange={(page) => handleProductPageChange(distributor.id, page)}
                                             showQuickJumper
                                         />
+                                        <DetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} product={selectedProduct} />
+
                                     </Box>
                                 </AccordionDetails>
                             </Accordion>

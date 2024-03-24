@@ -91,14 +91,16 @@ const DetailsModal = ({ isOpen, onClose, product }) => {
                                 {product.data.unit})
                             </h2>
                             <p>
+                              {product.data?.brandName}
+                            </p>
+                            <p>
                                 ${product.data.unitPrice}
-                                {product.data.unit}
                             </p>
                             <Description>{product.data.productDescription}</Description>
                             <Label>Category:</Label>
                             <p>{product.data.categoryName}</p>
-                            <Label>Product :</Label>
-                            <p>{product.data.categoryName}</p>
+                            <Label>Description :</Label>
+                            <p>{product.data.productDescription ? product.data.productDescription : 'N/A'}</p>
                         </FlexItem>
                     </FlexContainer>
                 </ModalContent>

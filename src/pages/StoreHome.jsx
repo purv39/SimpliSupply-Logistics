@@ -8,6 +8,7 @@ import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spi
 import "../styles/LoadingSpinner.css";
 import { Typography } from '@mui/material';
 import { Pagination } from 'antd';
+import DetailsModal from '../components/DetailsModal';
 
 const StoreHome = () => {
   const [inventory, setInventory] = useState([]);
@@ -16,6 +17,9 @@ const StoreHome = () => {
   const [currentPage, setCurrentPage] = useState(1); // State for current page
   const [itemsPerPage, setItemsPerPage] = useState(8); // Number of items per page
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [selectedProduct, setSelectedProduct] = useState(null); // State for selected product
+
 
   const storeID = currentUser.selectedStore;
 
@@ -51,6 +55,11 @@ const StoreHome = () => {
     setSearchQuery(event.target.value);
     setCurrentPage(1); // Reset to first page when searching
   };
+
+  const handleOpenModal = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+}
 
   return (
     <div className="dashboard">
@@ -96,9 +105,9 @@ const StoreHome = () => {
                     <td>
                       <button
                         className="btn btn-primary"
-                        onClick={() => handleOrder(item.id)}
+                        onClick={() => handleOpenModal(item)}
                       >
-                        Order
+                        Details
                       </button>
                     </td>
                   </tr>
@@ -114,6 +123,8 @@ const StoreHome = () => {
                 showQuickJumper
               />
             </div>
+            <DetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} product={selectedProduct} />
+
           </>
         )}
       </div>
