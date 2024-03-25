@@ -306,7 +306,8 @@ export const FetchPendingInvitations = async (storeID) => {
             try {
                 const distributorID = doc.data().distributorID;
                 const storeName = (await FetchDistributionStoresDetailsByUID([distributorID]))[0].storeName;
-                return { id: doc.id, data: { storeName } };
+                const newData = {...doc.data(), storeName}
+                return { id: doc.id, data: newData };
             } catch (error) {
                 console.error('Error fetching distributor details:', error);
                 return { id: doc.id, data: { storeName: "Error retrieving store name" } };
