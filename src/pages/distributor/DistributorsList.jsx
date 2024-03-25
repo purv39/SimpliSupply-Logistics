@@ -3,7 +3,7 @@ import { useAuth } from '../../firebase/firebaseAuth';
 import { Checkbox, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Chip, Button } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainNavBar from '../../components/MainNavBar';
-import { DisconnectDistributorStore, FetchAllDistributorsForStore } from "../../firebase/firebaseFirestore";
+import { DisconnectDistributorStore, FetchAllDistributorsForStore, FetchPendingInvitations } from "../../firebase/firebaseFirestore";
 import { RiseLoader } from 'react-spinners'; 
 import "../../styles/LoadingSpinner.css";
 import { Pagination } from 'antd'; // Import Pagination from Ant Design
@@ -11,6 +11,8 @@ import { Pagination } from 'antd'; // Import Pagination from Ant Design
 const DistributorsList = () => {
   const { currentUser } = useAuth();
   const [connectedDistributors, setConnectedDistributors] = useState([]);
+  const [pendingDistributors, setPendingDistributors] = useState([]);
+  const [list, setList] = useState([]);
   const [selectedDistributors, setSelectedDistributors] = useState({});
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1); // State for current page
@@ -24,14 +26,28 @@ const DistributorsList = () => {
     setLoading(false); // Set loading to false when data is fetched
   };
 
+  const fetchPendingDistributors = async (storeID) => {
+    setLoading(true);
+    const distributorData = await FetchPendingInvitations(storeID);
+    setPendingDistributors(distributorData);
+    setLoading(false); // Set loading to false when data is fetched
+  };
+
   useEffect(() => {
     fetchConnectedDistributors(storeID);
+    fetchPendingDistributors(storeID);
   }, [storeID]);
+
+  useEffect(() => {
+    // Combine connectedDistributors and pendingDistributors into a single list
+    const combinedList = [...connectedDistributors, ...pendingDistributors];
+    setList(combinedList);
+  }, [connectedDistributors, pendingDistributors]);
 
   // Logic to get current distributors based on pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentDistributors = connectedDistributors.slice(indexOfFirstItem, indexOfLastItem);
+  const currentDistributors = list.slice(indexOfFirstItem, indexOfLastItem);
 
   // Change page
   const onPageChange = (page) => setCurrentPage(page);
@@ -53,7 +69,7 @@ const DistributorsList = () => {
     }
     try {
       await Promise.all(selectedIds.map(id => DisconnectDistributorStore(storeID, id)));
-      setConnectedDistributors(connectedDistributors.filter(distributor => !selectedIds.includes(distributor.id)));
+      setList(list.filter(distributor => !selectedIds.includes(distributor.id)));
       setSelectedDistributors({}); // Reset the selected distributors
       alert('Selected distributors have been successfully removed.');
     } catch (error) {
@@ -92,7 +108,11 @@ const DistributorsList = () => {
                     </TableCell>
                     <TableCell>{distributor?.data?.storeName || 'Unknown Distributor'}</TableCell>
                     <TableCell align="right">
-                      <Chip label="Connected" color="primary" variant="outlined" />
+                      {pendingDistributors.find(pendingDistributor => pendingDistributor.id === distributor.id) ? (
+                        <Chip label="Pending" color="warning" variant="outlined" />
+                      ) : (
+                        <Chip label="Connected" color="success" variant="outlined" />
+                      )}
                     </TableCell>
                   </TableRow>
                 )) : (
@@ -107,11 +127,10 @@ const DistributorsList = () => {
             <Pagination
               current={currentPage}
               pageSize={itemsPerPage}
-              total={connectedDistributors.length}
+              total={list.length}
               onChange={onPageChange}
               showQuickJumper
             />
-            
           </div>
           <div className="removeButtonContainer">
             <Button variant="contained" color="error" onClick={handleRemoveSelected}>
