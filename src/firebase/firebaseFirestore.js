@@ -168,15 +168,15 @@ export const FetchProductsByDistributorID = async (distributorID) => {
     const q = query(productsRef, where("distributorID", "==", distributorID));
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        name: data.productName,
-        quantity: data.quantityPerUnit,
-        price: data.unitPrice,
-        description: data.productDescription
-      };
+        const data = doc.data();
+        return {
+            name: data.productName,
+            quantity: data.quantityPerUnit,
+            price: data.unitPrice,
+            description: data.productDescription
+        };
     });
-  };
+};
 
 
 export const FetchDistributorUserInfo = async (distributorID) => {
@@ -235,25 +235,25 @@ export const AddInvitation = async (distributorID, storeID) => {
 
 export const FetchInvitationsForStore = async (storeID) => {
     try {
-      const invitationsRef = collection(db, 'Invitations');
-      const q = query(invitationsRef, where("storeID", "==", storeID));
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const invitationsRef = collection(db, 'Invitations');
+        const q = query(invitationsRef, where("storeID", "==", storeID));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
-      console.error("Error fetching invitations for store:", error);
-      throw error;
+        console.error("Error fetching invitations for store:", error);
+        throw error;
     }
-  };
+};
 
-  export const RemoveInvitation = async (invitationId) => {
+export const RemoveInvitation = async (invitationId) => {
     try {
-      await deleteDoc(doc(db, 'Invitations', invitationId));
-      console.log(`Invitation with ID ${invitationId} has been removed.`);
+        await deleteDoc(doc(db, 'Invitations', invitationId));
+        console.log(`Invitation with ID ${invitationId} has been removed.`);
     } catch (error) {
-      console.error('Error removing invitation:', error);
-      throw new Error(error);
+        console.error('Error removing invitation:', error);
+        throw new Error(error);
     }
-  };
+};
 
 
 export const FetchInvitationsForDistributor = async (distributorID) => {
@@ -295,6 +295,31 @@ export const FetchDistributorStore = async () => {
         console.error('Error fetching distribution stores:', error);
     }
 }
+
+export const FetchPendingInvitations = async (storeID) => {
+    try {
+        const invitationsRef = collection(db, 'Invitations');
+        const q = query(invitationsRef, where("storeID", "==", storeID));
+        const querySnapshot = await getDocs(q);
+        
+        const invitationsData = await Promise.all(querySnapshot.docs.map(async doc => {
+            try {
+                const distributorID = doc.data().distributorID;
+                const storeName = (await FetchDistributionStoresDetailsByUID([distributorID]))[0].storeName;
+                const newData = {...doc.data(), storeName}
+                return { id: doc.id, data: newData };
+            } catch (error) {
+                console.error('Error fetching distributor details:', error);
+                return { id: doc.id, data: { storeName: "Error retrieving store name" } };
+            }
+        }));
+        
+        return invitationsData;
+    } catch (error) {
+        console.error('Error fetching pending invitations:', error);
+    }
+}
+
 
 // Function to accept an invitation
 export const AcceptInvitation = async (distributorID, storeID, invitationID) => {
@@ -439,11 +464,11 @@ export const fetchOrderHistoryForDistributor = async (distributorID) => {
         for (const orderDoc of ordersSnapshot.docs) {
             const orderData = orderDoc.data();
             console.log("Order data:", orderData);
-            
+
             const orderItemsSnapshot = await getDocs(collection(orderDoc.ref, 'orderItems'));
             const orderItemsData = orderItemsSnapshot.docs.map((doc) => doc.data());
             console.log("Order items data:", orderItemsData);
-            
+
             orderData.orderItems = orderItemsData;
 
             // Fetch store name using store ID
@@ -470,15 +495,15 @@ export const fetchOrderHistoryForDistributor = async (distributorID) => {
 export const UpdateUserData = async (userId, updatedInfo) => {
     const userRef = doc(db, 'Users', userId);
     try {
-      await updateDoc(userRef, {
-        ...updatedInfo, // Spread the updatedInfo object to only update the provided fields
-      });
-      console.log("User data updated successfully");
+        await updateDoc(userRef, {
+            ...updatedInfo, // Spread the updatedInfo object to only update the provided fields
+        });
+        console.log("User data updated successfully");
     } catch (error) {
-      console.error("Error updating user data:", error);
-      throw new Error(error);
+        console.error("Error updating user data:", error);
+        throw new Error(error);
     }
-  };
+};
 
 export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
     try {
@@ -597,31 +622,8 @@ export const FetchUserData = async (uuid) => {
 // This function fetches detailed information for a list of store IDs.
 export const FetchStoresDetailsByIDs = async (storeIDs) => {
     try {
-      const storesData = await Promise.all(storeIDs.map(async (storeID) => {
-        const storeRef = doc(db, 'Retail Stores', storeID);
-
-        const storeSnap = await getDoc(storeRef);
-        if (!storeSnap.exists()) {
-          console.error(`No data found for store with ID: ${storeID}`);
-          return null; // This will ensure that non-existing stores do not cause errors.
-        }
-        return { id: storeID, ...storeSnap.data() };
-      }));
-  
-      // Filter out any potential null values if some stores were not found.
-      return storesData.filter(store => store !== null);
-    } catch (error) {
-      console.error('Error fetching stores details:', error);
-      throw new Error('Error fetching stores details');
-    }
-  };
-
-
-export const FetchDistributionStoresDetailsByUID = async (storeIDs) => {
-    try {
         const storesData = await Promise.all(storeIDs.map(async (storeID) => {
-            const storeRef = doc(db, 'Distribution Stores', storeID);
-    
+            const storeRef = doc(db, 'Retail Stores', storeID);
             const storeSnap = await getDoc(storeRef);
             if (!storeSnap.exists()) {
                 console.error(`No data found for store with ID: ${storeID}`);
@@ -639,7 +641,29 @@ export const FetchDistributionStoresDetailsByUID = async (storeIDs) => {
 };
 
 
-  export const FetchStoreDetails = async (storeId) => {
+export const FetchDistributionStoresDetailsByUID = async (storeIDs) => {
+    try {
+        const storesData = await Promise.all(storeIDs.map(async (storeID) => {
+            const storeRef = doc(db, 'Distribution Stores', storeID);
+
+            const storeSnap = await getDoc(storeRef);
+            if (!storeSnap.exists()) {
+                console.error(`No data found for store with ID: ${storeID}`);
+                return null; // This will ensure that non-existing stores do not cause errors.
+            }
+            return { id: storeID, ...storeSnap.data() };
+        }));
+
+        // Filter out any potential null values if some stores were not found.
+        return storesData.filter(store => store !== null);
+    } catch (error) {
+        console.error('Error fetching stores details:', error);
+        throw new Error('Error fetching stores details');
+    }
+};
+
+
+export const FetchStoreDetails = async (storeId) => {
     try {
         const storeRef = doc(db, 'Retail Stores', storeId);
         const storeSnap = await getDoc(storeRef);

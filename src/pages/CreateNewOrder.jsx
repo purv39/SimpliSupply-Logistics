@@ -97,12 +97,12 @@ const CreateNewOrder = () => {
     };
 
     // Logic to get current distributors based on pagination and search query
-    const filteredDistributors = distributors.filter(distributor =>
+    const filteredDistributors = distributors?.filter(distributor =>
         distributor.data.storeName.toLowerCase().includes(searchQueryDistributor.toLowerCase())
     );
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentDistributors = filteredDistributors.slice(indexOfFirstItem, indexOfLastItem);
+    const currentDistributors = filteredDistributors?.slice(indexOfFirstItem, indexOfLastItem);
 
     // Change page
     const onPageChange = (page) => setCurrentPage(page);
@@ -155,7 +155,7 @@ const CreateNewOrder = () => {
                 </Grid>
             ) : (
                 <Grid container spacing={2}>
-                    {currentDistributors.map(distributor => (
+                    {currentDistributors?.map(distributor => (
                         <Grid item xs={12} key={distributor.id}>
                             <Accordion
                                 expanded={expanded === distributor.id}
@@ -193,7 +193,7 @@ const CreateNewOrder = () => {
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {filterProducts(distributor.data.productsData)
+                                                {filterProducts(distributor?.data.productsData)
                                                     .slice((productPage[distributor.id] - 1) * itemsPerPage, productPage[distributor.id] * itemsPerPage)
                                                     .map(product => (
                                                         <TableRow key={product.id}>

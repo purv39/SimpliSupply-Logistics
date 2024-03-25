@@ -3,14 +3,16 @@ import { useAuth } from '../../firebase/firebaseAuth';
 import { Checkbox, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Chip, Button } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainNavBar from '../../components/MainNavBar';
-import { DisconnectDistributorStore, FetchAllDistributorsForStore } from "../../firebase/firebaseFirestore";
-import { RiseLoader } from 'react-spinners'; 
+import { DeclineInvitation, DisconnectDistributorStore, FetchAllDistributorsForStore, FetchPendingInvitations, RemoveInvitation } from "../../firebase/firebaseFirestore";
+import { RiseLoader } from 'react-spinners';
 import "../../styles/LoadingSpinner.css";
-import { Pagination } from 'antd'; // Import Pagination from Ant Design
+import { Pagination, message } from 'antd'; // Import Pagination from Ant Design
 
 const DistributorsList = () => {
   const { currentUser } = useAuth();
   const [connectedDistributors, setConnectedDistributors] = useState([]);
+  const [pendingDistributors, setPendingDistributors] = useState([]);
+  const [list, setList] = useState([]);
   const [selectedDistributors, setSelectedDistributors] = useState({});
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1); // State for current page
@@ -24,14 +26,40 @@ const DistributorsList = () => {
     setLoading(false); // Set loading to false when data is fetched
   };
 
+  const fetchPendingDistributors = async (storeID) => {
+    setLoading(true);
+    const distributorData = await FetchPendingInvitations(storeID);
+    setPendingDistributors(distributorData);
+    setLoading(false); // Set loading to false when data is fetched
+  };
+
   useEffect(() => {
     fetchConnectedDistributors(storeID);
+    fetchPendingDistributors(storeID);
   }, [storeID]);
+
+  useEffect(() => {
+    // Check if both connectedDistributors and pendingDistributors have data
+    if (connectedDistributors && connectedDistributors.length > 0 && pendingDistributors && pendingDistributors.length > 0) {
+      // Combine connectedDistributors and pendingDistributors into a single list
+      const combinedList = [...connectedDistributors, ...pendingDistributors];
+      setList(combinedList);
+    } else if (connectedDistributors && connectedDistributors.length > 0) {
+      // If only connectedDistributors has data, set list to connectedDistributors
+      setList([...connectedDistributors]);
+    } else if (pendingDistributors && pendingDistributors.length > 0) {
+      // If only pendingDistributors has data, set list to pendingDistributors
+      setList([...pendingDistributors]);
+    } else {
+      // If both are empty or null, set list to an empty array
+      setList([]);
+    }
+  }, [connectedDistributors, pendingDistributors]);
 
   // Logic to get current distributors based on pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentDistributors = connectedDistributors.slice(indexOfFirstItem, indexOfLastItem);
+  const currentDistributors = list.slice(indexOfFirstItem, indexOfLastItem);
 
   // Change page
   const onPageChange = (page) => setCurrentPage(page);
@@ -52,21 +80,33 @@ const DistributorsList = () => {
       return;
     }
     try {
-      await Promise.all(selectedIds.map(id => DisconnectDistributorStore(storeID, id)));
-      setConnectedDistributors(connectedDistributors.filter(distributor => !selectedIds.includes(distributor.id)));
+      await Promise.all(selectedIds.map(async id => {
+        const distributor = list.find(distributor => distributor.id === id);
+        if (connectedDistributors?.some(d => d.id === id)) {
+          // Distributor is connected, call DisconnectDistributorStore
+          await DisconnectDistributorStore(storeID, id);
+        } else {
+          // Distributor is pending, call RemoveInvitation
+          // Here, you need to replace RemoveInvitation with the actual function to remove invitations
+
+          await DeclineInvitation(distributor.data.distributorID, distributor.data.storeID, id); // Assuming such a function exists
+        }
+      }));
+      setList(list.filter(distributor => !selectedIds.includes(distributor.id)));
       setSelectedDistributors({}); // Reset the selected distributors
-      alert('Selected distributors have been successfully removed.');
+      message.success('Selected distributors have been successfully removed.');
     } catch (error) {
       console.error('Error removing selected distributors:', error);
-      alert('Failed to remove selected distributors. Please try again.');
+      message.error('Failed to remove selected distributors. Please try again.');
     }
   };
+
 
   return (
     <div>
       <MainNavBar />
       <h2>Distributors List</h2>
-      {loading ? ( 
+      {loading ? (
         <div className="loading-spinner">
           <RiseLoader color="#36D7B7" loading={loading} size={10} />
         </div>
@@ -92,7 +132,11 @@ const DistributorsList = () => {
                     </TableCell>
                     <TableCell>{distributor?.data?.storeName || 'Unknown Distributor'}</TableCell>
                     <TableCell align="right">
-                      <Chip label="Connected" color="primary" variant="outlined" />
+                      {pendingDistributors.find(pendingDistributor => pendingDistributor.id === distributor.id) ? (
+                        <Chip label="Pending" color="warning" variant="outlined" />
+                      ) : (
+                        <Chip label="Connected" color="success" variant="outlined" />
+                      )}
                     </TableCell>
                   </TableRow>
                 )) : (
@@ -107,11 +151,10 @@ const DistributorsList = () => {
             <Pagination
               current={currentPage}
               pageSize={itemsPerPage}
-              total={connectedDistributors.length}
+              total={list.length}
               onChange={onPageChange}
               showQuickJumper
             />
-            
           </div>
           <div className="removeButtonContainer">
             <Button variant="contained" color="error" onClick={handleRemoveSelected}>
