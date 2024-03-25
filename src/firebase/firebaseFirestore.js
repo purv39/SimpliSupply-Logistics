@@ -142,6 +142,25 @@ export const AddNewStoreForOperator = async (uuid, storeName, businessNumber, gs
         throw error;
     }
 }
+// Remove store from retail store collection
+export const RemoveStorebyId = async (storeId, userId) => {
+    try {
+        // Remove the store document from the 'Retail Stores' collection
+        const storeDocRef = doc(db, 'Retail Stores', storeId);
+        await deleteDoc(storeDocRef);
+
+        // Update the 'storesList' array in the 'Users' collection
+        const userDocRef = doc(db, 'Users', userId);
+        await updateDoc(userDocRef, {
+            storesList: arrayRemove(storeId)
+        });
+
+        return true; // Indicate successful removal
+    } catch (error) {
+        console.error("Error removing store: ", error);
+        throw error;
+    }
+}
 
 
 export const FetchProductsByDistributorID = async (distributorID) => {

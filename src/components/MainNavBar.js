@@ -60,6 +60,7 @@ const MainNavBar = ({ reloadNavbar }) => {
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/DistributorList')}>Distributor List</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/OrderHistory')}>Order History</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/Addstore')}>Add Store</button></li>}
+          {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/RemoveStore')}>Remove Store</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/CompareProducts')}>Compare Products</button></li>}
         </ul>
       </nav>
