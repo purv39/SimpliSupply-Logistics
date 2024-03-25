@@ -4,19 +4,20 @@ import { Checkbox, TableContainer, Table, TableHead, TableBody, TableRow, TableC
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainNavBar from '../../components/MainNavBar';
 import { DisconnectDistributorStore, FetchAllDistributorsForStore } from "../../firebase/firebaseFirestore";
-import '../../styles/DistributorList.css';
-import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spinners
+import { RiseLoader } from 'react-spinners'; 
 import "../../styles/LoadingSpinner.css";
+import { Pagination } from 'antd'; // Import Pagination from Ant Design
 
 const DistributorsList = () => {
   const { currentUser } = useAuth();
   const [connectedDistributors, setConnectedDistributors] = useState([]);
-  const [selectedDistributors, setSelecteDistributors] = useState({});
+  const [selectedDistributors, setSelectedDistributors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Number of items per page
   const storeID = currentUser.selectedStore;
 
-
-  const FetchConnectedDistributors = async (storeID) => {
+  const fetchConnectedDistributors = async (storeID) => {
     setLoading(true);
     const distributorData = await FetchAllDistributorsForStore(storeID);
     setConnectedDistributors(distributorData);
@@ -24,46 +25,55 @@ const DistributorsList = () => {
   };
 
   useEffect(() => {
-    FetchConnectedDistributors(storeID);
-  }, [storeID])
+    fetchConnectedDistributors(storeID);
+  }, [storeID]);
 
-  const handleSelectDistributor = (invitationId) => {
-    setSelecteDistributors(prevSelectedInvitations => ({
-      ...prevSelectedInvitations,
-      [invitationId]: !prevSelectedInvitations[invitationId]
+  // Logic to get current distributors based on pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentDistributors = connectedDistributors.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Change page
+  const onPageChange = (page) => setCurrentPage(page);
+
+  // Handle selecting distributor
+  const handleSelectDistributor = (id) => {
+    setSelectedDistributors(prevSelectedDistributors => ({
+      ...prevSelectedDistributors,
+      [id]: !prevSelectedDistributors[id]
     }));
   };
 
+  // Handle removing selected distributors
   const handleRemoveSelected = async () => {
     const selectedIds = Object.keys(selectedDistributors).filter(id => selectedDistributors[id]);
     if (selectedIds.length === 0) {
-      alert('Please select at least one invitation to remove.');
+      alert('Please select at least one distributor to remove.');
       return;
     }
     try {
       await Promise.all(selectedIds.map(id => DisconnectDistributorStore(storeID, id)));
       setConnectedDistributors(connectedDistributors.filter(distributor => !selectedIds.includes(distributor.id)));
-      setSelecteDistributors({}); // Reset the selected invitations
-      alert('Selected invitations have been successfully removed.');
+      setSelectedDistributors({}); // Reset the selected distributors
+      alert('Selected distributors have been successfully removed.');
     } catch (error) {
-      console.error('Error removing selected invitations:', error);
-      alert('Failed to remove selected invitations. Please try again.');
+      console.error('Error removing selected distributors:', error);
+      alert('Failed to remove selected distributors. Please try again.');
     }
   };
-
 
   return (
     <div>
       <MainNavBar />
       <h2>Distributors List</h2>
-      {loading ? ( // Render loading spinner if loading is true
+      {loading ? ( 
         <div className="loading-spinner">
           <RiseLoader color="#36D7B7" loading={loading} size={10} />
         </div>
       ) : (
         <div>
           <TableContainer component={Paper} className="tableContainer">
-            <Table aria-label="invitations table">
+            <Table aria-label="distributors table">
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox"></TableCell>
@@ -72,7 +82,7 @@ const DistributorsList = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {connectedDistributors?.length > 0 ? connectedDistributors.map((distributor) => (
+                {currentDistributors?.length > 0 ? currentDistributors.map((distributor) => (
                   <TableRow key={distributor.id} selected={selectedDistributors[distributor.id]}>
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -93,14 +103,23 @@ const DistributorsList = () => {
               </TableBody>
             </Table>
           </TableContainer>
+          <div className="pagination-container">
+            <Pagination
+              current={currentPage}
+              pageSize={itemsPerPage}
+              total={connectedDistributors.length}
+              onChange={onPageChange}
+              showQuickJumper
+            />
+            
+          </div>
           <div className="removeButtonContainer">
             <Button variant="contained" color="error" onClick={handleRemoveSelected}>
               Remove
             </Button>
           </div>
         </div>
-      )
-      }
+      )}
     </div>
   );
 };

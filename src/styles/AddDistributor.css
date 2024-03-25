@@ -19,5 +19,13 @@
 
 .add-button-container {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.check-profile-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px; /* Adjust the margin-top as necessary */
 }

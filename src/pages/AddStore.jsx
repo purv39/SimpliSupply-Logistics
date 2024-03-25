@@ -5,7 +5,6 @@ import { AddNewDistributionStoreForOperator, AddNewStoreForOperator } from '../f
 import { message } from 'antd';
 import MainNavBar from "../components/MainNavBar";
 import BusinessDetails from "../components/BusinessDetails";
-import { Button } from 'react-bootstrap'; // Import Bootstrap Button component
 
 const AddStore = () => {
   const { currentUser, setCurrentUser } = useAuth();
@@ -33,7 +32,7 @@ const AddStore = () => {
       const uuid = currentUser.user.uid;
 
       let addStoreFunction;
-      if(currentUser.currentRole === "Store") {
+      if (currentUser.currentRole === "Store") {
         addStoreFunction = AddNewStoreForOperator;
       } else if (currentUser.currentRole === "Distributor") {
         addStoreFunction = AddNewDistributionStoreForOperator;
@@ -42,9 +41,9 @@ const AddStore = () => {
       const storeId = await addStoreFunction(uuid, businessName, businessNumber, gstNumber, taxFile, businessContact, businessAddress, businessCity, businessPostalCode, businessProvince);
       setCurrentUser(prevUser => ({
         ...prevUser,
-        storesList: [...prevUser.storesList, storeId] 
+        storesList: [...prevUser.storesList, storeId]
       }));
-      sessionStorage.setItem('currentUser', JSON.stringify(currentUser));  
+      sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
 
       message.success("New Store has been Added")
       setBusinessName('');
@@ -58,7 +57,7 @@ const AddStore = () => {
       setBusinessProvince('');
       // Reload the navbar
       reloadNavbar();
-      if(currentUser.currentRole === "Distributor") {
+      if (currentUser.currentRole === "Distributor") {
         navigate('/DistributorHome');
       } else if (currentUser.currentRole === "Store") {
         navigate('/StoreHome');
@@ -94,7 +93,7 @@ const AddStore = () => {
             setBusinessProvince={setBusinessProvince}
           />
           <div className="d-grid gap-2 mt-3">
-            <Button variant="primary" onClick={handleStore}>ADD</Button>
+            <button variant="primary" onClick={handleStore}>ADD</button>
           </div>
         </div>
       </div>

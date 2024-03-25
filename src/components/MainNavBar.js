@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../firebase/firebaseAuth';
-import '../styles/MainNavBar.css';
 import { FetchDistributorDataByID, FetchStoreDataByID } from '../firebase/firebaseFirestore';
 
 const MainNavBar = ({ reloadNavbar }) => {
   const navigate = useNavigate();
-  const { LogOut, currentUser, setCurrentUser } = useAuth();
+  const { LogOut, currentUser, setCurrentUser } = useAuth(); // Assuming setCurrentUser is a function to update currentUser state
   const role = currentUser.currentRole;
 
   const navigateTo = (path) => {
     navigate(path);
   };
-
   const handleLogout = async () => {
     try {
       await LogOut();
@@ -26,7 +24,7 @@ const MainNavBar = ({ reloadNavbar }) => {
   const [storesData, setStoresData] = useState([]);
   useEffect(() => {
     async function fetchStoresData() {
-      if (currentUser.currentRole === 'Store') {
+      if(currentUser.currentRole === 'Store') {
         const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchStoreDataByID(option)));
         setStoresData(fetchedData);
       } else if (currentUser.currentRole === 'Distributor') {
@@ -35,7 +33,7 @@ const MainNavBar = ({ reloadNavbar }) => {
       }
     }
     fetchStoresData();
-  }, [currentUser.storesList]);
+  }, [currentUser.storesList, currentUser.currentRole]);
 
   const handleStoreChange = (e) => {
     const selectedStore = e.target.value;
@@ -55,7 +53,7 @@ const MainNavBar = ({ reloadNavbar }) => {
           navigateTo('/DistributorHome')
         }
       }}>SimpliSupply Logistics</div>
-      <nav className="nav-menu">
+      <nav>
         <ul>
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button></li>}
@@ -63,7 +61,7 @@ const MainNavBar = ({ reloadNavbar }) => {
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/OrderHistory')}>Order History</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/Addstore')}>Add Store</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/RemoveStore')}>Remove Store</button></li>}
-
+          {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/CompareProducts')}>Compare Products</button></li>}
         </ul>
       </nav>
       <nav>
@@ -74,7 +72,7 @@ const MainNavBar = ({ reloadNavbar }) => {
           {role === 'Distributor' && <li><button className="nav-button" onClick={() => navigateTo('/AddDistributionStore')}>Add Distribution Center</button></li>}
         </ul>
       </nav>
-      <div className="dropdown-container">
+      <div className="mb-3">
         <select
           className="form-select"
           id="storeSelect"
@@ -86,9 +84,9 @@ const MainNavBar = ({ reloadNavbar }) => {
           ))}
         </select>
       </div>
-      <div className="user-actions">
-        <button className="nav-button my-page" onClick={() => navigateTo('/Welcome')}>My Page</button>
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
+      <div>
+        <button className="nav-button my-page"  onClick={() => navigateTo('/Welcome')}>My Page</button>
+        <button className="logout-button" onClick={handleLogout}>Logout</button> 
       </div>
     </div>
   )

@@ -76,12 +76,14 @@ export const AddNewDistributionStoreForOperator = async (uuid, storeName, busine
 }
 
 // Function to add a new product to the distributor's inventory
-export const AddProductToInventory = async (distributorID, productName, category, quantityPerUnit, unitPrice, unitsInStock) => {
+export const AddProductToInventory = async (distributorID, productName, category, productDescription, quantityPerUnit, unitPrice, unitsInStock, moq) => {
     try {
         // Construct the product object
         const productData = {
             productName: productName,
             categoryName: category,
+            productDescription: productDescription,
+            moq: moq,
             quantityPerUnit: quantityPerUnit,
             unitPrice: unitPrice,
             unitsInStock: unitsInStock
@@ -159,6 +161,51 @@ export const RemoveStorebyId = async (storeId, userId) => {
         throw error;
     }
 }
+
+
+export const FetchProductsByDistributorID = async (distributorID) => {
+    const productsRef = collection(db, 'Products');
+    const q = query(productsRef, where("distributorID", "==", distributorID));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        name: data.productName,
+        quantity: data.quantityPerUnit,
+        price: data.unitPrice,
+        description: data.productDescription
+      };
+    });
+  };
+
+
+export const FetchDistributorUserInfo = async (distributorID) => {
+    try {
+        // Query the 'Users' collection for a document that contains the 'Distribution Store' ID in its 'distributionStores' array.
+        const usersRef = collection(db, 'Users');
+        const q = query(usersRef, where("distributionStores", "array-contains", distributorID));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+            console.error('No user found with the given distribution store ID:', distributorID);
+            return null;
+        }
+
+        // Assuming there's only one user per distribution store ID
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        console.log('Fetched User Data:', userData);
+        return {
+            name: userData.firstName + ' ' + userData.lastName,
+            phone: userData.contactNumber,
+            email: userData.email
+        };
+
+    } catch (error) {
+        console.error('Error fetching user information:', error);
+        throw new Error('User information not found.');
+    }
+};
 
 // Function to add a new Invitation for store
 export const AddInvitation = async (distributorID, storeID) => {
@@ -420,6 +467,19 @@ export const fetchOrderHistoryForDistributor = async (distributorID) => {
     }
 };
 
+export const UpdateUserData = async (userId, updatedInfo) => {
+    const userRef = doc(db, 'Users', userId);
+    try {
+      await updateDoc(userRef, {
+        ...updatedInfo, // Spread the updatedInfo object to only update the provided fields
+      });
+      console.log("User data updated successfully");
+    } catch (error) {
+      console.error("Error updating user data:", error);
+      throw new Error(error);
+    }
+  };
+
 export const CreateNewOrderForStore = async (storeID, distributorID, orderItems) => {
     try {
         const updateMap = new Map(); // Map to store docRef and newUnitsInStock
@@ -524,6 +584,8 @@ export const fetchOrderHistoryForStore = async (storeID) => {
     }
 };
 
+
+
 export const FetchUserData = async (uuid) => {
     const userDataRef = doc(db, 'Users', uuid);
     const userDataSnapshot = await getDoc(userDataRef);
@@ -554,6 +616,29 @@ export const FetchStoresDetailsByIDs = async (storeIDs) => {
     }
   };
 
+
+export const FetchDistributionStoresDetailsByUID = async (storeIDs) => {
+    try {
+        const storesData = await Promise.all(storeIDs.map(async (storeID) => {
+            const storeRef = doc(db, 'Distribution Stores', storeID);
+    
+            const storeSnap = await getDoc(storeRef);
+            if (!storeSnap.exists()) {
+                console.error(`No data found for store with ID: ${storeID}`);
+                return null; // This will ensure that non-existing stores do not cause errors.
+            }
+            return { id: storeID, ...storeSnap.data() };
+        }));
+
+        // Filter out any potential null values if some stores were not found.
+        return storesData.filter(store => store !== null);
+    } catch (error) {
+        console.error('Error fetching stores details:', error);
+        throw new Error('Error fetching stores details');
+    }
+};
+
+
   export const FetchStoreDetails = async (storeId) => {
     try {
         const storeRef = doc(db, 'Retail Stores', storeId);
@@ -575,8 +660,6 @@ export const FetchStoreDataByID = async (uuid) => {
     const userDataRef = doc(db, 'Retail Stores', uuid);
     const userDataSnapshot = await getDoc(userDataRef);
     const userData = userDataSnapshot.data();
-  
-    console.log("storeData:" + userData.storeName);
     return userData.storeName;
 }
 
@@ -585,7 +668,6 @@ export const FetchDistributorDataByID = async (uuid) => {
     const userDataRef = doc(db, 'Distribution Stores', uuid);
     const userDataSnapshot = await getDoc(userDataRef);
     const userData = userDataSnapshot.data();
-    console.log("storeData:" + userData.storeName);
     return userData.storeName;
 }
 
