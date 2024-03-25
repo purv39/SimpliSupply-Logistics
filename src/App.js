@@ -23,6 +23,7 @@ import DistributorHome from './pages/DistributorHome';
 import AddStore from "./pages/AddStore";
 import RemoveStore from "./pages/RemoveStore";
 import CompareProducts from './pages/CompareProducts';
+import GenerateSKULabel from './pages/GenerateSKULabel';
 
 
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
           <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
           <Route path="/Addstore" element={<StoreOperatorPrivateRoute><AddStore /></StoreOperatorPrivateRoute> } />
           <Route path="/CompareProducts" element={<StoreOperatorPrivateRoute><CompareProducts /></StoreOperatorPrivateRoute> } />
+          <Route path="/GenerateSkuLabel" element={<StoreOperatorPrivateRoute><GenerateSKULabel /></StoreOperatorPrivateRoute> } />
 
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
           <Route path="/AddProducts" element={<DistributorPrivateRoute><AddProducts /></DistributorPrivateRoute>} />

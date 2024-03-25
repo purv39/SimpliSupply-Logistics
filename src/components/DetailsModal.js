@@ -109,19 +109,6 @@ const DetailsModal = ({ isOpen, onClose, product }) => {
     );
 };
 
-DetailsModal.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    product: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        price: PropTypes.number.isRequired,
-        description: PropTypes.string.isRequired,
-        category: PropTypes.string.isRequired,
-        rating: PropTypes.number.isRequired,
-        image: PropTypes.string.isRequired,
-        quantityPerUnit:PropTypes.number.isRequired,
-        unit: PropTypes.string.isRequired,
-    }).isRequired,
-};
+
 
 export default DetailsModal;
