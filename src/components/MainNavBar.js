@@ -62,6 +62,8 @@ const MainNavBar = ({ reloadNavbar }) => {
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/Addstore')}>Add Store</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/RemoveStore')}>Remove Store</button></li>}
           {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/CompareProducts')}>Compare Products</button></li>}
+          {role === 'Store' && <li><button className="nav-button" onClick={() => navigateTo('/GenerateSkuLabel')}>Generate SKU Label</button></li>}
+
         </ul>
       </nav>
       <nav>
