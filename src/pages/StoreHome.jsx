@@ -9,6 +9,9 @@ import "../styles/LoadingSpinner.css";
 import { Typography } from '@mui/material';
 import { Pagination } from 'antd';
 import DetailsModal from '../components/DetailsModal';
+import Barcode from 'react-barcode';
+import { DownloadSharp } from '@mui/icons-material';
+import html2canvas from 'html2canvas'; // Import html2canvas for capturing the barcode as an image
 
 const StoreHome = () => {
   const [inventory, setInventory] = useState([]);
@@ -59,7 +62,21 @@ const StoreHome = () => {
   const handleOpenModal = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
-}
+  };
+
+  const handleDownloadImage = async (productId) => {
+    const element = document.getElementById(productId),
+        canvas = await html2canvas(element),
+        data = canvas.toDataURL('image/jpg'),
+        link = document.createElement('a');
+
+    link.href = data;
+    link.download = `sku_${productId}.jpg`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="dashboard">
@@ -85,6 +102,7 @@ const StoreHome = () => {
               <thead>
                 <tr>
                   <th>Product Name</th>
+                  <th>SKU</th>
                   <th>Category</th>
                   <th>Quantity Per Unit</th>
                   <th>Units In Stock</th>
@@ -97,10 +115,18 @@ const StoreHome = () => {
                 {currentItems.map((item) => (
                   <tr key={item.id}>
                     <td>{item.data.productName}</td>
+                    <td>
+                      <div style={{ display: "flex" }}>
+                        <div id={item.id}>
+                          <Barcode value={item.id} width={1} height={40} />
+                        </div>
+                        <DownloadSharp fontSize='small' color='primary' style={{cursor: "pointer"}} onClick={() => handleDownloadImage(item.id)} />
+                      </div>
+                    </td>
                     <td>{item.data.categoryName}</td>
                     <td>{item.data.quantityPerUnit}</td>
                     <td>{item.data.unitsInStock}</td>
-                    <td>${item.data.unitPrice % 1 === 0 ? item.data.unitPrice?.toFixed(2) : item.data?.unitPrice}</td> {/* Display with 2 decimal points if not an integer */}
+                    <td>${item.data.unitPrice % 1 === 0 ? item.data.unitPrice?.toFixed(2) : item.data?.unitPrice}</td>
                     <td>${item.data.itemRetailPrice?.toFixed(2)}</td>
                     <td>
                       <button
@@ -124,7 +150,6 @@ const StoreHome = () => {
               />
             </div>
             <DetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} product={selectedProduct} />
-
           </>
         )}
       </div>
@@ -133,3 +158,4 @@ const StoreHome = () => {
 };
 
 export default StoreHome;
+

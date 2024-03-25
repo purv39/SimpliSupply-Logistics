@@ -109,11 +109,6 @@ const GenerateSKULabel = () => {
     const handleBarcodeModalClose = () => {
         setBarcodeModalVisible(false);
     };
-    const handleDownloadBarcode = () => {
-        //make the barcode downloadable
-
-    };
-
 
     const handleDownloadImage = async () => {
         const element = document.getElementById('print'),
@@ -128,6 +123,8 @@ const GenerateSKULabel = () => {
         link.click();
         document.body.removeChild(link);
     };
+
+
     return (
         <div>
             <MainNavBar />
