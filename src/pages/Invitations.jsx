@@ -51,7 +51,7 @@ const Invitations = () => {
     // Logic to get current invitations based on pagination
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentInvitations = invitations.slice(indexOfFirstItem, indexOfLastItem);
+    const currentInvitations = invitations?.slice(indexOfFirstItem, indexOfLastItem);
 
     // Change page
     const onPageChange = (page) => setCurrentPage(page);

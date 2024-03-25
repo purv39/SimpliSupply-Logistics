@@ -93,7 +93,7 @@ const ShipmentHistory = () => {
                                     <TableRow>
                                         <TableCell>{order.id}</TableCell>
                                         <TableCell>{order.storeName}</TableCell>
-                                        <TableCell>{`$${order.totalCost}`}</TableCell>
+                                        <TableCell>{`$${order.totalCost.toFixed(2)}`}</TableCell>
                                         <TableCell>{formatDate(order.createdAt)}</TableCell>
                                         <TableCell>{order.currentStatus}</TableCell>
                                         <TableCell>

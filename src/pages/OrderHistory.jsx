@@ -79,7 +79,7 @@ const OrderHistory = () => {
                                         <TableRow onClick={() => handleExpandClick(order.id)}>
                                             <TableCell>{`${order.id}`}</TableCell>
                                             <TableCell>{`${order.distributorName}`}</TableCell>
-                                            <TableCell>{`$${order.totalCost}`}</TableCell>
+                                            <TableCell>{`$${order?.totalCost.toFixed(2)}`}</TableCell>
                                             <TableCell>{`${formatDate(order.createdAt)}`}</TableCell>
                                             <TableCell>{`${order.currentStatus}`}</TableCell>
                                             <TableCell>

@@ -200,7 +200,7 @@ const CreateNewOrder = () => {
                                                             <TableCell>{product.data.categoryName}</TableCell>
                                                             <TableCell>{product.data.productName}</TableCell>
                                                             <TableCell>{product.data.quantityPerUnit}</TableCell>
-                                                            <TableCell>${product.data.unitPrice}</TableCell>
+                                                            <TableCell>${product.data?.unitPrice.toFixed(2)}</TableCell>
                                                             <TableCell>{product.data.unitsInStock}</TableCell>
                                                             <TableCell>
                                                                 <button className="btn btn-primary" onClick={() => handleOpenModal(product)}>

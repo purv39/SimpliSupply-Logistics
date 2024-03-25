@@ -41,11 +41,11 @@ const StoreHome = () => {
 
   // Logic to get current items based on pagination and search query
   const filteredItems = inventory.filter(item =>
-    item.data.productName.toLowerCase().includes(searchQuery.toLowerCase())
+    item?.data?.productName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
 
   // Change page
   const onPageChange = (page) => setCurrentPage(page);
@@ -100,8 +100,8 @@ const StoreHome = () => {
                     <td>{item.data.categoryName}</td>
                     <td>{item.data.quantityPerUnit}</td>
                     <td>{item.data.unitsInStock}</td>
-                    <td>${item.data.unitPrice}</td>
-                    <td>${item.data.itemRetailPrice}</td>
+                    <td>${item.data.unitPrice % 1 === 0 ? item.data.unitPrice?.toFixed(2) : item.data?.unitPrice}</td> {/* Display with 2 decimal points if not an integer */}
+                    <td>${item.data.itemRetailPrice?.toFixed(2)}</td>
                     <td>
                       <button
                         className="btn btn-primary"
