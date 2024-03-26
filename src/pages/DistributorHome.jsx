@@ -19,6 +19,8 @@ const DistributorHome = () => {
     const [currentPage, setCurrentPage] = useState(1); // State for current page
     const [itemsPerPage, setItemsPerPage] = useState(8); // Number of items per page
     const [searchQuery, setSearchQuery] = useState(''); // State for search query
+    const [sortBy, setSortBy] = useState(null); // State for sorting column
+    const [sortOrder, setSortOrder] = useState('asc'); // State for sorting order
 
     useEffect(() => {
         const fetchInventory = async () => {
@@ -36,9 +38,26 @@ const DistributorHome = () => {
     }
 
     // Logic to get current items based on pagination and search query
-    const filteredItems = inventory?.filter(item =>
+    let filteredItems = inventory?.filter(item =>
         item.data.productName.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    // Sorting logic
+    if (sortBy) {
+        filteredItems.sort((a, b) => {
+            const valueA = a.data[sortBy];
+            const valueB = b.data[sortBy];
+
+            if (valueA < valueB) {
+                return sortOrder === 'asc' ? -1 : 1;
+            }
+            if (valueA > valueB) {
+                return sortOrder === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+    }
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
@@ -52,6 +71,16 @@ const DistributorHome = () => {
         setCurrentPage(1); // Reset to first page when searching
     };
 
+    // Handle sorting
+    const handleSort = (column) => {
+        if (sortBy === column) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(column);
+            setSortOrder('asc');
+        }
+    };
+
     return (
         <div className="dashboard">
             <MainNavBar />
@@ -63,7 +92,6 @@ const DistributorHome = () => {
                     value={searchQuery}
                     onChange={handleSearchInputChange}
                     className="search-input"
-
                 />
                 {loading ? (
                     <div className="loading-spinner">
@@ -76,11 +104,11 @@ const DistributorHome = () => {
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th>Product Name</th>
-                                    <th>Category</th>
-                                    <th>Quantity Per Unit</th>
-                                    <th>Units In Stock</th>
-                                    <th>Unit Price</th>
+                                    <th onClick={() => handleSort('productName')}>Product Name</th>
+                                    <th onClick={() => handleSort('categoryName')}>Category</th>
+                                    <th onClick={() => handleSort('quantityPerUnit')}>Quantity Per Unit</th>
+                                    <th onClick={() => handleSort('unitsInStock')}>Units In Stock</th>
+                                    <th onClick={() => handleSort('unitPrice')}>Unit Price</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
