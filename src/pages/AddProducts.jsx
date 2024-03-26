@@ -9,7 +9,6 @@ import '../styles/AddProducts.css';
 const AddProducts = () => {
   const { currentUser } = useAuth();
   const selectedStore = currentUser.selectedStore;
-
   const [product, setProduct] = useState({
     productName: '',
     category: '',
@@ -19,7 +18,8 @@ const AddProducts = () => {
     unitsInStock: '',
     moq: '' ,
     url: '' ,
-    brandName: ''
+    brandName: '',
+    product_image: ''
 
   });
 
@@ -66,7 +66,9 @@ const AddProducts = () => {
         parseInt(product.unitsInStock),
         parseInt(product.moq) ,
         product.brandName,
-        product.url
+        product.url,
+        product.product_image
+
       );
 
       // Reset form fields
@@ -79,7 +81,8 @@ const AddProducts = () => {
         unitsInStock: '',
         moq: '',
         brandName: '',
-        url: ''
+        url: '',
+        product_image:''
       });
 
       // Provide feedback to the user
@@ -125,7 +128,8 @@ const AddProducts = () => {
           unitsInStock,
           moq ,
           brandName,
-          url
+          url,
+          product_image
         ] = fields;
   
         // Form validation
@@ -157,7 +161,8 @@ const AddProducts = () => {
           unitsInStock: parseInt(unitsInStock),
           moq: parseInt(moq) ,
           brandName ,
-          url
+          url,
+          product_image
         });
       }
   
@@ -170,8 +175,9 @@ const AddProducts = () => {
   
       try {
         for (const product of productsToAdd) {
+      //  product.product_image= AddImageToStorage(product.product_image, selectedStore);
           // Add product to inventory
-          await AddProductToInventory(
+          let pid= await AddProductToInventory(
             selectedStore,
             product.productName,
             product.category,
@@ -181,8 +187,10 @@ const AddProducts = () => {
             product.unitsInStock,
             product.moq,
             product.brandName,
-            product.url
+            product.url,
+            product.product_image
           );
+
         }
   
         // Reset form fields
@@ -196,6 +204,7 @@ const AddProducts = () => {
           moq: '',
           brandName: '',
           url: '',
+          product_image: ''
         });
   
         // Provide feedback to the user
@@ -310,6 +319,11 @@ const AddProducts = () => {
               fullWidth
             />
           </div>
+
+          <div className="form-group">
+                <label>Upload Image:</label>
+                <input type="file"  onChange={(e) => { product.product_image=(e.target.files[0]); }} />
+            </div>
 
           <div className="add-products-form-row">
             <TextField
