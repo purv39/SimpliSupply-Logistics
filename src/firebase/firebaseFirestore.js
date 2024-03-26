@@ -115,7 +115,7 @@ export const AddProductToInventory = async (distributorID, productName, category
 
 
 // Function to add a new product to the distributor's inventory
-export const GenerateSKULabelForProduct = async (storeID, productName, brandName, category, productDescription, quantityPerUnit, unitPrice, unitsInStock, itemRetailPrice) => {
+export const GenerateSKULabelForProduct = async (storeID, productName, brandName, category, productDescription, quantityPerUnit, unitPrice, unitsInStock, itemRetailPrice, url, product_image) => {
     try {
         // Construct the product object
         const productData = {
@@ -126,13 +126,21 @@ export const GenerateSKULabelForProduct = async (storeID, productName, brandName
             quantityPerUnit: quantityPerUnit,
             unitPrice: unitPrice,
             unitsInStock: unitsInStock,
-            itemRetailPrice: itemRetailPrice
+            itemRetailPrice: itemRetailPrice,
+            url: url
         };
 
         // Add the product to the "products" subcollection of the distributor
         const storeRef = doc(db, 'Retail Stores', storeID);
         const productRef = await addDoc(collection(storeRef, 'Inventory'), productData);
 
+        if(product_image) {
+            const product_url = await AddImageToStorage(storeID, productRef.id, product_image);
+            // Update the product URL with the uploaded image URL
+            await updateDoc(productRef, {
+                productImageURL: product_url
+            });
+        }
         console.log("Product added successfully:", productRef.id);
         return productRef.id; // Return the ID of the added product
     } catch (error) {

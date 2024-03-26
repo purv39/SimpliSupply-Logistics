@@ -20,7 +20,9 @@ const GenerateSKULabel = () => {
         unitPrice: '',
         unitsInStock: '',
         itemRetailPrice: '',
-        brandName: ''
+        brandName: '',
+        url: '',
+        product_image: ''
     });
 
     const [loading, setLoading] = useState(false);
@@ -69,7 +71,9 @@ const GenerateSKULabel = () => {
                 product.quantityPerUnit,
                 parseFloat(product.unitPrice),
                 parseInt(product.unitsInStock),
-                parseInt(product.itemRetailPrice)
+                parseInt(product.itemRetailPrice),
+                product.url,
+                product.product_image
             );
 
             // Set the generated product ID
@@ -85,6 +89,8 @@ const GenerateSKULabel = () => {
                 unitsInStock: '',
                 itemRetailPrice: '',
                 brandName: '',
+                url: '',
+                product_image: ''
             });
 
             handleShowBarcodeModal()
@@ -206,7 +212,22 @@ const GenerateSKULabel = () => {
                             fullWidth
                         />
                     </div>
-
+                    <div className="form-group">
+                        <label>Upload Image:</label>
+                        <input type="file" onChange={(e) => { product.product_image = (e.target.files[0]); }} />
+                    </div>
+                    <div>
+                        OR
+                    </div>
+                    <div className="add-products-form-row">
+                        <TextField
+                            label="url"
+                            name="url"
+                            value={product.url}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </div>
                     <Button
                         type="submit"
                         variant="contained"
