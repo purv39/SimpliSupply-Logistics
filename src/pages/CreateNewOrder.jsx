@@ -39,6 +39,8 @@ const CreateNewOrder = () => {
 
         if (paramsDistributorID) {
             setExpanded(paramsDistributorID);
+            handleProductPageChange(paramsDistributorID, 1);
+
         }
     }, [storeID, paramsDistributorID]); // Empty dependency array ensures this effect runs only once on mount
 

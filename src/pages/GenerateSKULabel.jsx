@@ -135,6 +135,9 @@ const GenerateSKULabel = () => {
         <div>
             <MainNavBar />
             <div className="add-products-container">
+                <Typography variant="h4" gutterBottom>
+                    Generate SKU
+                </Typography>
                 <form className="add-products-form" onSubmit={handleSubmit}>
                     <div className="add-products-form-row">
                         <TextField
