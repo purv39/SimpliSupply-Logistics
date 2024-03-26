@@ -313,9 +313,10 @@ const AddProducts = () => {
               fullWidth
             />
             <TextField
-              label="url"
-              name="url"
-              value={product.url}
+              label="Minimum Order Quantity (MOQ)"
+              name="moq"
+              type="number"
+              value={product.moq}
               onChange={handleChange}
               required
               fullWidth
@@ -326,15 +327,15 @@ const AddProducts = () => {
                 <label>Upload Image:</label>
                 <input type="file"  onChange={(e) => { product.product_image=(e.target.files[0]); }} />
             </div>
-
+          <div>
+            OR
+          </div>
           <div className="add-products-form-row">
-            <TextField
-              label="Minimum Order Quantity (MOQ)"
-              name="moq"
-              type="number"
-              value={product.moq}
+          <TextField
+              label="url"
+              name="url"
+              value={product.url}
               onChange={handleChange}
-              required
               fullWidth
             />
           </div>

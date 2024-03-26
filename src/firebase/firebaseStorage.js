@@ -14,15 +14,15 @@ export const AddTaxFileToStorage = async (taxFile, storeID) => {
     return downloadURL;
 };
 
-export const  AddImageToStorage = async (taxFile) => {
-    const storageRef = ref(storage, `product_image/image`);;
-    const uploadTask = uploadBytesResumable(storageRef, taxFile);
+export const  AddImageToStorage = async (storeID, productID, image) => {
+    const storageRef = ref(storage, `product_image/${storeID}_${productID}_product`);;
+    const uploadTask = uploadBytesResumable(storageRef, image);
 
     await uploadTask;
 
     const dwnldurl = await getDownloadURL(uploadTask.snapshot.ref);
 
-    const downloadURL = dwnldurl.split("?")[0];
-
+    const downloadURL = dwnldurl.split("?")[0] + '?alt=media';
+    
     return downloadURL;
 };

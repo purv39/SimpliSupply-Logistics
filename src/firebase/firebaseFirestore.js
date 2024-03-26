@@ -79,8 +79,6 @@ export const AddNewDistributionStoreForOperator = async (uuid, storeName, busine
 // Function to add a new product to the distributor's inventory
 export const AddProductToInventory = async (distributorID, productName, category, productDescription, quantityPerUnit, unitPrice, unitsInStock, moq, brandName , url, product_image) => {
     try {
-      let product_image1= await AddImageToStorage(product_image)
-
         // Construct the product object
         const productData = {
             productName: productName,
@@ -92,15 +90,19 @@ export const AddProductToInventory = async (distributorID, productName, category
             unitsInStock: unitsInStock,
             brandName: brandName,
             url:url,
-            product_image: product_image1
-
-
         };
 
         // Add the product to the "products" subcollection of the distributor
         const distributorRef = doc(db, 'Distribution Stores', distributorID);
         const productRef = await addDoc(collection(distributorRef, 'products'), productData);
         
+        if(product_image) {
+            const product_url = await AddImageToStorage(distributorID, productRef.id, product_image);
+            // Update the product URL with the uploaded image URL
+            await updateDoc(productRef, {
+                productImageURL: product_url
+            });
+        }
 
         console.log("Product added successfully:", productRef);
         return productRef.id; // Return the ID of the added product
