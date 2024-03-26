@@ -6,7 +6,6 @@ import { message, Modal } from 'antd';
 import MainNavBar from '../components/MainNavBar';
 import '../styles/AddProducts.css';
 import Barcode from 'react-barcode'; // Import Barcode component
-import { saveAs } from 'file-saver'; // Import saveAs function from file-saver library
 import html2canvas from 'html2canvas';
 const GenerateSKULabel = () => {
     const { currentUser } = useAuth();
@@ -52,7 +51,7 @@ const GenerateSKULabel = () => {
             return;
         }
 
-        if (parseFloat(product.unitPrice) <= 0 || parseInt(product.unitsInStock) <= 0 || parseInt(product.itemRetailPrice) <= 0) {
+        if (parseFloat(product.unitPrice) <= 0 || parseInt(product.unitsInStock) < 0 || parseFloat(product.itemRetailPrice) <= 0) {
             setError('Unit price, units in stock, and retail price must be positive numbers.');
             return;
         }
