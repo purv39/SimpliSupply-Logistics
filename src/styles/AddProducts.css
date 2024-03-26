@@ -5,12 +5,18 @@
 }
 
 .add-products-form {
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
 .add-products-form-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.import-csv-form-row{
   display: flex;
   gap: 1.5rem;
 }
