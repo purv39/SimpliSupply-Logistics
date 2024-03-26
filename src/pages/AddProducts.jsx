@@ -201,21 +201,23 @@ const AddProducts = () => {
           Add Products
         </Typography>
         <form className="csv-form" onSubmit={handleCsvSubmit}>
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            className="csv-input"
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading}
-            className="csv-submit-button"
-          >
-            Import from CSV
-          </Button>
+          <div className="import-csv-form-row">
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className="csv-input"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              className="csv-submit-button"
+            >
+              Import from CSV
+            </Button>
+          </div>
         </form>
         
         <form className="add-products-form" onSubmit={handleSubmit}>
