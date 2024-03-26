@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Typography, Paper, Button } from '@mui/material';
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchInvitationsForDistributor, AcceptInvitation, DeclineInvitation } from "../firebase/firebaseFirestore";
-import { message } from 'antd';
+import { message, Pagination } from 'antd';
 import MainNavBar from '../components/MainNavBar';
-// import { CheckCircleOutlineOutlined, CancelOutlined } from '@mui/icons-material'; 
 import '../styles/Invitations.css'; // Import CSS file
 
 const Invitations = () => {
     const [invitations, setInvitations] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(8); // Change the number of items per page as needed
     const { currentUser } = useAuth();
     const distributorID = currentUser.selectedStore;
 
@@ -46,7 +47,15 @@ const Invitations = () => {
             message.error('Failed to decline invitation. Please try again later.');
         }
     };    
-    
+
+    // Logic to get current invitations based on pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentInvitations = invitations?.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Change page
+    const onPageChange = (page) => setCurrentPage(page);
+
     return (
         <div className="invitations-container">
             <MainNavBar />
@@ -56,31 +65,40 @@ const Invitations = () => {
             {invitations === undefined || invitations?.length === 0 ? (
                 <Typography variant="body1">You have no pending invitations.</Typography>
             ) : (
-                <Grid container spacing={2}>
-                    {invitations.map(invitation => (
-                        <Grid item xs={12} key={invitation.id}>
-                            <Paper elevation={3} className="invitation-paper">
-                                <Typography variant="subtitle1" gutterBottom>Store ID: {invitation.data.storeID}</Typography>
+                <>
+                    <Grid container spacing={2}>
+                        {currentInvitations.map(invitation => (
+                            <Grid item xs={12} key={invitation.id}>
+                                <Paper elevation={3} className="invitation-paper">
+                                    <Typography variant="subtitle1" gutterBottom>Store ID: {invitation.data.storeID}</Typography>
                                     <div className="invitation-buttons">
-                                    <Button
-                                        variant="contained"
-                                        color="success"
-                                        onClick={() => handleAcceptInvitation(invitation.id, invitation.data.storeID)}
-                                    >
-                                        Accept
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        color="error"
-                                        onClick={() => handleDeclineInvitation(invitation.id, invitation.data.storeID)}
-                                    >
-                                        Decline
-                                    </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="success"
+                                            onClick={() => handleAcceptInvitation(invitation.id, invitation.data.storeID)}
+                                        >
+                                            Accept
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="error"
+                                            onClick={() => handleDeclineInvitation(invitation.id, invitation.data.storeID)}
+                                        >
+                                            Decline
+                                        </Button>
                                     </div>
-                            </Paper>
-                        </Grid>
-                    ))}
-                </Grid>
+                                </Paper>
+                            </Grid>
+                        ))}
+                    </Grid>
+                    <Pagination
+                        current={currentPage}
+                        pageSize={itemsPerPage}
+                        total={invitations.length}
+                        onChange={onPageChange}
+                        showQuickJumper
+                    />
+                </>
             )}
         </div>
     );

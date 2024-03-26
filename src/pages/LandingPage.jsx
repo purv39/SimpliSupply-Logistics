@@ -29,18 +29,13 @@ const LandingPage = () => {
               <img src={companyLogo} alt="Company Logo" />
             </div>
             <div>
-              <h2>About Us</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, felis sit amet tempor
-                maximus, eros felis tincidunt ante, at fringilla velit ligula nec sem. Duis malesuada, nisl non
-                congue tristique, libero odio lacinia mi, non porta nisi sapien vitae leo. Curabitur ultricies
-                lacinia eleifend.
-              </p>
-              <p>
-                Proin eu luctus lectus. Fusce dapibus libero a ex tincidunt, eget accumsan felis pharetra.
-                Suspendisse tincidunt erat nec magna volutpat scelerisque. Nulla facilisi. Phasellus convallis
-                magna id eros cursus, nec tristique lacus tincidunt. In sit amet mi vel nisl bibendum blandit.
-              </p>
+                <h2>About Us</h2> <br/>
+                <p>
+                    At SimpliSupply Logistics, we are dedicated to revolutionizing the way businesses manage their supply chains. With our innovative platform, we provide seamless solutions for distributors and stores alike, streamlining processes, reducing costs, and improving efficiency. Our goal is to empower businesses of all sizes to thrive in today's dynamic marketplace by offering comprehensive tools and resources tailored to their specific needs.
+                </p>
+                <p>
+                    Our mission is to simplify supply chain management for businesses around the globe. We strive to deliver cutting-edge technology and exceptional services that enable our clients to optimize their operations, drive growth, and achieve success. With a commitment to excellence and continuous innovation, we aim to be the leading provider of logistics solutions, empowering businesses to reach new heights of productivity and profitability. Join us on this journey as we transform the way businesses connect, collaborate, and succeed in the digital age.
+                </p>
             </div>
           </div>
         </section>

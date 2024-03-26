@@ -21,7 +21,10 @@ import DistributorPrivateRoute from './components/DistributorPrivateRoute';
 import StoreHome from './pages/StoreHome';
 import DistributorHome from './pages/DistributorHome';
 import AddStore from "./pages/AddStore";
+import RemoveStore from "./pages/RemoveStore";
 import CompareProducts from './pages/CompareProducts';
+import GenerateSKULabel from './pages/GenerateSKULabel';
+
 
 const App = () => {
   return (
@@ -43,6 +46,7 @@ const App = () => {
           <Route path="/OrderHistory" element={<StoreOperatorPrivateRoute><OrderHistory /></StoreOperatorPrivateRoute> } />
           <Route path="/Addstore" element={<StoreOperatorPrivateRoute><AddStore /></StoreOperatorPrivateRoute> } />
           <Route path="/CompareProducts" element={<StoreOperatorPrivateRoute><CompareProducts /></StoreOperatorPrivateRoute> } />
+          <Route path="/GenerateSkuLabel" element={<StoreOperatorPrivateRoute><GenerateSKULabel /></StoreOperatorPrivateRoute> } />
 
           <Route path="/DistributorHome" element={<DistributorPrivateRoute><DistributorHome /></DistributorPrivateRoute> } />
           <Route path="/AddProducts" element={<DistributorPrivateRoute><AddProducts /></DistributorPrivateRoute>} />
@@ -50,6 +54,8 @@ const App = () => {
           <Route path="/Invitations" element={<DistributorPrivateRoute><Invitations /></DistributorPrivateRoute>} />
           <Route path="/ShipmentHistory" element={<DistributorPrivateRoute><ShipmentHistory /></DistributorPrivateRoute>} />
           <Route path="/AddDistributionStore" element={<DistributorPrivateRoute><AddStore /></DistributorPrivateRoute>} />
+          <Route path="/RemoveStore" element={<StoreOperatorPrivateRoute><RemoveStore /></StoreOperatorPrivateRoute> } />
+
           
         </Routes>
       </AuthContextProvider>

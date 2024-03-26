@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextField, Button, Typography, Grid } from '@mui/material';
+import { TextField, Button, Typography } from '@mui/material';
 import { AddProductToInventory } from '../firebase/firebaseFirestore';
 import { useAuth } from '../firebase/firebaseAuth';
 import { message, Modal } from 'antd';
@@ -226,21 +226,23 @@ const AddProducts = () => {
           Add Products
         </Typography>
         <form className="csv-form" onSubmit={handleCsvSubmit}>
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            className="csv-input"
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading}
-            className="csv-submit-button"
-          >
-            Import from CSV
-          </Button>
+          <div className="import-csv-form-row">
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className="csv-input"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              className="csv-submit-button"
+            >
+              Import from CSV
+            </Button>
+          </div>
         </form>
         
         <form className="add-products-form" onSubmit={handleSubmit}>
