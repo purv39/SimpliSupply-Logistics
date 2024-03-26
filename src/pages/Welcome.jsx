@@ -56,7 +56,7 @@ const WelcomePage = () => {
       address: userInfo.address,
 
     });
-  }, [isEditMode]); 
+  }, [isEditMode, userInfo.address, userInfo.contactNumber, userInfo.email]); 
 
 
   useEffect(() => {

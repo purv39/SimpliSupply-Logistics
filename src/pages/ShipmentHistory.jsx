@@ -7,11 +7,13 @@ import ShipmentDetailsTable from '../components/ShipmentDetailsTable';
 import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners';
 import { useAuth } from '../firebase/firebaseAuth';
-
+import { Pagination } from 'antd';
 const ShipmentHistory = () => {
     const [shipments, setShipments] = useState([]);
     const [expandedOrderId, setExpandedOrderId] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(8);
     const { currentUser } = useAuth();
     const distributorID = currentUser.selectedStore;
 
@@ -51,6 +53,14 @@ const ShipmentHistory = () => {
         }
     };
 
+    // Logic to get current shipments based on pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentShipments = shipments.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Change page
+    const onPageChange = (page) => setCurrentPage(page);
+
     return (
         <div>
             <MainNavBar />
@@ -78,12 +88,12 @@ const ShipmentHistory = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {shipments.map((order) => (
+                            {currentShipments.map((order) => (
                                 <React.Fragment key={order.id}>
                                     <TableRow>
                                         <TableCell>{order.id}</TableCell>
                                         <TableCell>{order.storeName}</TableCell>
-                                        <TableCell>{`$${order.totalCost}`}</TableCell>
+                                        <TableCell>{`$${order.totalCost.toFixed(2)}`}</TableCell>
                                         <TableCell>{formatDate(order.createdAt)}</TableCell>
                                         <TableCell>{order.currentStatus}</TableCell>
                                         <TableCell>
@@ -109,6 +119,16 @@ const ShipmentHistory = () => {
                     </Table>
                 </TableContainer>
             )}
+            <Box mt={2} display="flex" justifyContent="center" margin="20px">
+                <Pagination
+                    current={currentPage}
+                    pageSize={itemsPerPage}
+                    total={shipments.length}
+                    onChange={onPageChange}
+                    showQuickJumper
+
+                />
+            </Box>
         </div>
     );
 };

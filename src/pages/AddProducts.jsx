@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextField, Button, Typography, Grid } from '@mui/material';
+import { TextField, Button, Typography } from '@mui/material';
 import { AddProductToInventory } from '../firebase/firebaseFirestore';
 import { useAuth } from '../firebase/firebaseAuth';
 import { message, Modal } from 'antd';

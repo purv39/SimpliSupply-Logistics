@@ -59,3 +59,30 @@
   max-width: 100%; /* Ensure the image does not exceed its original size */
   max-height: 50%; /* Ensure the image does not exceed its original size */
 }
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+
+/* StoreHome.css */
+
+.search-input {
+  padding: 10px 15px; /* Adjust padding to your preference */
+  margin: auto;
+  border: 1px solid #ccc;
+  width: 60%;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-image: url('../assets/search-icon.png'); /* Path to your search icon */
+  background-size: 40px; /* Adjust icon size */
+  background-repeat: no-repeat;
+  background-position: 1px center; /* Adjust icon position */
+  padding-left: 40px; /* Leave space for the icon */
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #000000; /* Adjust focus border color */
+}
