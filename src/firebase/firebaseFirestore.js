@@ -1,6 +1,7 @@
 import { db } from "./firebaseConfig";
 import { collection, doc, setDoc, addDoc, deleteDoc, updateDoc, arrayUnion, getDocs, getDoc, query, where, arrayRemove, runTransaction } from 'firebase/firestore';
-import { AddTaxFileToStorage } from "./firebaseStorage";
+import { AddTaxFileToStorage , AddImageToStorage } from "./firebaseStorage";
+
 
 export const AddNewUserToFirestore = (uuid, email, firstName, lastName, contactNumber, address, city, zipCode, province, role) => {
     let storeOperator = false;
@@ -76,7 +77,7 @@ export const AddNewDistributionStoreForOperator = async (uuid, storeName, busine
 }
 
 // Function to add a new product to the distributor's inventory
-export const AddProductToInventory = async (distributorID, productName, category, productDescription, quantityPerUnit, unitPrice, unitsInStock, moq) => {
+export const AddProductToInventory = async (distributorID, productName, category, productDescription, quantityPerUnit, unitPrice, unitsInStock, moq, brandName , url, product_image) => {
     try {
         // Construct the product object
         const productData = {
@@ -86,14 +87,24 @@ export const AddProductToInventory = async (distributorID, productName, category
             moq: moq,
             quantityPerUnit: quantityPerUnit,
             unitPrice: unitPrice,
-            unitsInStock: unitsInStock
+            unitsInStock: unitsInStock,
+            brandName: brandName,
+            url:url,
         };
 
         // Add the product to the "products" subcollection of the distributor
         const distributorRef = doc(db, 'Distribution Stores', distributorID);
         const productRef = await addDoc(collection(distributorRef, 'products'), productData);
+        
+        if(product_image) {
+            const product_url = await AddImageToStorage(distributorID, productRef.id, product_image);
+            // Update the product URL with the uploaded image URL
+            await updateDoc(productRef, {
+                productImageURL: product_url
+            });
+        }
 
-        console.log("Product added successfully:", productRef.id);
+        console.log("Product added successfully:", productRef);
         return productRef.id; // Return the ID of the added product
     } catch (error) {
         console.error("Error adding product:", error);

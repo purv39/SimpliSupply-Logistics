@@ -9,7 +9,6 @@ import '../styles/AddProducts.css';
 const AddProducts = () => {
   const { currentUser } = useAuth();
   const selectedStore = currentUser.selectedStore;
-
   const [product, setProduct] = useState({
     productName: '',
     category: '',
@@ -17,7 +16,11 @@ const AddProducts = () => {
     quantityPerUnit: '',
     unitPrice: '',
     unitsInStock: '',
-    moq: ''
+    moq: '' ,
+    url: '' ,
+    brandName: '',
+    product_image: ''
+
   });
 
   const [loading, setLoading] = useState(false);
@@ -38,7 +41,7 @@ const AddProducts = () => {
     e.preventDefault();
 
     // Form validation
-    if (!product.productName || !product.category || !product.quantityPerUnit || !product.unitPrice || !product.unitsInStock || !product.description || !product.moq) {
+    if (!product.productName || !product.category || !product.quantityPerUnit || !product.unitPrice || !product.unitsInStock || !product.description || !product.moq || !product.brandName) {
       setError('Please fill out all fields.');
       return;
     }
@@ -61,7 +64,11 @@ const AddProducts = () => {
         product.quantityPerUnit,
         parseFloat(product.unitPrice),
         parseInt(product.unitsInStock),
-        parseInt(product.moq)
+        parseInt(product.moq) ,
+        product.brandName,
+        product.url,
+        product.product_image
+
       );
 
       // Reset form fields
@@ -72,7 +79,10 @@ const AddProducts = () => {
         quantityPerUnit: '',
         unitPrice: '',
         unitsInStock: '',
-        moq: ''
+        moq: '',
+        brandName: '',
+        url: '',
+        product_image:''
       });
 
       // Provide feedback to the user
@@ -116,7 +126,10 @@ const AddProducts = () => {
           quantityPerUnit,
           unitPrice,
           unitsInStock,
-          moq
+          moq ,
+          brandName,
+          url,
+          product_image
         ] = fields;
   
         // Form validation
@@ -127,7 +140,8 @@ const AddProducts = () => {
           !unitPrice ||
           !unitsInStock ||
           !description ||
-          !moq
+          !moq ||
+          !brandName
         ) {
           invalidProducts.push({ fields, reason: 'Missing fields' });
           continue;
@@ -145,7 +159,10 @@ const AddProducts = () => {
           quantityPerUnit,
           unitPrice: parseFloat(unitPrice),
           unitsInStock: parseInt(unitsInStock),
-          moq: parseInt(moq)
+          moq: parseInt(moq) ,
+          brandName ,
+          url,
+          product_image
         });
       }
   
@@ -158,8 +175,9 @@ const AddProducts = () => {
   
       try {
         for (const product of productsToAdd) {
+      //  product.product_image= AddImageToStorage(product.product_image, selectedStore);
           // Add product to inventory
-          await AddProductToInventory(
+          let pid= await AddProductToInventory(
             selectedStore,
             product.productName,
             product.category,
@@ -167,8 +185,12 @@ const AddProducts = () => {
             product.quantityPerUnit,
             product.unitPrice,
             product.unitsInStock,
-            product.moq
+            product.moq,
+            product.brandName,
+            product.url,
+            product.product_image
           );
+
         }
   
         // Reset form fields
@@ -179,7 +201,10 @@ const AddProducts = () => {
           quantityPerUnit: '',
           unitPrice: '',
           unitsInStock: '',
-          moq: ''
+          moq: '',
+          brandName: '',
+          url: '',
+          product_image: ''
         });
   
         // Provide feedback to the user
@@ -277,7 +302,16 @@ const AddProducts = () => {
               fullWidth
             />
           </div>
+
           <div className="add-products-form-row">
+            <TextField
+              label="Brand Name"
+              name="brandName"
+              value={product.brandName}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
             <TextField
               label="Minimum Order Quantity (MOQ)"
               name="moq"
@@ -285,6 +319,23 @@ const AddProducts = () => {
               value={product.moq}
               onChange={handleChange}
               required
+              fullWidth
+            />
+          </div>
+
+          <div className="form-group">
+                <label>Upload Image:</label>
+                <input type="file"  onChange={(e) => { product.product_image=(e.target.files[0]); }} />
+            </div>
+          <div>
+            OR
+          </div>
+          <div className="add-products-form-row">
+          <TextField
+              label="url"
+              name="url"
+              value={product.url}
+              onChange={handleChange}
               fullWidth
             />
           </div>
