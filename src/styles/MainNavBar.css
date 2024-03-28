@@ -10,6 +10,8 @@
 
 .menu.open {
   display: block;
+  width: 100%; /* Allow the menu to take up available width */
+  justify-content: space-between;
 }
 
 .menu nav ul {
@@ -43,6 +45,10 @@
 
 .menu nav ul li button:hover {
   background-color: #333; /* Change this to the desired hover background color */
+}
+
+.store-select select {
+  text-align: center;
 }
 
 @media (max-width: 768px) {

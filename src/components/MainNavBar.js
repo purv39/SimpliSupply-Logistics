@@ -86,7 +86,7 @@ const MainNavBar = ({ reloadNavbar }) => {
             )}
           </ul>
         </nav>
-        <div className="mb-3">
+        <div className="store-select">
           <select
             className="form-select"
             id="storeSelect"
