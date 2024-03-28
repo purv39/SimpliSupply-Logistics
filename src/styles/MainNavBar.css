@@ -96,3 +96,20 @@
   .logout-button:hover {
     background-color: #d32f2f;
   }
+  
+  /* Media query for smaller screens (e.g., mobile devices) */
+  @media screen and (max-width: 768px) {
+    .sidebar-toggle,
+    .toggle-sidebar {
+      display: block; /* Show toggle button for smaller screens */
+    }
+  
+    .sidebar {
+      width: 200px; /* Adjust width for smaller screens */
+    }
+  
+    .nav-menu {
+      padding-top: 60px; /* Adjust top padding to accommodate toggle button */
+    }
+  }
+  
