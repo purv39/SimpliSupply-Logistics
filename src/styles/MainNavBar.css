@@ -1,0 +1,98 @@
+.main-container {
+    position: relative;
+  }
+  
+  .sidebar-toggle {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1001; /* Ensure the toggle icon is above the sidebar */
+  }
+  
+  .sidebar {
+    width: 250px; /* Adjust as needed */
+    height: 100vh;
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: -250px; /* Initially hide the sidebar */
+    transition: left 0.3s ease; /* Smooth transition */
+    z-index: 1000; /* Ensure sidebar is on top of other content */
+  }
+  
+  .sidebar.open {
+    left: 0; /* Move the sidebar into view */
+  }
+  
+  .toggle-sidebar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  /* Additional styling for other elements within the sidebar */
+  .logo {
+    padding: 20px;
+    cursor: pointer;
+  }
+  
+  .nav-menu ul {
+    padding: 0;
+  }
+  
+  .nav-menu li {
+    list-style-type: none;
+  }
+  
+  .nav-button {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .form-select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .user-actions {
+    padding: 20px;
+    border-top: 1px solid #555;
+  }
+  
+  .logout-button {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #f44336;
+    border: none;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-button:hover {
+    background-color: #d32f2f;
+  }
