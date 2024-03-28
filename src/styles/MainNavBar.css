@@ -1,0 +1,73 @@
+.menu-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menu {
+  display: none;
+}
+
+.menu.open {
+  display: block;
+  width: 100%; /* Allow the menu to take up available width */
+  justify-content: space-between;
+}
+
+.menu nav ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.menu nav ul li {
+  margin-bottom: 5px;
+}
+
+.menu-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.menu nav ul li button {
+  background-color: #333; /* Change this to the desired background color */
+  color: #ffffff; /* Change this to the desired text color */
+  border: none;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.menu nav ul li button:hover {
+  background-color: #333; /* Change this to the desired hover background color */
+}
+
+.store-select select {
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .menu {
+    position: absolute;
+    top: 60px; /* Adjust according to your layout */
+    right: 0;
+    background-color: #333;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 10;
+  }
+
+  .menu nav ul li {
+    margin-bottom: 10px; /* Add some spacing between buttons */
+  }
+}
