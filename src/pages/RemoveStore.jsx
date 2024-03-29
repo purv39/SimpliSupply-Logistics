@@ -5,13 +5,11 @@ import MainNavBar from "../components/MainNavBar";
 import "../styles/LoadingSpinner.css";
 import '../styles/DistributorList.css';
 
-
-
 import { FetchDistributorDataByID, FetchStoreDataByID } from '../firebase/firebaseFirestore';
-
+import { Button } from 'antd';
 
 const RemoveStore = () => {
-    const { LogOut, currentUser, setCurrentUser } = useAuth();
+  const { LogOut, currentUser, setCurrentUser } = useAuth();
 
   const [storesData, setStoresData] = useState([]);
   useEffect(() => {
@@ -27,44 +25,48 @@ const RemoveStore = () => {
     fetchStoresData();
   }, [currentUser.storesList]);
 
-  const handleRemoveStore = async (storeIdToRemove) => {
-    const removestore = await RemoveStorebyId(storeIdToRemove,currentUser.user.uid)
+  const handleRemoveStore = async (storeIdToRemove, index) => {
+    const removestore = await RemoveStorebyId(storeIdToRemove, currentUser.user.uid);
     setCurrentUser(prevUser => ({
       ...prevUser,
-      storesList: prevUser.storesList.filter(storeId => storeId !== storeIdToRemove)
+      storesList: prevUser.storesList.filter((storeId, idx) => idx !== index)
     }));
   };
 
   return (
     <div>
-    <MainNavBar />
-    <div className="row justify-content-center">
-      <div className="col-md-10">
-    <div>
-      <h2>Remove Store</h2>
-      <table className='table'>
-        <thead>
-          <tr>
-            {/* <th>Store ID</th> */}
-            <th>Store Name</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {storesData.map((storeName, index) => (
-            <tr key={index}>
-              {/* <td>{currentUser.storesList[index]}</td> */}
-              <td>{storeName}</td>
-              <td>
-                <button variant="contained" color="error"  onClick={() => handleRemoveStore(currentUser.storesList[index])}>Remove</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    </div>
-    </div>
+      <MainNavBar />
+      <div className="row justify-content-center">
+        <div className="col-md-10">
+          <div>
+            <h2>Remove Store</h2>
+            <table className='table'>
+              <thead>
+                <tr>
+                  {/* <th>Store ID</th> */}
+                  <th>Store Name</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {storesData.map((storeName, index) => (
+                  <tr key={index}>
+                    {/* <td>{currentUser.storesList[index]}</td> */}
+                    <td>{storeName}</td>
+                    <td>
+                      {index === 0 ? (
+                        <Button type='primary' disabled>Default</Button>
+                      ) : (
+                        <Button type='primary' onClick={() => handleRemoveStore(currentUser.storesList[index], index)}>Remove</Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
