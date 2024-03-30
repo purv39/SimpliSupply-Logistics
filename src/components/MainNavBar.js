@@ -7,9 +7,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 const MainNavBar = ({ reloadNavbar }) => {
   const navigate = useNavigate();
-  const { LogOut, currentUser, setCurrentUser } = useAuth(); // Assuming setCurrentUser is a function to update currentUser state
+  const { LogOut, currentUser, setCurrentUser } = useAuth();
   const role = currentUser.currentRole;
-  const [menuOpen, setMenuOpen] = useState(false); // State to manage menu visibility
+  const [menuOpen, setMenuOpen] = useState(false);
   const [storesData, setStoresData] = useState([]);
   
   useEffect(() => {
@@ -36,7 +36,7 @@ const MainNavBar = ({ reloadNavbar }) => {
 
   const navigateTo = (path) => {
     navigate(path);
-    setMenuOpen(false); // Close the menu after navigation
+    setMenuOpen(false);
   };
 
   const handleLogout = async () => {
@@ -58,40 +58,35 @@ const MainNavBar = ({ reloadNavbar }) => {
           navigateTo('/DistributorHome')
         }
       }}>SimpliSupply Logistics</div>
-      <button className="menu-icon" onClick={() => setMenuOpen(!menuOpen)}>
-        <MenuIcon />
-      </button>
-      <div className={`menu ${menuOpen ? 'open' : ''}`}>
-        <nav>
-          <ul>
-            {role === 'Store' && (
-              <>
-                <div className={`menu-item${menuOpen ? ' open' : ''}`}>
-                  Distributors
-                  <div className="dropdown-content">
-                    <button onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button>
-                    <button onClick={() => navigateTo('/DistributorList')}>Distributor List</button>
-                  </div>
-                </div>
-                <div className={`menu-item${menuOpen ? ' open' : ''}`}>
-                  Orders
-                  <div className="dropdown-content">
-                    <button onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button>
-                    <button onClick={() => navigateTo('/OrderHistory')}>Order History</button>
-                    <button onClick={() => navigateTo('/CompareProducts')}>Compare Products</button>
-                    <button onClick={() => navigateTo('/GenerateSkuLabel')}>Generate SKU Label</button>
-                  </div>
-                </div>
-                <div className={`menu-item${menuOpen ? ' open' : ''}`}>
-                  Manage Store
-                  <div className="dropdown-content">
-                    <button onClick={() => navigateTo('/AddStore')}>Add Store</button>
-                    <button onClick={() => navigateTo('/RemoveStore')}>Remove Store</button>
-                  </div>
-                </div>
-              </>
-            )}
-            {role === 'Distributor' && (
+      <div className="menu" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={() => setMenuOpen(false)}>
+        {role === 'Store' && (
+          <>
+            <div className={`menu-item${menuOpen ? ' open' : ''}`}>
+              Distributors
+              <div className="dropdown-content">
+                <button onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button>
+                <button onClick={() => navigateTo('/DistributorList')}>Distributor List</button>
+              </div>
+            </div>
+            <div className={`menu-item${menuOpen ? ' open' : ''}`}>
+              Orders
+              <div className="dropdown-content">
+                <button onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button>
+                <button onClick={() => navigateTo('/OrderHistory')}>Order History</button>
+                <button onClick={() => navigateTo('/CompareProducts')}>Compare Products</button>
+                <button onClick={() => navigateTo('/GenerateSkuLabel')}>Generate SKU Label</button>
+              </div>
+            </div>
+            <div className={`menu-item${menuOpen ? ' open' : ''}`}>
+              Manage Store
+              <div className="dropdown-content">
+                <button onClick={() => navigateTo('/AddStore')}>Add Store</button>
+                <button onClick={() => navigateTo('/RemoveStore')}>Remove Store</button>
+              </div>
+            </div>
+          </>
+        )}
+        {role === 'Distributor' && (
               <>
                 <li><button onClick={() => navigateTo('/AddProducts')}>Add Products</button></li>
                 <li><button onClick={() => navigateTo('/Invitations')}>Invitations</button></li>
@@ -99,10 +94,7 @@ const MainNavBar = ({ reloadNavbar }) => {
                 <li><button onClick={() => navigateTo('/AddDistributionStore')}>Add Distribution Center</button></li>
               </>
             )}
-          </ul>
-        </nav>
-        <div className="store-select">
-          <select
+            <select
             className="form-select"
             id="storeSelect"
             value={currentUser.selectedStore}
@@ -112,11 +104,10 @@ const MainNavBar = ({ reloadNavbar }) => {
               <option key={index} value={currentUser.storesList[index]}>{storeName}</option>
             ))}
           </select>
-        </div>
-        <div className="menu-footer">
+      </div>
+      <div className="menu-footer">
           <button className="nav-button my-page" onClick={() => navigateTo('/Welcome')}>My Page</button>
           <button className="logout-button" onClick={handleLogout}>Logout</button>
-        </div>
       </div>
     </div>
   )
