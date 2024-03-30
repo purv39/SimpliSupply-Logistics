@@ -66,14 +66,29 @@ const MainNavBar = ({ reloadNavbar }) => {
           <ul>
             {role === 'Store' && (
               <>
-                <li><button onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button></li>
-                <li><button onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button></li>
-                <li><button onClick={() => navigateTo('/DistributorList')}>Distributor List</button></li>
-                <li><button onClick={() => navigateTo('/OrderHistory')}>Order History</button></li>
-                <li><button onClick={() => navigateTo('/Addstore')}>Add Store</button></li>
-                <li><button onClick={() => navigateTo('/RemoveStore')}>Remove Store</button></li>
-                <li><button onClick={() => navigateTo('/CompareProducts')}>Compare Products</button></li>
-                <li><button onClick={() => navigateTo('/GenerateSkuLabel')}>Generate SKU Label</button></li>
+                <div className={`menu-item${menuOpen ? ' open' : ''}`}>
+                  Distributors
+                  <div className="dropdown-content">
+                    <button onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button>
+                    <button onClick={() => navigateTo('/DistributorList')}>Distributor List</button>
+                  </div>
+                </div>
+                <div className={`menu-item${menuOpen ? ' open' : ''}`}>
+                  Orders
+                  <div className="dropdown-content">
+                    <button onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button>
+                    <button onClick={() => navigateTo('/OrderHistory')}>Order History</button>
+                    <button onClick={() => navigateTo('/CompareProducts')}>Compare Products</button>
+                    <button onClick={() => navigateTo('/GenerateSkuLabel')}>Generate SKU Label</button>
+                  </div>
+                </div>
+                <div className={`menu-item${menuOpen ? ' open' : ''}`}>
+                  Manage Store
+                  <div className="dropdown-content">
+                    <button onClick={() => navigateTo('/AddStore')}>Add Store</button>
+                    <button onClick={() => navigateTo('/RemoveStore')}>Remove Store</button>
+                  </div>
+                </div>
               </>
             )}
             {role === 'Distributor' && (
