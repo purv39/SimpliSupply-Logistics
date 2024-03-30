@@ -8,7 +8,8 @@
   display: none;
 }
 
-.menu.open {
+.menu-icon:hover + .menu, /* Display the menu when hovering over the menu icon */
+.menu:hover {
   display: block;
   width: 100%; /* Allow the menu to take up available width */
   justify-content: space-between;
