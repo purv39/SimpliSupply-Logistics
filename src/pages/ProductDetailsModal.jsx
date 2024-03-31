@@ -79,10 +79,10 @@ const ProductDetailsModal = ({ visible, handleCancel, hit, connected }) => {
             const item = [{
                 productData: {
                     data: {
-                        categoryName: 'test',
-                        productName: hit.productName,
-                        unitPrice: hit.unitPrice,
-                        quantityPerUnit: hit.quantityPerUnit,
+                        categoryName: hit?.categoryName,
+                        productName: hit?.productName,
+                        unitPrice: hit?.unitPrice,
+                        quantityPerUnit: hit?.quantityPerUnit,
                         moq: hit.moq,
                     },
                     id: id[1],
