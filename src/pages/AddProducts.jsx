@@ -16,8 +16,8 @@ const AddProducts = () => {
     quantityPerUnit: '',
     unitPrice: '',
     unitsInStock: '',
-    moq: '' ,
-    url: '' ,
+    moq: '',
+    url: '',
     brandName: '',
     product_image: ''
 
@@ -64,7 +64,7 @@ const AddProducts = () => {
         product.quantityPerUnit,
         parseFloat(product.unitPrice),
         parseInt(product.unitsInStock),
-        parseInt(product.moq) ,
+        parseInt(product.moq),
         product.brandName,
         product.url,
         product.product_image
@@ -82,7 +82,7 @@ const AddProducts = () => {
         moq: '',
         brandName: '',
         url: '',
-        product_image:''
+        product_image: ''
       });
 
       // Provide feedback to the user
@@ -97,7 +97,6 @@ const AddProducts = () => {
   const handleModalClose = () => {
     setError('');
   };
-
   const handleCsvSubmit = async (e) => {
     e.preventDefault();
     if (!csvFile) {
@@ -108,13 +107,31 @@ const AddProducts = () => {
     const reader = new FileReader();
     reader.onload = async (event) => {
       const csvData = event.target.result;
-      const productsArray = csvData.split('\n').map(line => line.split(','));
+      
+      // Split CSV lines while considering quoted fields
+      const productsArray = csvData.split('\n').map(line => {
+        let fields = [];
+        let currentField = '';
+        let inQuotes = false;
+        for (const char of line) {
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            fields.push(currentField);
+            currentField = '';
+          } else {
+            currentField += char;
+          }
+        }
+        fields.push(currentField); // Push the last field
+        return fields;
+      });
   
       // Remove the header row
       productsArray.shift();
   
       // Assuming CSV structure:
-      // productName,category,description,quantityPerUnit,unitPrice,unitsInStock,moq
+      // productName,category,description,quantityPerUnit,unitPrice,unitsInStock,moq,brandName,url
       const productsToAdd = [];
       let invalidProducts = [];
   
@@ -126,10 +143,9 @@ const AddProducts = () => {
           quantityPerUnit,
           unitPrice,
           unitsInStock,
-          moq ,
+          moq,
           brandName,
-          url,
-          product_image
+          url
         ] = fields;
   
         // Form validation
@@ -159,10 +175,9 @@ const AddProducts = () => {
           quantityPerUnit,
           unitPrice: parseFloat(unitPrice),
           unitsInStock: parseInt(unitsInStock),
-          moq: parseInt(moq) ,
-          brandName ,
-          url,
-          product_image
+          moq: parseInt(moq),
+          brandName,
+          url
         });
       }
   
@@ -175,9 +190,9 @@ const AddProducts = () => {
   
       try {
         for (const product of productsToAdd) {
-      //  product.product_image= AddImageToStorage(product.product_image, selectedStore);
+          //  product.product_image= AddImageToStorage(product.product_image, selectedStore);
           // Add product to inventory
-          let pid= await AddProductToInventory(
+          let pid = await AddProductToInventory(
             selectedStore,
             product.productName,
             product.category,
@@ -187,10 +202,9 @@ const AddProducts = () => {
             product.unitsInStock,
             product.moq,
             product.brandName,
-            product.url,
-            product.product_image
+            product.url
           );
-
+  
         }
   
         // Reset form fields
@@ -217,6 +231,7 @@ const AddProducts = () => {
     };
     reader.readAsText(csvFile);
   };
+  
 
   return (
     <div>
@@ -244,7 +259,7 @@ const AddProducts = () => {
             </Button>
           </div>
         </form>
-        
+
         <form className="add-products-form" onSubmit={handleSubmit}>
           <div className="add-products-form-row">
             <TextField
@@ -324,14 +339,14 @@ const AddProducts = () => {
           </div>
 
           <div className="form-group">
-                <label>Upload Image:</label>
-                <input type="file"  onChange={(e) => { product.product_image=(e.target.files[0]); }} />
-            </div>
+            <label>Upload Image:</label>
+            <input type="file" onChange={(e) => { product.product_image = (e.target.files[0]); }} />
+          </div>
           <div>
             OR
           </div>
           <div className="add-products-form-row">
-          <TextField
+            <TextField
               label="url"
               name="url"
               value={product.url}

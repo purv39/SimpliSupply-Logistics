@@ -165,7 +165,7 @@ const ProductDetailsModal = ({ visible, handleCancel, hit, connected }) => {
                 <strong>Units In Stock:</strong> {hit?.unitsInStock}
             </Typography.Paragraph>
             <Typography.Paragraph>
-                <strong>Unit Price:</strong> ${hit?.unitPrice.toFixed(2)}
+                <strong>Unit Price:</strong> ${hit?.unitPrice?.toFixed(2)}
             </Typography.Paragraph>
             <Typography.Paragraph>
                 <strong>Total Price:</strong> ${totalPrice}
