@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Typography, Paper, Button } from '@mui/material';
 import { useAuth } from "../firebase/firebaseAuth";
-import { FetchInvitationsForDistributor, AcceptInvitation, DeclineInvitation } from "../firebase/firebaseFirestore";
+import { FetchInvitationsForDistributor, AcceptInvitation, DeclineInvitation, FetchStoreDataByID } from "../firebase/firebaseFirestore";
 import { message, Pagination } from 'antd';
 import MainNavBar from '../components/MainNavBar';
 import '../styles/Invitations.css'; // Import CSS file
@@ -17,7 +17,13 @@ const Invitations = () => {
         const fetchInvitations = async () => {
             try {
                 const invitationsData = await FetchInvitationsForDistributor(distributorID);
-                setInvitations(invitationsData);
+                const data = invitationsData.map(async (invite) => {
+                    const storeName = await FetchStoreDataByID(invite.data.storeID);
+                    return {...invite, storeName}
+                })
+                const resolvedInvitations = await Promise.all(data);
+
+                setInvitations(resolvedInvitations);
             } catch (error) {
                 console.error('Error fetching invitations:', error);
             }
@@ -70,7 +76,7 @@ const Invitations = () => {
                         {currentInvitations.map(invitation => (
                             <Grid item xs={12} key={invitation.id}>
                                 <Paper elevation={3} className="invitation-paper">
-                                    <Typography variant="subtitle1" gutterBottom>Store ID: {invitation.data.storeID}</Typography>
+                                    <Typography variant="subtitle1" gutterBottom>Store Name: {invitation?.storeName}</Typography>
                                     <div className="invitation-buttons">
                                         <Button
                                             variant="contained"
