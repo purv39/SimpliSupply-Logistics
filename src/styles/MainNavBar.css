@@ -1,6 +1,13 @@
+.form-select {
+  background-color: #333 !important; /* Change the background color to grey */
+  color: #fff !important; /* Change the text color to white */
+  padding: 16px 32px;; /* Adjust padding as needed */
+  width: 100%; /* Ensure dropdown spans full width */
+}
+
 .menu {
   display: flex;
-  justify-content: space-around; /* Evenly spreads out menu items */
+  justify-content: space-between; /* Evenly spreads out menu items */
   align-items: center; /* Centers items vertically */
   background-color: #333; /* Sets a dark background for the menu */
   padding: 10px; /* Adds some padding for better spacing */
@@ -32,7 +39,6 @@
   position: absolute;
   background-color: #333; /* Dark gray background for dropdown */
   border-radius: 5px;
-  box-shadow: 0 2px 5px #1e70dc1a;
   padding: 10px;
   top: 100%;
   width: 150px;
@@ -42,6 +48,7 @@
 
 .menu-item {
   position: relative;
+  flex-grow: 1;
 }
 
 .menu-item.open .dropdown-content {

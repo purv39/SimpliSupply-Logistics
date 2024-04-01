@@ -94,16 +94,16 @@ const MainNavBar = ({ reloadNavbar }) => {
                 <li><button onClick={() => navigateTo('/AddDistributionStore')}>Add Distribution Center</button></li>
               </>
             )}
-            <select
-            className="form-select"
-            id="storeSelect"
-            value={currentUser.selectedStore}
-            onChange={handleStoreChange}
-          >
-            {storesData.map((storeName, index) => (
-              <option key={index} value={currentUser.storesList[index]}>{storeName}</option>
-            ))}
-          </select>
+        <select
+          className="form-select"
+          id="storeSelect"
+          value={currentUser.selectedStore}
+          onChange={handleStoreChange}
+        >
+          {storesData.map((storeName, index) => (
+            <option key={index} value={currentUser.storesList[index]}>{storeName}</option>
+          ))}
+        </select>
       </div>
       <div className="menu-footer">
           <button className="nav-button my-page" onClick={() => navigateTo('/Welcome')}>My Page</button>
