@@ -4,36 +4,41 @@
 .form-select {
   background-color: #333 !important; /* Change the background color to grey */
   color: #fff !important; /* Change the text color to white */
-  padding: 16px 32px; /* Adjust padding as needed */
+  padding: 16px 32px;; /* Adjust padding as needed */
   width: 100%; /* Ensure dropdown spans full width */
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row; /* Display items in a column */
 }
 
 .menu {
   display: flex;
-  justify-content: space-between; /* Evenly spreads out menu items */
+  flex-wrap: wrap; /* Allow items to wrap to the next line */
+  justify-content: space-evenly; /* Evenly spread items */
   align-items: center; /* Centers items vertically */
   background-color: #333; /* Sets a dark background for the menu */
   padding: 10px; /* Adds some padding for better spacing */
   border-radius: 5px; /* Rounds the corners */
 }
 
-.menu li {
-  list-style: none; /* Removes the default bullet points */
+.menu-item {
+  position: relative;
 }
 
-.menu li button {
+.menu-item button {
   background-color: transparent; /* Transparent background for buttons */
   color: #fff; /* White text color for buttons */
   border: none;
   padding: 16px 32px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
   border-radius: 4px;
   transition: background-color 0.3s ease;
 }
 
-.menu li button:hover {
+.menu-item button:hover {
   background-color: #555; /* Slightly darker background on hover */
 }
 
@@ -49,38 +54,13 @@
   color: #fff; /* White text color in the dropdown */
 }
 
-.menu-item {
-  position: relative;
-  flex-grow: 1;
-}
-
-.menu-item.open .dropdown-content {
-  display: block;
-}
-
 .menu-item:hover .dropdown-content {
   display: block;
 }
 
-.menu-item:hover {
-  background-color: #555;
-}
-
-.menu-item button {
-  background: none;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
-  display: block;
-  padding: 8px 16px;
-  text-align: left;
-  text-decoration: none;
-  width: 100%;
-}
-
 .menu-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-evenly; /* Evenly spread items */
   margin-top: 10px;
 }
 
@@ -97,28 +77,3 @@
 .logout-button:hover {
   background-color: #555;
 }
-
-/* Media query for smaller screens */
-/* Media query for smaller screens */
-@media screen and (max-width: 768px) {
-  .menu {
-    flex-wrap: wrap; /* Allow items to wrap to the next line */
-  }
-
-  .menu-item {
-    width: 50%; /* Two items per row on smaller screens */
-    box-sizing: border-box; /* Include padding and border in the width calculation */
-    padding: 5px; /* Add some padding between items */
-  }
-
-  .menu-item .dropdown-content {
-    width: 100%; /* Ensure dropdown spans full width */
-    left: 0; /* Position dropdown at the left edge */
-    top: auto; /* Reset top position */
-  }
-
-  .menu-footer {
-    margin-top: 20px; /* Increase margin for better separation */
-  }
-}
-

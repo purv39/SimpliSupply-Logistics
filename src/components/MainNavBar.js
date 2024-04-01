@@ -49,8 +49,12 @@ const MainNavBar = ({ reloadNavbar }) => {
     }
   };
 
-  const toggleDropdown = (index) => {
-    setOpenDropdownIndex(index === openDropdownIndex ? null : index); // Toggle the dropdown
+  const handleMouseEnter = (index) => {
+    setOpenDropdownIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setOpenDropdownIndex(null);
   };
 
   return (
@@ -65,8 +69,8 @@ const MainNavBar = ({ reloadNavbar }) => {
       <div className="menu">
         {role === 'Store' && (
           <>
-            <div className="menu-item">
-              <button onClick={() => toggleDropdown(0)}>Distributors</button>
+            <div className="menu-item" onMouseEnter={() => handleMouseEnter(0)} onMouseLeave={handleMouseLeave}>
+              <button>Distributors</button>
               {openDropdownIndex === 0 && (
                 <div className="dropdown-content">
                   <button onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button>
@@ -74,8 +78,8 @@ const MainNavBar = ({ reloadNavbar }) => {
                 </div>
               )}
             </div>
-            <div className="menu-item">
-              <button onClick={() => toggleDropdown(1)}>Orders</button>
+            <div className="menu-item" onMouseEnter={() => handleMouseEnter(1)} onMouseLeave={handleMouseLeave}>
+              <button>Orders</button>
               {openDropdownIndex === 1 && (
                 <div className="dropdown-content">
                   <button onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button>
@@ -85,8 +89,8 @@ const MainNavBar = ({ reloadNavbar }) => {
                 </div>
               )}
             </div>
-            <div className="menu-item">
-              <button onClick={() => toggleDropdown(2)}>Manage Store</button>
+            <div className="menu-item" onMouseEnter={() => handleMouseEnter(2)} onMouseLeave={handleMouseLeave}>
+              <button>Manage Store</button>
               {openDropdownIndex === 2 && (
                 <div className="dropdown-content">
                   <button onClick={() => navigateTo('/AddStore')}>Add Store</button>
