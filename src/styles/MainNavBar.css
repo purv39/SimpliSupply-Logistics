@@ -1,88 +1,79 @@
-.menu-icon {
-  background: none;
-  border: none;
-  cursor: pointer;
+/* MainNavBar.css */
+
+/* General styles */
+.form-select {
+  background-color: #333 !important; /* Change the background color to grey */
+  color: #fff !important; /* Change the text color to white */
+  padding: 16px 32px;; /* Adjust padding as needed */
+  width: 100%; /* Ensure dropdown spans full width */
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row; /* Display items in a column */
 }
 
 .menu {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next line */
+  justify-content: space-evenly; /* Evenly spread items */
+  align-items: center; /* Centers items vertically */
+  background-color: #333; /* Sets a dark background for the menu */
+  padding: 10px; /* Adds some padding for better spacing */
+  border-radius: 5px; /* Rounds the corners */
+}
+
+.menu-item {
+  position: relative;
+}
+
+.menu-item button {
+  background-color: transparent; /* Transparent background for buttons */
+  color: #fff; /* White text color for buttons */
+  border: none;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-item button:hover {
+  background-color: #555; /* Slightly darker background on hover */
+}
+
+.dropdown-content {
   display: none;
-  opacity: 0; /* Initially hidden */
-  transition: opacity 0.3s ease; /* Add transition effect for opacity */
+  position: absolute;
+  background-color: #333; /* Dark gray background for dropdown */
+  border-radius: 5px;
+  padding: 10px;
+  top: 100%;
+  width: 150px;
+  z-index: 1;
+  color: #fff; /* White text color in the dropdown */
 }
 
-.menu-icon:hover + .menu,
-.menu:hover {
+.menu-item:hover .dropdown-content {
   display: block;
-  width: 100%;
-  justify-content: space-between;
-  opacity: 1;
-}
-
-/* Keep the menu open when hovering over it */
-.menu:hover {
-  display: block;
-}
-
-.menu nav ul {
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
-}
-
-.menu nav ul li {
-  margin-bottom: 5px;
 }
 
 .menu-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly; /* Evenly spread items */
   margin-top: 10px;
 }
 
-.menu nav ul li button {
+.logout-button {
   background-color: #333;
-  color: #ffffff;
   border: none;
-  padding: 8px 16px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
   border-radius: 4px;
+  color: #ffffff;
   cursor: pointer;
+  padding: 8px 16px;
   transition: background-color 0.3s ease;
 }
 
-.menu nav ul li button:hover {
-  background-color: #333;
-}
-
-.store-select select {
-  text-align: center;
-}
-
-@media (max-width: 768px) {
-  .menu-icon {
-    display: block;
-  }
-
-  .menu {
-    position: absolute;
-    top: 60px;
-    right: 0;
-    background-color: #333;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    padding: 10px;
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.3s ease; /* Add transition effect for opacity */
-  }
-
-  .menu:hover {
-    opacity: 1; /* Show with smooth fade-in effect */
-  }
-
-  .menu nav ul li {
-    margin-bottom: 10px;
-  }
+.logout-button:hover {
+  background-color: #555;
 }
