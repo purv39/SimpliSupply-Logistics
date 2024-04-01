@@ -14,7 +14,7 @@ const MainNavBar = ({ reloadNavbar }) => {
 
   useEffect(() => {
     async function fetchStoresData() {
-      if(currentUser.currentRole === 'Store') {
+      if (currentUser.currentRole === 'Store') {
         const fetchedData = await Promise.all(currentUser.storesList.map(option => FetchStoreDataByID(option)));
         setStoresData(fetchedData);
       } else if (currentUser.currentRole === 'Distributor') {
@@ -108,20 +108,29 @@ const MainNavBar = ({ reloadNavbar }) => {
             <button onClick={() => navigateTo('/AddDistributionStore')}>Add Distribution Center</button>
           </div>
         )}
-        <select
-          className="form-select"
-          id="storeSelect"
-          value={currentUser.selectedStore}
-          onChange={handleStoreChange}
-        >
-          {storesData.map((storeName, index) => (
-            <option key={index} value={currentUser.storesList[index]}>{storeName}</option>
-          ))}
-        </select>
+
+
       </div>
       <div className="menu-footer">
-        <button className="nav-button my-page" onClick={() => navigateTo('/Welcome')}>My Page</button>
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
+        <div className='menu-item'>
+          <select
+            className="form-select"
+            id="storeSelect"
+            value={currentUser.selectedStore}
+            onChange={handleStoreChange}
+          >
+            {storesData.map((storeName, index) => (
+              <option key={index} value={currentUser.storesList[index]}>{storeName}</option>
+            ))}
+          </select>
+        </div>
+        <div className='menu-item'>
+        <button onClick={() => navigateTo('/Welcome')}>My Page</button>
+        </div>
+        <div className='menu-item'>
+          <button className="logout-button" onClick={handleLogout}>Logout</button>
+        </div>
+        
       </div>
     </div>
   )
