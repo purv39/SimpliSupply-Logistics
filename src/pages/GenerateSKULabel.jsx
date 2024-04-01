@@ -130,6 +130,142 @@ const GenerateSKULabel = () => {
     };
 
 
+    const handleCsvSubmit = async (e) => {
+        e.preventDefault();
+        if (!csvFile) {
+          setError('Please select a CSV file.');
+          return;
+        }
+      
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const csvData = event.target.result;
+          
+          // Split CSV lines while considering quoted fields
+          const productsArray = csvData.split('\n').map(line => {
+            let fields = [];
+            let currentField = '';
+            let inQuotes = false;
+            for (const char of line) {
+              if (char === '"') {
+                inQuotes = !inQuotes;
+              } else if (char === ',' && !inQuotes) {
+                fields.push(currentField);
+                currentField = '';
+              } else {
+                currentField += char;
+              }
+            }
+            fields.push(currentField); // Push the last field
+            return fields;
+          });
+      
+          // Remove the header row
+          productsArray.shift();
+      
+          // Assuming CSV structure:
+          // productName,category,description,quantityPerUnit,unitPrice,unitsInStock,moq,brandName,url
+          const productsToAdd = [];
+          let invalidProducts = [];
+      
+          for (const fields of productsArray) {
+            const [
+              productName,
+              category,
+              description,
+              quantityPerUnit,
+              unitPrice,
+              retailPrice,
+              unitsInStock,
+              brandName,
+              url
+            ] = fields;
+      
+            // Form validation
+            if (
+              !productName ||
+              !category ||
+              !quantityPerUnit ||
+              !unitPrice ||
+              !unitsInStock ||
+              !description ||
+              !retailPrice ||
+              !brandName
+            ) {
+              invalidProducts.push({ fields, reason: 'Missing fields' });
+              continue;
+            }
+      
+            if (parseFloat(unitPrice) <= 0 || parseInt(unitsInStock) <= 0 || parseFloat(retailPrice) <= 0) {
+              invalidProducts.push({ fields, reason: 'Invalid values' });
+              continue;
+            }
+      
+            productsToAdd.push({
+              productName,
+              category,
+              description,
+              quantityPerUnit,
+              unitPrice: parseFloat(unitPrice),
+              unitsInStock: parseInt(unitsInStock),
+              retailPrice: parseFloat(retailPrice),
+              brandName,
+              url
+            });
+          }
+      
+          if (invalidProducts.length > 0) {
+            setError(`Some products were not added due to invalid fields: ${JSON.stringify(invalidProducts)}`);
+          }
+      
+          setLoading(true);
+          setError('');
+      
+          try {
+            for (const product of productsToAdd) {
+              //  product.product_image= AddImageToStorage(product.product_image, selectedStore);
+              // Add product to inventory
+              let pid = await GenerateSKULabelForProduct(
+                selectedStore,
+                product.productName,
+                product.brandName,
+                product.category,
+                product.description,
+                product.quantityPerUnit,
+                product.unitPrice,
+                product.unitsInStock,
+                product.retailPrice,
+                product.url
+              );
+      
+            }
+      
+            // Reset form fields
+            setProduct({
+              productName: '',
+              category: '',
+              description: '',
+              quantityPerUnit: '',
+              unitPrice: '',
+              unitsInStock: '',
+              moq: '',
+              brandName: '',
+              url: '',
+              product_image: ''
+            });
+      
+            // Provide feedback to the user
+            message.success('Products added successfully!');
+          } catch (error) {
+            setError('Failed to add products. Please try again later.');
+          } finally {
+            setLoading(false);
+          }
+        };
+        reader.readAsText(csvFile);
+      };
+
+
     return (
         <div>
             <MainNavBar />
@@ -137,6 +273,25 @@ const GenerateSKULabel = () => {
                 <Typography variant="h4" gutterBottom>
                     Generate SKU
                 </Typography>
+                <form className="csv-form" onSubmit={handleCsvSubmit}>
+                    <div className="import-csv-form-row">
+                        <input
+                            type="file"
+                            accept=".csv"
+                            onChange={handleFileChange}
+                            className="csv-input"
+                        />
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            disabled={loading}
+                            className="csv-submit-button"
+                        >
+                            Import from CSV
+                        </Button>
+                    </div>
+                </form>
                 <form className="add-products-form" onSubmit={handleSubmit}>
                     <div className="add-products-form-row">
                         <TextField
