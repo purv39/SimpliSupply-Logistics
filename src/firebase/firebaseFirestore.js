@@ -210,6 +210,83 @@ export const RemoveStorebyId = async (storeId, userId) => {
     }
 }
 
+export const FetchUserByDistributorKey = async (distributorKey) => {
+    const usersRef = collection(db, 'Users');
+    const q = query(usersRef, where("distributionStores", "array-contains", distributorKey));
+    const querySnapshot = await getDocs(q);
+  
+    if (!querySnapshot.empty) {
+      const userData = querySnapshot.docs[0].data();
+      return {
+        name: `${userData.firstName} ${userData.lastName}`,
+        contactNumber: userData.contactNumber,
+        email: userData.email
+      };
+    } else {
+      throw new Error(`No user found for distributor key: ${distributorKey}`);
+    }
+  };
+
+
+  export const FetchUserByStoreKey = async (storeKey) => {
+    const usersRef = collection(db, 'Users');
+    console.log("storeKey:", storeKey);
+
+    const q = query(usersRef, where("storesList", "array-contains", storeKey));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+
+        // If you need to return the first user's data
+        const userData = querySnapshot.docs[0].data();
+        return {
+            name: `${userData.firstName} ${userData.lastName}`,
+            contactNumber: userData.contactNumber,
+            email: userData.email
+        };
+    } else {
+        throw new Error(`No user found for store key: ${storeKey}`);
+    }
+};
+
+
+  export const FetchStoreOwnerByIDs = async (storeIDs) => {
+    try {
+        const storeNames = [];
+        for (const id of storeIDs) {
+        const docRef = doc(db, 'Retail Stores', id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            storeNames.push({
+                name: docSnap.data().storeName, // The name of the distributor
+                key: id, // The Firestore document ID of the distributor's store
+              });        }
+      }
+      return storeNames;
+    } catch (error) {
+      console.error('Error fetching store names:', error);
+      throw new Error(error);
+    }
+  };
+
+export const FetchDistributorsNamesByIDs = async (distributorIDs) => {
+    try {
+        const distributorInfo = [];
+        for (const id of distributorIDs) {
+        const docRef = doc(db, 'Distribution Stores', id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            distributorInfo.push({
+                name: docSnap.data().storeName, // The name of the distributor
+                key: id, // The Firestore document ID of the distributor's store
+              });        }
+      }
+      return distributorInfo;
+    } catch (error) {
+      console.error('Error fetching distributors names:', error);
+      throw new Error(error);
+    }
+  };
 
 export const FetchProductsByDistributorID = async (distributorID) => {
     const productsRef = collection(db, 'Products');
