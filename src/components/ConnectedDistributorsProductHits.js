@@ -36,7 +36,7 @@ const ConnectedDistributorsProductHits = ({ hit }) => {
             </div>
             <div className="product-quantity">Quantity Per Unit: {hit.quantityPerUnit}</div>
             <div className="product-quantity">MOQ: {hit.moq}</div>
-            <div className="product-price">Price: ${hit.unitPrice.toFixed(2)}</div>
+            <div className="product-price">Price: ${hit.unitPrice?.toFixed(2)}</div>
             <button className="create-order-button" onClick={createOrderForDistributor}>Create Order</button>
             <ProductDetailsModal visible={visible} handleCancel={handleCancel} hit={hit} connected={true}/>
         </div>
