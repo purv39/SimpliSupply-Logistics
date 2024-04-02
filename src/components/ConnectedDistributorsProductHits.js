@@ -31,7 +31,7 @@ const ConnectedDistributorsProductHits = ({ hit }) => {
                 {hit.distributorStoreName}   
                 <Launch 
                     onClick={navigateToCreateOrder} 
-                    style={{width: "7%", color: "blue", cursor: "pointer", marginLeft: "4px", marginRight: "-5px" }} 
+                    style={{fontSize: "medium", color: "blue", cursor: "pointer", marginLeft: "4px", marginRight: "-5px" }} 
                 />
             </div>
             <div className="product-quantity">Quantity Per Unit: {hit.quantityPerUnit}</div>
