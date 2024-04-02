@@ -386,7 +386,7 @@ const WelcomePage = () => {
                           <strong>Store Address:</strong> {selectedStoreDetails.storeAddress}
                         </Typography>
                       </Paper>
-                      <Paper elevation={3} sx={{ padding: 2, marginTop: 2 }}>
+                      {/* <Paper elevation={3} sx={{ padding: 2, marginTop: 2 }}>
                         <Typography variant="h6" gutterBottom component="div">
                           Connected for
                         </Typography>
@@ -420,7 +420,7 @@ const WelcomePage = () => {
                           ))
                         )
                       }
-                      </Paper>
+                      </Paper> */}
                     </>
                   )}
                 </Paper>
