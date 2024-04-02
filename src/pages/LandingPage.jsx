@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/LandingPage.css';
 import companyLogo from '../assets/logo.png';
-import aboutUsImage from '../assets/about-us-image.png';
+import aboutUsImage from '../assets/about-us-image1.png';
 
 const LandingPage = () => {
   return (
@@ -22,7 +22,7 @@ const LandingPage = () => {
       <main className="landing-content">
         <section className="about-us">
           <div className="about-us-image">
-            <img src={aboutUsImage} alt="About Us" />
+            <img src={aboutUsImage} alt="About Us" style={{width: "90%"}} />
           </div>
           <div className="about-us-text">
             <div className="company-logo">
