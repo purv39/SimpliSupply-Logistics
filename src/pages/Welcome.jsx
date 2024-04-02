@@ -1,7 +1,7 @@
 // components/WelcomePage.js
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../firebase/firebaseAuth';
-import { FetchUserData, FetchStoresDetailsByIDs, FetchDistributionStoreDetails,FetchDistributionStoresDetailsByUID, FetchStoreDetails, UpdateUserData  } from "../firebase/firebaseFirestore";
+import { FetchDistributorsNamesByIDs, FetchUserData, FetchStoreOwnerByIDs,FetchStoresDetailsByIDs,FetchUserByStoreKey ,FetchUserByDistributorKey , FetchDistributionStoreDetails,FetchDistributionStoresDetailsByUID, FetchStoreDetails, UpdateUserData  } from "../firebase/firebaseFirestore";
 import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners';
 import Avatar from '@mui/material/Avatar';
@@ -16,6 +16,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box'; 
+
 
 
 const WelcomePage = () => {
@@ -42,8 +43,9 @@ const WelcomePage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedStoreDetails, setSelectedStoreDetails] = useState(null);
 
+  const [openDistributorDialog, setOpenDistributorDialog] = useState(false);
+  const [distributorDetails, setDistributorDetails] = useState({});
 
-  
 
   const formatFullAddress = (address, city, province, postalCode) => {
     return `${address}, ${city}, ${province}, ${postalCode}`;
@@ -120,39 +122,71 @@ const WelcomePage = () => {
   
   const handleStoreChange = async (event) => {
     const storeId = event.target.value;
-    setSelectedList(storeId); 
+    setSelectedList(storeId);
     setLoading(true);
-
+  
     try {
       let storeDetails = null;
-
-      if (userInfo.roles && userInfo.roles.distributor)  {
+      if (userInfo.roles.distributor) {
         storeDetails = await FetchDistributionStoreDetails(storeId);
-      } else if (userInfo.roles && userInfo.roles.storeOperator) {
+        if (storeDetails) {
+          let storeOwnerInfo= ['No stores']; // Default message if no distributors are connected
+          
+          if (storeDetails.storesConnected?.length > 0) {
+            // Fetch the names of connected distributors
+            storeOwnerInfo = await FetchStoreOwnerByIDs(storeDetails.storesConnected);
+          }
+    
+          // Set the state with all the store details including the distributor names
+          setSelectedStoreDetails({
+            storeName: storeDetails.storeName,
+            businessNumber: storeDetails.businessNumber,
+            gstNumber: storeDetails.gstNumber,
+            storeAddress: formatFullAddress(
+              storeDetails.storeAddress,
+              storeDetails.storeCity,
+              storeDetails.storeProvince,
+              storeDetails.storePostalCode
+            ),
+            stores: storeOwnerInfo // Use the fetched names
+          });
+        } else {
+          setError('Distributor details not found.');
+        }
+    
+
+      } else if (userInfo.roles.storeOperator) {
         storeDetails = await FetchStoreDetails(storeId);
+        if (storeDetails) {
+          let distributorInfo = ['No distributors']; // Default message if no distributors are connected
+          
+          if (storeDetails.distributorsConnected?.length > 0) {
+            // Fetch the names of connected distributors
+            distributorInfo = await FetchDistributorsNamesByIDs(storeDetails.distributorsConnected);
+          }
+    
+          // Set the state with all the store details including the distributor names
+          setSelectedStoreDetails({
+            storeName: storeDetails.storeName,
+            businessNumber: storeDetails.businessNumber,
+            gstNumber: storeDetails.gstNumber,
+            storeAddress: formatFullAddress(
+              storeDetails.storeAddress,
+              storeDetails.storeCity,
+              storeDetails.storeProvince,
+              storeDetails.storePostalCode
+            ),
+            distributors: distributorInfo // Use the fetched names
+          });
+        } else {
+          setError('Store details not found.');
+        }
       }
-      if (storeDetails) {
-        setSelectedStoreDetails({
-          storeName: storeDetails.storeName,
-          businessNumber: storeDetails.businessNumber,
-          gstNumber: storeDetails.gstNumber,
-          storeAddress: formatFullAddress(
-            storeDetails.storeAddress,
-            storeDetails.storeCity,
-            storeDetails.storeProvince,
-            storeDetails.storePostalCode
-          ),
-        });
-        console.log("Selected store details: ", storeDetails);
-      } else {
-        console.error('No store details found for the selected ID:', storeId);
-        setSelectedStoreDetails(null);
-        setError('Store details not found.');
-      }
+  
+      
     } catch (err) {
       console.error('Error fetching store details:', err);
       setError(err.message);
-      setSelectedStoreDetails(null);
     } finally {
       setLoading(false);
     }
@@ -174,8 +208,6 @@ const WelcomePage = () => {
         ...editedUserInfo,
       }));
       setIsEditMode(false);
-      // Refresh user info (you might want to re-fetch the user data from the Firestore)
-      // ... Fetch user data code ...
     } catch (error) {
       console.error("Error updating user data:", error);
       setError(error.message);
@@ -213,7 +245,39 @@ const WelcomePage = () => {
     }
   };
 
+  
 
+  const handleViewDistributor = async (distribytorKey) => {
+    setLoading(true);
+  try {
+    const userDetails = await FetchUserByDistributorKey(distribytorKey);
+    setDistributorDetails(userDetails);
+    setOpenDistributorDialog(true);
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    setError(error.message);
+  } finally {
+    setLoading(false);
+  }
+  };
+
+  const handleViewStoreOwner = async (storeKey) => {
+    console.log("here: " + storeKey);
+    setLoading(true);
+  try {
+    const userDetails = await FetchUserByStoreKey(storeKey);
+        console.log("user detail: " + userDetails.contactNumber);
+
+    setDistributorDetails(userDetails);
+    setOpenDistributorDialog(true);
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    setError(error.message);
+  } finally {
+    setLoading(false);
+  }
+  };
+ 
   return (
     <div>
       <MainNavBar />
@@ -224,11 +288,11 @@ const WelcomePage = () => {
       ) : error ? (
         <p>Error: {error}</p>
       ) : (
-        <Container component="main" maxWidth="lg"> {/* Change maxWidth to 'sm' or any size you prefer */}
+        <Container component="main" maxWidth="lg">
           <Typography component="h1" variant="h4" align="center" marginY={4}>
             My Page
           </Typography>
-          <Grid container spacing={3} direction="row" alignItems="flex-start"> {/* Align items to flex-start */}
+          <Grid container spacing={3} direction="row" alignItems="flex-start"> 
             {/* Separate Grid for Avatar and Name */}
             <Grid item xs={12} >
               <Paper elevation={3} sx={{ padding: 4, display: 'flex', alignItems: 'center' }}>
@@ -236,7 +300,6 @@ const WelcomePage = () => {
                 <Typography variant="h6">{userInfo.fullName}</Typography>
               </Paper>
             </Grid>
-            {/* Grid for Email, Contact Number, and Store Selection */}
             <Grid item xs={12} md={6}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <TextField
@@ -296,7 +359,7 @@ const WelcomePage = () => {
                     className="select-dropdown"
                   >
                     <option value="" disabled>
-                      ----------- Select List -----------
+                      ----------- Select Store -----------
                     </option>
                     {userInfo.stores.map((store, index) => (
                       <option key={index} value={store.id}>
@@ -304,19 +367,78 @@ const WelcomePage = () => {
                       </option>
                     ))}
                   </select>
-                  {selectedStoreDetails && ( 
-                                        <>
-                      <Typography variant="h6"> ------ Store Information ------ </Typography>
-                      <Typography><strong>Store Name:</strong> {selectedStoreDetails.storeName}</Typography>
-                      <Typography><strong>Business Number:</strong> {selectedStoreDetails.businessNumber}</Typography>
-                      <Typography><strong>GST Number:</strong> {selectedStoreDetails.gstNumber}</Typography>
-                      <Typography><strong>Store Address:</strong> {selectedStoreDetails.storeAddress}</Typography>
+                  {selectedStoreDetails && (
+                    <>
+                      <Paper elevation={3} sx={{ padding: 2, marginTop: 2 }}>
+                        <Typography variant="h6" gutterBottom component="div">
+                          Store Information
+                        </Typography>
+                        <Typography variant="subtitle1">
+                          <strong>Store Name:</strong> {selectedStoreDetails.storeName}
+                        </Typography>
+                        <Typography variant="subtitle1">
+                          <strong>Business Number:</strong> {selectedStoreDetails.businessNumber}
+                        </Typography>
+                        <Typography variant="subtitle1">
+                          <strong>GST Number:</strong> {selectedStoreDetails.gstNumber}
+                        </Typography>
+                        <Typography variant="subtitle1" gutterBottom>
+                          <strong>Store Address:</strong> {selectedStoreDetails.storeAddress}
+                        </Typography>
+                      </Paper>
+                      <Paper elevation={3} sx={{ padding: 2, marginTop: 2 }}>
+                        <Typography variant="h6" gutterBottom component="div">
+                          Connected for
+                        </Typography>
+                                          
+                        {
+                          selectedStoreDetails.stores && selectedStoreDetails.stores.length > 0 && (
+                            selectedStoreDetails.stores.map((store, index) => (
+                              <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                <Typography variant="subtitle1">
+                                  {store.name}
+                                </Typography>
+                                <Button variant="outlined" size="small" onClick={() => handleViewStoreOwner(store.key)}>
+                                  View
+                                </Button>
+                              </div>
+                            ))
+                          )
+                        }
+
+                      {
+                        selectedStoreDetails.distributors && selectedStoreDetails.distributors.length > 0 && (
+                          selectedStoreDetails.distributors.map((distributor, index) => (
+                            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                              <Typography variant="subtitle1">
+                                {distributor.name}
+                              </Typography>
+                              <Button variant="outlined" size="small" onClick={() => handleViewDistributor(distributor.key)}>
+                                View
+                              </Button>
+                            </div>
+                          ))
+                        )
+                      }
+                      </Paper>
                     </>
                   )}
                 </Paper>
               </Grid>
             )}
+
           </Grid>
+          <Dialog open={openDistributorDialog} onClose={() => setOpenDistributorDialog(false)}>
+            <DialogTitle>Profile</DialogTitle>
+            <DialogContent>
+              <Typography>Name: {distributorDetails.name}</Typography>
+              <Typography>Contact Number: {distributorDetails.contactNumber}</Typography>
+              <Typography>Email: {distributorDetails.email}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenDistributorDialog(false)}>Close</Button>
+            </DialogActions>
+          </Dialog>
           <Dialog open={openDialog} onClose={handleCloseDialog}>
             <DialogTitle>Edit Address Information</DialogTitle>
             <DialogContent>
