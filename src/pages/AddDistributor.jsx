@@ -97,7 +97,7 @@ const AddDistributor = () => {
       return;
     }
     const distributionID = selectedDistributor;
-    const retailStoreID = currentUser.storesList[0];
+    const retailStoreID = currentUser.selectedStore;
     try {
 
       const existingInvitation = await CheckForExistingInvitation(selectedDistributor, retailStoreID);
