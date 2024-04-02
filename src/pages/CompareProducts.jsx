@@ -1,7 +1,7 @@
 import MainNavBar from "../components/MainNavBar";
 import algoliasearch from "algoliasearch/lite";
 import { useEffect, useState } from "react";
-import { InstantSearch, SearchBox, Hits } from "react-instantsearch";
+import { InstantSearch, SearchBox, Hits, Pagination } from "react-instantsearch";
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchAllDistributorsForStore } from "../firebase/firebaseFirestore";
 import "../styles/CompareProducts.css";
@@ -71,6 +71,7 @@ const CompareProducts = () => {
                                     }}
                                 />
                             </div>
+                            <Pagination />
 
                         </InstantSearch>
                     </div>

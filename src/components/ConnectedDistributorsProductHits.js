@@ -31,12 +31,12 @@ const ConnectedDistributorsProductHits = ({ hit }) => {
                 {hit.distributorStoreName}   
                 <Launch 
                     onClick={navigateToCreateOrder} 
-                    style={{width: "7%", color: "blue", cursor: "pointer", marginLeft: "4px", marginRight: "-5px" }} 
+                    style={{fontSize: "medium", color: "blue", cursor: "pointer", marginLeft: "4px", marginRight: "-5px" }} 
                 />
             </div>
             <div className="product-quantity">Quantity Per Unit: {hit.quantityPerUnit}</div>
             <div className="product-quantity">MOQ: {hit.moq}</div>
-            <div className="product-price">Price: ${hit.unitPrice}</div>
+            <div className="product-price">Price: ${hit.unitPrice?.toFixed(2)}</div>
             <button className="create-order-button" onClick={createOrderForDistributor}>Create Order</button>
             <ProductDetailsModal visible={visible} handleCancel={handleCancel} hit={hit} connected={true}/>
         </div>

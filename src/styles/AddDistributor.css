@@ -1,6 +1,7 @@
 .select-dropdown {
   width: 100%;
   padding: 8px 16px;
+  overflow-y: auto;
 }
 
 .select-dropdown:focus {
@@ -22,4 +23,10 @@
   margin-top: 50px;
   display: flex;
   justify-content: center;
+}
+
+.check-profile-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px; /* Adjust the margin-top as necessary */
 }

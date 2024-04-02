@@ -7,11 +7,13 @@ import ShipmentDetailsTable from '../components/ShipmentDetailsTable';
 import MainNavBar from '../components/MainNavBar';
 import { RiseLoader } from 'react-spinners';
 import { useAuth } from '../firebase/firebaseAuth';
-
+import { Pagination } from 'antd';
 const ShipmentHistory = () => {
     const [shipments, setShipments] = useState([]);
     const [expandedOrderId, setExpandedOrderId] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const { currentUser } = useAuth();
     const distributorID = currentUser.selectedStore;
 
@@ -51,6 +53,14 @@ const ShipmentHistory = () => {
         }
     };
 
+    // Logic to get current shipments based on pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentShipments = shipments.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Change page
+    const onPageChange = (page) => setCurrentPage(page);
+
     return (
         <div>
             <MainNavBar />
@@ -64,51 +74,66 @@ const ShipmentHistory = () => {
             ) : shipments.length === 0 ? (
                 <Typography variant="body1">No shipments in shipment history</Typography>
             ) : (
-                <TableContainer component={Paper}>
-                    <Table aria-label="collapsible table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Order ID</TableCell>
-                                <TableCell>Store Name</TableCell>
-                                <TableCell>Total Cost</TableCell>
-                                <TableCell>Created At</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Actions</TableCell> {/* Add a new column for actions */}
-                                <TableCell />
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {shipments.map((order) => (
-                                <React.Fragment key={order.id}>
-                                    <TableRow>
-                                        <TableCell>{order.id}</TableCell>
-                                        <TableCell>{order.storeName}</TableCell>
-                                        <TableCell>{`$${order.totalCost}`}</TableCell>
-                                        <TableCell>{formatDate(order.createdAt)}</TableCell>
-                                        <TableCell>{order.currentStatus}</TableCell>
-                                        <TableCell>
-                                            <Button variant="outlined" onClick={() => handleStatusChange(order.id, 'Shipped')}>
-                                                Mark as Shipped
-                                            </Button>
-                                            {/* Add more buttons or dropdown menu options for other status changes */}
-                                        </TableCell>
-                                        <TableCell>
-                                            <IconButton
-                                                aria-label="expand row"
-                                                size="small"
-                                                onClick={() => handleExpandClick(order.id)}
-                                            >
-                                                {expandedOrderId === order.id ? <KeyboardArrowUpIcon /> : <ExpandMoreIcon />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    <ShipmentDetailsTable order={order} expandedOrderId={expandedOrderId} />
-                                </React.Fragment>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <>
+                    <TableContainer component={Paper}>
+                        <Table aria-label="collapsible table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Order ID</TableCell>
+                                    <TableCell>Store Name</TableCell>
+                                    <TableCell>Total Cost</TableCell>
+                                    <TableCell>Created At</TableCell>
+                                    <TableCell>Status</TableCell>
+                                    <TableCell>Actions</TableCell> {/* Add a new column for actions */}
+                                    <TableCell />
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {currentShipments.map((order) => (
+                                    <React.Fragment key={order.id}>
+                                        <TableRow>
+                                            <TableCell>{order.id}</TableCell>
+                                            <TableCell>{order.storeName}</TableCell>
+                                            <TableCell>{`$${order.totalCost.toFixed(2)}`}</TableCell>
+                                            <TableCell>{formatDate(order.createdAt)}</TableCell>
+                                            <TableCell>{order.currentStatus}</TableCell>
+                                            <TableCell>
+                                                <Button variant="outlined" onClick={() => handleStatusChange(order.id, 'Shipped')}>
+                                                    Mark as Shipped
+                                                </Button>
+                                                {/* Add more buttons or dropdown menu options for other status changes */}
+                                            </TableCell>
+                                            <TableCell>
+                                                <IconButton
+                                                    aria-label="expand row"
+                                                    size="small"
+                                                    onClick={() => handleExpandClick(order.id)}
+                                                >
+                                                    {expandedOrderId === order.id ? <KeyboardArrowUpIcon /> : <ExpandMoreIcon />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <ShipmentDetailsTable order={order} expandedOrderId={expandedOrderId} />
+                                    </React.Fragment>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Box mt={2} display="flex" justifyContent="center" margin="20px">
+                        <Pagination
+                            current={currentPage}
+                            pageSize={itemsPerPage}
+                            total={shipments.length}
+                            onChange={onPageChange}
+                            showQuickJumper
+                            showSizeChanger
+                            onShowSizeChange={(current, pageSize) => setItemsPerPage(pageSize)}
+
+                        />
+                    </Box>
+                </>
             )}
+
         </div>
     );
 };
