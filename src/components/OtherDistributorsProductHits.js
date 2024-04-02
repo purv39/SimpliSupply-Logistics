@@ -53,7 +53,7 @@ const OtherDistributorsProductHits = ({ hit }) => {
             <div className="product-brand">{hit.distributorStoreName}</div>
             <div className="product-quantity">Quantity Per Unit: {hit.quantityPerUnit}</div>
             <div className="product-quantity">MOQ: {hit.moq}</div>
-            <div className="product-price">Price: ${hit.unitPrice}</div>
+            <div className="product-price">Price: ${hit.unitPrice.toFixed(2)}</div>
             <button className="request-button" disabled={invitationExists} onClick={sendInvitation}>
                 {invitationExists ? 'Requested' : 'Connect'}
             </button>
