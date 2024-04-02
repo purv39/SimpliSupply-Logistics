@@ -1,6 +1,7 @@
 .select-dropdown {
   width: 100%;
   padding: 8px 16px;
+  overflow-y: auto;
 }
 
 .select-dropdown:focus {

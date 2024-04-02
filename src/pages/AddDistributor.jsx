@@ -12,13 +12,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-
+import {Pagination} from 'antd';
 const AddDistributor = () => {
   const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
   const [distributorOptions, setDistributorOptions] = useState([]);
   const [selectedDistributor, setSelectedDistributor] = useState('');
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Number of items per page
 
   const [error, setError] = useState('');
 
@@ -49,7 +51,7 @@ const AddDistributor = () => {
     const storeId = event.target.value;
     setSelectedDistributor(storeId);
     setLoading(true);
-    setProducts([]); 
+    setProducts([]);
     try {
       const storeDetails = await FetchDistributionStoreDetails(storeId);
       const productsList = await FetchProductsByDistributorID(storeId);
@@ -75,6 +77,14 @@ const AddDistributor = () => {
     }
     setLoading(false);
   };
+
+  // Logic to get current products based on pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProducts = products?.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Change page
+  const onPageChange = (page) => setCurrentPage(page);
 
 
   const formatAddress = (userInfo) => {
@@ -114,12 +124,12 @@ const AddDistributor = () => {
       message.error('Please select a distributor to view profile.');
       return;
     }
-    console.log( "selected : "+ selectedDistributor);
+    console.log("selected : " + selectedDistributor);
 
     setLoading(true);
     try {
       const userInfo = await FetchDistributorUserInfo(selectedDistributor); // Implement this function
-      console.log( "user: "+ userInfo);
+      console.log("user: " + userInfo);
 
       setDistributorUserInfo(userInfo);
       setProfilePopupOpen(true);
@@ -154,7 +164,7 @@ const AddDistributor = () => {
                         className="select-dropdown"
                       >
                         <option value="" disabled>
-                          Select Distributor 
+                          Select Distributor
                         </option>
                         {distributorOptions.map((distributor) => (
                           <option key={distributor.id} value={distributor.id}>
@@ -194,25 +204,25 @@ const AddDistributor = () => {
                 <p>Select distributor</p>
               </div>
             ) : products.length > 0 ? (
-              
+
               <TableContainer component={Paper} style={{ marginTop: '20px' }}>
                 <Table aria-label="products table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell colSpan={5} style={{ textAlign: 'center' }}>
-                      <h3>Products Provided</h3>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>#</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Quantity</TableCell>
-                    <TableCell>Price</TableCell>
-                    <TableCell>Description</TableCell>
-                  </TableRow>
-                </TableHead>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell colSpan={5} style={{ textAlign: 'center' }}>
+                        <h3>Products Provided</h3>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>#</TableCell>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Quantity</TableCell>
+                      <TableCell>Price</TableCell>
+                      <TableCell>Description</TableCell>
+                    </TableRow>
+                  </TableHead>
                   <TableBody>
-                    {products.map((product, index) => (
+                    {currentProducts.map((product, index) => (
                       <TableRow key={index}>
                         <TableCell component="th" scope="row">
                           {index + 1}
@@ -223,8 +233,21 @@ const AddDistributor = () => {
                         <TableCell>{product.description}</TableCell>
                       </TableRow>
                     ))}
+                    
                   </TableBody>
+                  
                 </Table>
+                <div className='pagination-container'>
+                      <Pagination
+                        current={currentPage}
+                        pageSize={itemsPerPage}
+                        total={products.length}
+                        onChange={onPageChange}
+                        showQuickJumper
+                        showSizeChanger
+                        onShowSizeChange={(current, pageSize) => setItemsPerPage(pageSize)}
+                      />
+                    </div>
               </TableContainer>
             ) : (
               <div style={{ marginTop: '20px', textAlign: 'center' }}>
@@ -252,17 +275,17 @@ const AddDistributor = () => {
             <Button variant="outlined" color="secondary" onClick={handleOpenProfile} className="profile-button">
               Check Profile
             </Button>
-          
+
           </div>
 
 
 
           <div className="add-button-container">
-              <Button variant="contained" color="primary" onClick={handleAddDistributor}>
-                Add Distributor
-              </Button>
-              
-            </div>
+            <Button variant="contained" color="primary" onClick={handleAddDistributor}>
+              Add Distributor
+            </Button>
+
+          </div>
         </div>
       )}
     </div>
