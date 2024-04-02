@@ -103,8 +103,8 @@ const CreateNewOrder = () => {
     const filteredDistributors = distributors?.filter(distributor =>
         distributor.data.storeName.toLowerCase().includes(searchQueryDistributor.toLowerCase())
     );
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const indexOfLastItem = currentPage * distributorsPerPage;
+    const indexOfFirstItem = indexOfLastItem - distributorsPerPage;
     const currentDistributors = filteredDistributors?.slice(indexOfFirstItem, indexOfLastItem);
 
     // Change page
@@ -157,6 +157,7 @@ const CreateNewOrder = () => {
                     <RiseLoader color="#36D7B7" loading={loading} size={10} />
                 </Grid>
             ) : (
+                <>
                 <Grid container spacing={2}>
                     {currentDistributors?.map(distributor => (
                         <Grid item xs={12} key={distributor.id}>
@@ -251,20 +252,23 @@ const CreateNewOrder = () => {
                                     </Box>
                                 </AccordionDetails>
                             </Accordion>
-                            <Box mt={4} display="flex" justifyContent="center">
-                                <Pagination
-                                    current={currentPage}
-                                    pageSize={distributorsPerPage}
-                                    total={filteredDistributors.length}
-                                    onChange={onPageChange}
-                                    showQuickJumper
-                                    showSizeChanger
-                                    onShowSizeChange={(current, pageSize) => setDistributorsPerPage(pageSize)}
-                                />
-                            </Box>
+
                         </Grid>
                     ))}
+                    
                 </Grid>
+                <Box mt={4} display="flex" justifyContent="center">
+                <Pagination
+                    current={currentPage}
+                    pageSize={distributorsPerPage}
+                    total={filteredDistributors?.length}
+                    onChange={onPageChange}
+                    showQuickJumper
+                    showSizeChanger
+                    onShowSizeChange={(current, pageSize) => setDistributorsPerPage(pageSize)}
+                />
+            </Box>
+            </>
             )}
 
         </Box>
