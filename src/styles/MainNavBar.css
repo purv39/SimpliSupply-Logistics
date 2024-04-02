@@ -3,11 +3,14 @@
 /* General styles */
 .form-select {
   background-color: #333 ; /* Change the background color to grey */
-  color: #fff; /* Change the text color to white */
+  color: #fff !important; /* Change the text color to white */
   background: #333 url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='white' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px !important;
-  width: 150px; /* Ensure dropdown spans full width */
-  padding: 15px;
-
+  width: 180px !important; /* Ensure dropdown spans full width */
+  padding: 13px !important;
+  margin-left:20px !important;
+  white-space: nowrap !important;
+  text-overflow:ellipsis !important;
+  overflow: auto !important;
 }
 
 .navbar {
@@ -18,7 +21,7 @@
 .menu {
   display: flex;
   flex-wrap: wrap; /* Allow items to wrap to the next line */
-  justify-content: center; /* Evenly spread items */
+  justify-content: space-around; /* Evenly spread items */
   align-items: center; /* Centers items vertically */
   background-color: #333; /* Sets a dark background for the menu */
   border-radius: 5px; /* Rounds the corners */
@@ -65,7 +68,6 @@
   display: flex;
   justify-content: space-around; /* Evenly spread items */
   flex-direction: row;
-  margin-top: 10px;
 }
 
 .logout-button {
@@ -80,4 +82,10 @@
 
 .logout-button:hover {
   background-color: #555;
+}
+
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

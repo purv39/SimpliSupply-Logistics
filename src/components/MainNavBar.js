@@ -65,53 +65,7 @@ const MainNavBar = ({ reloadNavbar }) => {
         } else {
           navigateTo('/DistributorHome')
         }
-      }}>SimpliSupply Logistics</div>
-      <div className="menu">
-        {role === 'Store' && (
-          <>
-            <div className="menu-item" onMouseEnter={() => handleMouseEnter(0)} onMouseLeave={handleMouseLeave}>
-              <button>Distributors</button>
-              {openDropdownIndex === 0 && (
-                <div className="dropdown-content">
-                  <button onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button>
-                  <button onClick={() => navigateTo('/DistributorList')}>Distributor List</button>
-                </div>
-              )}
-            </div>
-            <div className="menu-item" onMouseEnter={() => handleMouseEnter(1)} onMouseLeave={handleMouseLeave}>
-              <button>Orders</button>
-              {openDropdownIndex === 1 && (
-                <div className="dropdown-content">
-                  <button onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button>
-                  <button onClick={() => navigateTo('/OrderHistory')}>Order History</button>
-                  <button onClick={() => navigateTo('/CompareProducts')}>Compare Products</button>
-                  <button onClick={() => navigateTo('/GenerateSkuLabel')}>Generate SKU Label</button>
-                </div>
-              )}
-            </div>
-            <div className="menu-item" onMouseEnter={() => handleMouseEnter(2)} onMouseLeave={handleMouseLeave}>
-              <button>Manage Store</button>
-              {openDropdownIndex === 2 && (
-                <div className="dropdown-content">
-                  <button onClick={() => navigateTo('/AddStore')}>Add Store</button>
-                  <button onClick={() => navigateTo('/RemoveStore')}>Remove Store</button>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-        {role === 'Distributor' && (
-          <div className="menu-item">
-            <button onClick={() => navigateTo('/AddProducts')}>Add Products</button>
-            <button onClick={() => navigateTo('/Invitations')}>Invitations</button>
-            <button onClick={() => navigateTo('/ShipmentHistory')}>Shipment History</button>
-            <button onClick={() => navigateTo('/AddDistributionStore')}>Add Distribution Center</button>
-          </div>
-        )}
-
-
-      </div>
-      <div className="menu-footer">
+      }}>SimpliSupply Logistics
         <div className='menu-item'>
           <select
             className="form-select"
@@ -124,14 +78,78 @@ const MainNavBar = ({ reloadNavbar }) => {
             ))}
           </select>
         </div>
-        <div className='menu-item'>
-        <button onClick={() => navigateTo('/Welcome')}>My Page</button>
-        </div>
-        <div className='menu-item'>
+      </div>
+
+      <div className="menu-footer">
+          {role === 'Store' && (
+            <>
+              <div className="menu-item" onMouseEnter={() => handleMouseEnter(0)} onMouseLeave={handleMouseLeave}>
+                <button>Distributors</button>
+                {openDropdownIndex === 0 && (
+                  <div className="dropdown-content">
+                    <button onClick={() => navigateTo('/AddDistributor')}>Add Distributor</button>
+                    <button onClick={() => navigateTo('/DistributorList')}>Distributor List</button>
+                  </div>
+                )}
+              </div>
+              <div className="menu-item" onMouseEnter={() => handleMouseEnter(1)} onMouseLeave={handleMouseLeave}>
+                <button>Orders</button>
+                {openDropdownIndex === 1 && (
+                  <div className="dropdown-content">
+                    <button onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button>
+                    <button onClick={() => navigateTo('/OrderHistory')}>Order History</button>
+                    <button onClick={() => navigateTo('/CompareProducts')}>Compare Products</button>
+                    <button onClick={() => navigateTo('/GenerateSkuLabel')}>Generate SKU Label</button>
+                  </div>
+                )}
+              </div>
+              <div className="menu-item" onMouseEnter={() => handleMouseEnter(2)} onMouseLeave={handleMouseLeave}>
+                <button>Profile</button>
+                {openDropdownIndex === 2 && (
+                  <div className="dropdown-content">
+                    <button onClick={() => navigateTo('/AddStore')}>Add Store</button>
+                    <button onClick={() => navigateTo('/RemoveStore')}>Remove Store</button>
+                    <button onClick={() => navigateTo('/Welcome')}>My Page</button>
+
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+          {role === 'Distributor' && (
+            <>
+              <div className='menu-item'>
+              <button onClick={() => navigateTo('/AddProducts')}>Add Products</button>
+
+              </div>
+              <div className='menu-item'>
+              <button onClick={() => navigateTo('/Invitations')}>Invitations</button>
+
+              </div>
+              
+              <div className='menu-item'>
+              <button onClick={() => navigateTo('/ShipmentHistory')}>Shipment History</button>
+
+              </div>
+              
+              <div className='menu-item'>
+              <button onClick={() => navigateTo('/AddDistributionStore')}>Add Distribution Center</button>
+
+              </div>
+              <div className='menu-item'>
+              <button onClick={() => navigateTo('/Welcome')}>My Page</button>
+
+              </div>
+
+
+            </>
+          )}
+
+
+        
           <button className="logout-button" onClick={handleLogout}>Logout</button>
         </div>
-        
-      </div>
+
     </div>
   )
 }
