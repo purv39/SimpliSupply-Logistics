@@ -10,7 +10,7 @@ import { Typography } from '@mui/material';
 import { Pagination } from 'antd';
 import DetailsModal from '../components/DetailsModal';
 import Barcode from 'react-barcode';
-import { DownloadSharp } from '@mui/icons-material';
+import { DownloadSharp, Sort, SwapVert } from '@mui/icons-material';
 import html2canvas from 'html2canvas'; // Import html2canvas for capturing the barcode as an image
 
 const StoreHome = () => {
@@ -128,13 +128,13 @@ const StoreHome = () => {
             <table className="table">
               <thead>
                 <tr>
-                  <th onClick={() => handleSort('productName')}>Product Name</th>
+                  <th onClick={() => handleSort('productName')}>Product Name <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
                   <th>SKU</th>
-                  <th onClick={() => handleSort('categoryName')}>Category</th>
-                  <th onClick={() => handleSort('quantityPerUnit')}>Quantity Per Unit</th>
-                  <th onClick={() => handleSort('unitsInStock')}>Units In Stock</th>
-                  <th onClick={() => handleSort('unitPrice')}>Unit Price</th>
-                  <th onClick={() => handleSort('itemRetailPrice')}>Item Retail Price</th>
+                  <th onClick={() => handleSort('categoryName')}>Category <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
+                  <th onClick={() => handleSort('quantityPerUnit')}>Quantity Per Unit <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
+                  <th onClick={() => handleSort('unitsInStock')}>Units In Stock <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
+                  <th onClick={() => handleSort('unitPrice')}>Unit Price <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
+                  <th onClick={() => handleSort('itemRetailPrice')}>Item Retail Price <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
                   <th>Action</th>
                 </tr>
               </thead>

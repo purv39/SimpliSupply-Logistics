@@ -8,6 +8,7 @@ import { RiseLoader } from 'react-spinners'; // Import RingLoader from react-spi
 import "../styles/LoadingSpinner.css";
 import { Typography, Pagination } from 'antd'; // Import Pagination from antd
 import DetailsModal from '../components/DetailsModal'; // Import DetailsModal component
+import { SwapVert } from '@mui/icons-material';
 
 const DistributorHome = () => {
     const [inventory, setInventory] = useState([]);
@@ -104,11 +105,11 @@ const DistributorHome = () => {
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th onClick={() => handleSort('productName')}>Product Name</th>
-                                    <th onClick={() => handleSort('categoryName')}>Category</th>
-                                    <th onClick={() => handleSort('quantityPerUnit')}>Quantity Per Unit</th>
-                                    <th onClick={() => handleSort('unitsInStock')}>Units In Stock</th>
-                                    <th onClick={() => handleSort('unitPrice')}>Unit Price</th>
+                                    <th onClick={() => handleSort('productName')}>Product Name <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
+                                    <th onClick={() => handleSort('categoryName')}>Category <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
+                                    <th onClick={() => handleSort('quantityPerUnit')}>Quantity Per Unit <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
+                                    <th onClick={() => handleSort('unitsInStock')}>Units In Stock <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
+                                    <th onClick={() => handleSort('unitPrice')}>Unit Price <SwapVert fontSize='xs' style={{cursor: "pointer"}}/></th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
