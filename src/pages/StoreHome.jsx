@@ -18,7 +18,7 @@ const StoreHome = () => {
   const [loading, setLoading] = useState(true); // State for loading status
   const { currentUser } = useAuth();
   const [currentPage, setCurrentPage] = useState(1); // State for current page
-  const [itemsPerPage, setItemsPerPage] = useState(8); // Number of items per page
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Number of items per page
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [selectedProduct, setSelectedProduct] = useState(null); // State for selected product
@@ -84,9 +84,9 @@ const StoreHome = () => {
 
   const handleDownloadImage = async (productId) => {
     const element = document.getElementById(productId),
-        canvas = await html2canvas(element),
-        data = canvas.toDataURL('image/jpg'),
-        link = document.createElement('a');
+      canvas = await html2canvas(element),
+      data = canvas.toDataURL('image/jpg'),
+      link = document.createElement('a');
 
     link.href = data;
     link.download = `sku_${productId}.jpg`;
@@ -147,7 +147,7 @@ const StoreHome = () => {
                         <div id={item.id}>
                           <Barcode value={item.id} width={1} height={40} />
                         </div>
-                        <DownloadSharp fontSize='small' color='primary' style={{cursor: "pointer"}} onClick={() => handleDownloadImage(item.id)} />
+                        <DownloadSharp fontSize='small' color='primary' style={{ cursor: "pointer" }} onClick={() => handleDownloadImage(item.id)} />
                       </div>
                     </td>
                     <td>{item.data.categoryName}</td>
@@ -174,6 +174,8 @@ const StoreHome = () => {
                 total={filteredItems.length}
                 onChange={onPageChange}
                 showQuickJumper
+                showSizeChanger
+                onShowSizeChange={(current, pageSize) => setItemsPerPage(pageSize)}
               />
             </div>
             <DetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} product={selectedProduct} />

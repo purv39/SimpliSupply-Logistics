@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Typography, Paper, Button } from '@mui/material';
 import { useAuth } from "../firebase/firebaseAuth";
 import { FetchInvitationsForDistributor, AcceptInvitation, DeclineInvitation, FetchStoreDataByID } from "../firebase/firebaseFirestore";
-import { message, Pagination } from 'antd';
+import { Flex, message, Pagination } from 'antd';
 import MainNavBar from '../components/MainNavBar';
 import '../styles/Invitations.css'; // Import CSS file
 
 const Invitations = () => {
     const [invitations, setInvitations] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(8); // Change the number of items per page as needed
+    const [itemsPerPage, setItemsPerPage] = useState(10); // Change the number of items per page as needed
     const { currentUser } = useAuth();
     const distributorID = currentUser.selectedStore;
 
@@ -19,7 +19,7 @@ const Invitations = () => {
                 const invitationsData = await FetchInvitationsForDistributor(distributorID);
                 const data = invitationsData.map(async (invite) => {
                     const storeName = await FetchStoreDataByID(invite.data.storeID);
-                    return {...invite, storeName}
+                    return { ...invite, storeName }
                 })
                 const resolvedInvitations = await Promise.all(data);
 
@@ -41,8 +41,8 @@ const Invitations = () => {
             console.error('Error accepting invitation:', error);
             message.error('Failed to accept invitation. Please try again later.');
         }
-    };    
-    
+    };
+
     const handleDeclineInvitation = async (invitationId, storeID) => {
         try {
             await DeclineInvitation(distributorID, storeID, invitationId);
@@ -52,7 +52,7 @@ const Invitations = () => {
             console.error('Error declining invitation:', error);
             message.error('Failed to decline invitation. Please try again later.');
         }
-    };    
+    };
 
     // Logic to get current invitations based on pagination
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -97,13 +97,19 @@ const Invitations = () => {
                             </Grid>
                         ))}
                     </Grid>
+                    <div style={{display: "flex", justifyContent: "center"}}>
+
                     <Pagination
                         current={currentPage}
                         pageSize={itemsPerPage}
                         total={invitations.length}
                         onChange={onPageChange}
                         showQuickJumper
+                        showSizeChanger
+                        onShowSizeChange={(current, pageSize) => setItemsPerPage(pageSize)}
                     />
+                    </div>
+
                 </>
             )}
         </div>

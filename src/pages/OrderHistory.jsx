@@ -16,7 +16,7 @@ const OrderHistory = () => {
     const [expandedOrderId, setExpandedOrderId] = useState(null);
     const [loading, setLoading] = useState(true); // State for loading status
     const [currentPage, setCurrentPage] = useState(1); // State for current page
-    const [itemsPerPage, setItemsPerPage] = useState(8); // Number of items per page
+    const [itemsPerPage, setItemsPerPage] = useState(10); // Number of items per page
     const { currentUser } = useAuth();
     const storeID = currentUser.selectedStore;
 
@@ -105,6 +105,8 @@ const OrderHistory = () => {
                             total={orders.length}
                             onChange={onPageChange}
                             showQuickJumper
+                            showSizeChanger
+                            onShowSizeChange={(current, pageSize) => setItemsPerPage(pageSize)}
                         />
                     </div>
                 </div>

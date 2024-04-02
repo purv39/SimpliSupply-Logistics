@@ -13,7 +13,7 @@ const ShipmentHistory = () => {
     const [expandedOrderId, setExpandedOrderId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(8);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const { currentUser } = useAuth();
     const distributorID = currentUser.selectedStore;
 
@@ -126,6 +126,8 @@ const ShipmentHistory = () => {
                     total={shipments.length}
                     onChange={onPageChange}
                     showQuickJumper
+                    showSizeChanger
+                    onShowSizeChange={(current, pageSize) => setItemsPerPage(pageSize)}
 
                 />
             </Box>

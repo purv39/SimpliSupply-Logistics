@@ -18,7 +18,8 @@ const CreateNewOrder = () => {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1); // State for current page
     const [productPage, setProductPage] = useState({}); // State for product page
-    const [itemsPerPage, setItemsPerPage] = useState(5); // Number of items per page
+    const [distributorsPerPage, setDistributorsPerPage] = useState(10); // Number of items per page
+    const [itemsPerPage, setItemsPerPage] = useState(10); // Number of items per page
     const [searchQueryDistributor, setSearchQueryDistributor] = useState(''); // State for distributor search query
     const [searchQueryProduct, setSearchQueryProduct] = useState(''); // State for product search query
     const { currentUser } = useAuth();
@@ -242,6 +243,8 @@ const CreateNewOrder = () => {
                                             total={filterProducts(distributor.data.productsData).length}
                                             onChange={(page) => handleProductPageChange(distributor.id, page)}
                                             showQuickJumper
+                                            showSizeChanger
+                                            onShowSizeChange={(current, pageSize) => setItemsPerPage(pageSize)}
                                         />
                                         <DetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} product={selectedProduct} />
 
@@ -251,10 +254,12 @@ const CreateNewOrder = () => {
                             <Box mt={4} display="flex" justifyContent="center">
                                 <Pagination
                                     current={currentPage}
-                                    pageSize={itemsPerPage}
+                                    pageSize={distributorsPerPage}
                                     total={filteredDistributors.length}
                                     onChange={onPageChange}
                                     showQuickJumper
+                                    showSizeChanger
+                                    onShowSizeChange={(current, pageSize) => setDistributorsPerPage(pageSize)}
                                 />
                             </Box>
                         </Grid>

@@ -93,7 +93,7 @@ const MainNavBar = ({ reloadNavbar }) => {
                 )}
               </div>
               <div className="menu-item" onMouseEnter={() => handleMouseEnter(1)} onMouseLeave={handleMouseLeave}>
-                <button>Orders</button>
+                <button>Products</button>
                 {openDropdownIndex === 1 && (
                   <div className="dropdown-content">
                     <button onClick={() => navigateTo('/CreateNewOrder')}>Create New Order</button>

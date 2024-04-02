@@ -16,7 +16,7 @@ const DistributorsList = () => {
   const [selectedDistributors, setSelectedDistributors] = useState({});
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1); // State for current page
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Number of items per page
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Number of items per page
   const storeID = currentUser.selectedStore;
 
   const fetchConnectedDistributors = async (storeID) => {
@@ -154,6 +154,8 @@ const DistributorsList = () => {
               total={list.length}
               onChange={onPageChange}
               showQuickJumper
+              showSizeChanger
+              onShowSizeChange={(current, pageSize) => setItemsPerPage(pageSize)}
             />
           </div>
           <div className="removeButtonContainer">

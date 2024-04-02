@@ -17,7 +17,7 @@ const DistributorHome = () => {
     const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
     const [selectedProduct, setSelectedProduct] = useState(null); // State for selected product
     const [currentPage, setCurrentPage] = useState(1); // State for current page
-    const [itemsPerPage, setItemsPerPage] = useState(8); // Number of items per page
+    const [itemsPerPage, setItemsPerPage] = useState(10); // Number of items per page
     const [searchQuery, setSearchQuery] = useState(''); // State for search query
     const [sortBy, setSortBy] = useState(null); // State for sorting column
     const [sortOrder, setSortOrder] = useState('asc'); // State for sorting order
@@ -136,6 +136,8 @@ const DistributorHome = () => {
                                 total={filteredItems.length}
                                 onChange={onPageChange}
                                 showQuickJumper
+                                showSizeChanger
+                                onShowSizeChange={(current, pageSize) => setItemsPerPage(pageSize)}
                             />
                         </div>
                         <DetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} product={selectedProduct} />
