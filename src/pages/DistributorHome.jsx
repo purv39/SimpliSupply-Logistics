@@ -119,7 +119,7 @@ const DistributorHome = () => {
                                         <td>{item.data.categoryName}</td>
                                         <td>{item.data.quantityPerUnit}</td>
                                         <td>{item.data.unitsInStock}</td>
-                                        <td>${item.data.unitPrice % 1 === 0 ? item.data.unitPrice.toFixed(2) : item.data.unitPrice}</td> {/* Display with 2 decimal points if not an integer */}
+                                        <td>${item.data.unitPrice.toFixed(2)}</td> {/* Display with 2 decimal points if not an integer */}
                                         <td>
                                             <button className="btn btn-primary" onClick={() => handleOpenModal(item)}>
                                                 Details

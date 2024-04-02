@@ -121,7 +121,7 @@ const DetailsModal = ({ isOpen, onClose, product }) => {
                 {product.data.productName} ({product.data.quantityPerUnit} {product.data.unit})
               </h2>
               <p>{product.data?.brandName}</p>
-              <p>${product.data.unitPrice}</p>
+              <p>${product.data?.unitPrice.toFixed(2)}</p>
               <Label>Category:</Label>
               <p>{product.data.categoryName}</p>
               <Label>Description:</Label>

@@ -153,7 +153,7 @@ const StoreHome = () => {
                     <td>{item.data.categoryName}</td>
                     <td>{item.data.quantityPerUnit}</td>
                     <td>{item.data.unitsInStock}</td>
-                    <td>${item.data.unitPrice % 1 === 0 ? item.data.unitPrice?.toFixed(2) : item.data?.unitPrice}</td>
+                    <td>${item.data.unitPrice.toFixed(2)}</td>
                     <td>${item.data.itemRetailPrice?.toFixed(2)}</td>
                     <td>
                       <button
